@@ -1,53 +1,46 @@
-# 🎮 Guia de Desenvolvimento de Minigames (Ecoverse)
+# 🎮 Guia de Integração de Minigames (Ecoverse)
 
-Bem-vindos ao coração interativo do Ecoverse! Este repositório foi arquitetado para ser escalável, modular e à prova de conflitos. Para garantir que o código de vocês não entre em conflito (Merge Conflicts) no GitHub, cada desenvolvedor tem a sua própria pasta isolada.
+Temos uma arquitetura modularizada, baseada em "Single Responsibility" (Responsabilidade Única) e puramente orientada a objetos usando classes ES6.
+
+Para garantir ZERO conflitos no GitHub (os chamados Merge Conflicts), adotamos a infraestrutura onde **1 Missão = 1 Arquivo JS**.
 
 ## 📁 Estrutura da Equipe
-- `/andre/` -> Módulos 1 e 2
-- `/felipe/` -> Módulos 3 e 4
-- `/pedro_borges/` -> Módulos 5 e 6
-- `/thiago/` -> Módulos 7 e 8
+- `/andre/` -> `modulo1.js` e `modulo2.js`
+- `/felipe/` -> `modulo3.js` e `modulo4.js`
+- `/pedro_borges/` -> `modulo5.js` e `modulo6.js`
+- `/thiago/` -> `modulo7.js` e `modulo8.js`
 
 ---
 
-## 🛠️ Como criar o seu Minigame (Padrão Profissional)
+## 🛠️ Como criar o seu Minigame
 
-Vocês não precisam (nem devem) alterar arquivos globais como `state.js` ou `main.js` para criar a lógica do jogo de vocês. A plataforma fornece uma interface onde vocês só precisam construir a tela e disparar um evento quando o jogo acabar.
+Vocês NÃO precisam saber como o Roteador Principal (`minigames.js`) ou o Controle de Moedas (`state.js`) funcionam. Nós, da Liderança Técnica, já conectamos os dois mundos.
 
-### 1. O Arquivo Base (O seu Módulo)
-Dentro da sua pasta, crie a lógica do seu minigame seguindo o padrão de "Exportação de Classe ou Função". Veja o exemplo estruturado nos arquivos `.js` já deixados na sua pasta.
+Basta você abrir o seu arquivo correspondente (ex: `modulo1.js`) e criar a sua tela e a sua lógica livremente dentro do escopo da Função Principal.
 
-### 2. Ciclo de Vida do Minigame
-Um minigame perfeito no Ecoverse precisa de 3 coisas:
-1. **init(containerId):** Uma função que recebe o ID de uma `<div>` vazia onde você vai injetar o HTML, botões e Canvas do seu jogo.
-2. **start():** A função que inicia os cronômetros e a lógica.
-3. **onFinish(pontuacao):** A função callback (que nós da arquitetura base vamos te passar) que você chama quando o jogador "Ganhar" ou "Perder".
+### O Ciclo (Mastigado)
 
-### Exemplo de Integração Segura
+Quando o jogador clica na Amazônia no Globo 3D, a arquitetura injeta a classe respectiva e chama automaticamente o método \`start()\`. Olhe dentro do arquivo \`modulo1.js\` para entender onde o seu código deve ser alocado (procure a etiqueta \`[IMPLEMENTE AQUI]\`).
+
+### Exemplo (O que você precisa fazer)
 ```javascript
-export function iniciarMeuMinigame(containerId, aoFinalizar) {
-    const container = document.getElementById(containerId);
-    
-    // 1. Crie seu HTML
-    container.innerHTML = \`<div class="meu-jogo">
-        <h1>Meu Jogo Incrível</h1>
-        <button id="btn-ganhar">Ganhar 100 pontos!</button>
-    </div>\`;
-    
-    // 2. Coloque seus Eventos
-    document.getElementById('btn-ganhar').addEventListener('click', () => {
-        // 3. Avise a Plataforma que o jogo acabou passando o Score!
-        aoFinalizar({ 
-            sucesso: true, 
-            pontos: 100 
+    start() {
+        // Abaixo da etiqueta [IMPLEMENTE AQUI], coloque algo como:
+        this.container.innerHTML = \`<div class="meu-jogo">
+            <h1>Meu Jogo Incrível</h1>
+            <button id="btn-ganhar">Ganhar 100 pontos!</button>
+        </div>\`;
+        
+        document.getElementById('btn-ganhar').addEventListener('click', () => {
+            // Avise a Plataforma que o jogo acabou enviando true/false e a Pontuação!
+            this.finishGame(true, 100);
         });
-    });
-}
+    }
 ```
 
-### 3. Regras de Ouro ⚠️
-- **NÃO use variáveis globais soltas** (como `var meusPontos`). Use let/const dentro das suas funções ou classes.
-- **NÃO mude arquivos dos colegas**.
-- **CSS Isolado:** Para estilizar o jogo de vocês, criem um arquivo `.css` dentro da sua pasta e avisem o Tech Lead (Pedro Furtado) para importá-lo no `main.css` oficial. Nomeiem suas classes com prefixos únicos, ex: `.andre-botao-pulo` para evitar colidir estilos com o do Felipe.
+### Regras de Ouro
+1. NUNCA crie variáveis soltas fora da Classe (`var x = 1;`). Use `this` dentro do construtor ou `let` locais.
+2. Todo o CSS do seu jogo deve ter classes com NOME ÚNICO pra sua área, ex: `.andre-cenario-1 { ... }`.
+3. Não altere e não comite nas pastas dos seus colegas.
 
-Bom código! A arquitetura base está 100% pronta para receber as inovações de vocês.
+O sistema base está 100% pronto. Começem o show!

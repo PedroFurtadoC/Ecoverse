@@ -22,79 +22,79 @@ const POMODORO_CONFIG = {
   rewardCoins: 5
 };
 
-/* ===== MISSIONS — Real-world natural landmarks ===== */
+/* ===== MISSÕES NO GLOBO ===== */
 const MISSIONS = [
   {
     id: 1, title: 'Floresta Amazônica',
-    desc: 'Módulo 1: Em desenvolvimento estrutural. Colega responsável: André.',
+    desc: '[WIP] Módulo 1 reservado para o André. Área em construção!',
     location: 'Amazônia, Brasil',
     photo: 'assets/photo-amazon.jpg',
     costEnergy: 1, rewardCoins: 10, impactCO2: 0.5,
     lat: -3.4653, lng: -62.2159,
-    prereqId: null, minigame: null
+    prereqId: null, minigame: 'andre_1'
   },
   {
     id: 2, title: 'Bacia do Congo',
-    desc: 'Módulo 2: Em desenvolvimento estrutural. Colega responsável: André.',
+    desc: '[WIP] Módulo 2 reservado para o André. Área em construção!',
     location: 'República Dem. do Congo',
     photo: 'assets/photo-congo.jpg',
     costEnergy: 2, rewardCoins: 15, impactCO2: 0.8,
     lat: -0.7893, lng: 23.6566,
-    prereqId: 1, minigame: null
+    prereqId: 1, minigame: 'andre_2'
   },
   {
     id: 3, title: 'Mata Atlântica',
-    desc: 'Módulo 3: Em desenvolvimento estrutural. Colega responsável: Felipe.',
+    desc: '[WIP] Módulo 3 reservado para o Felipe. Área em construção!',
     location: 'Mata Atlântica, Brasil',
     photo: 'assets/photo-atlantic.jpg',
     costEnergy: 2, rewardCoins: 25, impactCO2: 1.2,
     lat: -22.9519, lng: -43.2106,
-    prereqId: 2, minigame: null
+    prereqId: 2, minigame: 'felipe_1'
   },
   {
     id: 4, title: 'Florestas de Bornéu',
-    desc: 'Módulo 4: Em desenvolvimento estrutural. Colega responsável: Felipe.',
+    desc: '[WIP] Módulo 4 reservado para o Felipe. Área em construção!',
     location: 'Bornéu, Indonésia',
     photo: 'assets/photo-borneo.jpg',
     costEnergy: 3, rewardCoins: 20, impactCO2: 1.5,
     lat: 1.8166, lng: 109.9767,
-    prereqId: 3, minigame: null
+    prereqId: 3, minigame: 'felipe_2'
   },
   {
     id: 5, title: 'Madagascar',
-    desc: 'Módulo 5: Em desenvolvimento estrutural. Colega responsável: Pedro Borges.',
+    desc: '[WIP] Módulo 5 reservado para o Pedro Borges. Área em construção!',
     location: 'Madagascar',
     photo: 'assets/photo-madagascar.jpg',
     costEnergy: 3, rewardCoins: 35, impactCO2: 2.0,
     lat: -18.7669, lng: 46.8691,
-    prereqId: 4, minigame: null
+    prereqId: 4, minigame: 'pedro_b_1'
   },
   {
     id: 6, title: 'Pantanal',
-    desc: 'Módulo 6: Em desenvolvimento estrutural. Colega responsável: Pedro Borges.',
+    desc: '[WIP] Módulo 6 reservado para o Pedro Borges. Área em construção!',
     location: 'Pantanal, Brasil',
     photo: 'assets/photo-pantanal.jpg',
     costEnergy: 4, rewardCoins: 40, impactCO2: 1.8,
     lat: -19.0907, lng: -57.6534,
-    prereqId: 5, minigame: null
+    prereqId: 5, minigame: 'pedro_b_2'
   },
   {
     id: 7, title: 'Grande Barreira de Coral',
-    desc: 'Módulo 7: Em desenvolvimento estrutural. Colega responsável: Thiago.',
+    desc: '[WIP] Módulo 7 reservado para o Thiago. Área em construção!',
     location: 'Queensland, Austrália',
     photo: 'assets/photo-coral.jpg',
     costEnergy: 5, rewardCoins: 60, impactCO2: 3.0,
     lat: -18.2871, lng: 147.6992,
-    prereqId: 6, minigame: null
+    prereqId: 6, minigame: 'thiago_1'
   },
   {
     id: 8, title: 'Cordilheira dos Andes',
-    desc: 'Módulo 8: Em desenvolvimento estrutural. Colega responsável: Thiago.',
+    desc: '[WIP] Módulo 8 reservado para o Thiago. Área em construção!',
     location: 'Andes, Chile/Peru',
     photo: null,
     costEnergy: 5, rewardCoins: 75, impactCO2: 3.5,
     lat: -13.1631, lng: -72.5450,
-    prereqId: 7, minigame: null
+    prereqId: 7, minigame: 'thiago_2'
   }
 ];
 

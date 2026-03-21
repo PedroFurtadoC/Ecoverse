@@ -1,4 +1,12 @@
 import { MINIGAME_CONFIG } from '../config/data.js';
+import { Modulo1 } from './minigames/andre/modulo1.js';
+import { Modulo2 } from './minigames/andre/modulo2.js';
+import { Modulo3 } from './minigames/felipe/modulo3.js';
+import { Modulo4 } from './minigames/felipe/modulo4.js';
+import { Modulo5 } from './minigames/pedro_borges/modulo5.js';
+import { Modulo6 } from './minigames/pedro_borges/modulo6.js';
+import { Modulo7 } from './minigames/thiago/modulo7.js';
+import { Modulo8 } from './minigames/thiago/modulo8.js';
 
 let callback = null;
 let currentGame = null;
@@ -27,6 +35,57 @@ export function open(gameType, cb) {
   initDOM();
   callback = cb;
   currentGame = gameType;
+
+  // ==== Roteamento Dinâmico para Módulos da Equipe ====
+  function setupTeamMinigame(title, desc) {
+    if (titleEl) titleEl.textContent = title;
+    if (descEl) descEl.textContent = desc;
+    if (scoreEl) scoreEl.textContent = '0';
+    if (resultEl) resultEl.style.display = 'none';
+    if (canvasEl) canvasEl.style.display = 'none';
+    gridEl.innerHTML = '';
+    gridEl.className = 'mg-grid';
+    gridEl.style.display = 'block';
+    container.classList.add('active');
+  }
+
+  if (gameType === 'andre_1') {
+    setupTeamMinigame('Integração (André)', 'Ambiente de desenvolvimento do Módulo 1.');
+    return new Modulo1(gridEl, (res) => closeGame(res.success, false)).start();
+  }
+  if (gameType === 'andre_2') {
+    setupTeamMinigame('Integração (André)', 'Ambiente de desenvolvimento do Módulo 2.');
+    return new Modulo2(gridEl, (res) => closeGame(res.success, false)).start();
+  }
+
+  if (gameType === 'felipe_1') {
+    setupTeamMinigame('Integração (Felipe)', 'Ambiente de desenvolvimento do Módulo 3.');
+    return new Modulo3(gridEl, (res) => closeGame(res.success, false)).start();
+  }
+  if (gameType === 'felipe_2') {
+    setupTeamMinigame('Integração (Felipe)', 'Ambiente de desenvolvimento do Módulo 4.');
+    return new Modulo4(gridEl, (res) => closeGame(res.success, false)).start();
+  }
+
+  if (gameType === 'pedro_b_1') {
+    setupTeamMinigame('Integração (Pedro Borges)', 'Ambiente de desenvolvimento do Módulo 5.');
+    return new Modulo5(gridEl, (res) => closeGame(res.success, false)).start();
+  }
+  if (gameType === 'pedro_b_2') {
+    setupTeamMinigame('Integração (Pedro Borges)', 'Ambiente de desenvolvimento do Módulo 6.');
+    return new Modulo6(gridEl, (res) => closeGame(res.success, false)).start();
+  }
+
+  if (gameType === 'thiago_1') {
+    setupTeamMinigame('Integração (Thiago)', 'Ambiente de desenvolvimento do Módulo 7.');
+    return new Modulo7(gridEl, (res) => closeGame(res.success, false)).start();
+  }
+  if (gameType === 'thiago_2') {
+    setupTeamMinigame('Integração (Thiago)', 'Ambiente de desenvolvimento do Módulo 8.');
+    return new Modulo8(gridEl, (res) => closeGame(res.success, false)).start();
+  }
+  // ====================================================
+
   const config = MINIGAME_CONFIG[gameType];
   if (!config) { cb(true, false); return; }
 
