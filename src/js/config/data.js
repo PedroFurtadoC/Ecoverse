@@ -26,66 +26,75 @@ const POMODORO_CONFIG = {
 const MISSIONS = [
   {
     id: 1, title: 'Floresta Amazônica',
-    desc: 'Plante sementes no coração da maior floresta tropical do mundo. A Amazônia produz 20% do oxigênio da Terra.',
+    desc: 'Módulo 1: Em desenvolvimento estrutural. Colega responsável: André.',
     location: 'Amazônia, Brasil',
     photo: 'assets/photo-amazon.jpg',
     costEnergy: 1, rewardCoins: 10, impactCO2: 0.5,
     lat: -3.4653, lng: -62.2159,
-    prereqId: null, minigame: 'memory'
+    prereqId: null, minigame: null
   },
   {
     id: 2, title: 'Bacia do Congo',
-    desc: 'Irrigue mudas na segunda maior floresta tropical — lar dos gorilas-de-montanha e okapis.',
+    desc: 'Módulo 2: Em desenvolvimento estrutural. Colega responsável: André.',
     location: 'República Dem. do Congo',
     photo: 'assets/photo-congo.jpg',
     costEnergy: 2, rewardCoins: 15, impactCO2: 0.8,
     lat: -0.7893, lng: 23.6566,
-    prereqId: 1, minigame: 'quiz'
+    prereqId: 1, minigame: null
   },
   {
     id: 3, title: 'Mata Atlântica',
-    desc: 'Monte um viveiro para proteger espécies endêmicas da Mata Atlântica, que já perdeu 88% de sua cobertura.',
+    desc: 'Módulo 3: Em desenvolvimento estrutural. Colega responsável: Felipe.',
     location: 'Mata Atlântica, Brasil',
     photo: 'assets/photo-atlantic.jpg',
     costEnergy: 2, rewardCoins: 25, impactCO2: 1.2,
     lat: -22.9519, lng: -43.2106,
-    prereqId: 2, minigame: 'sorting'
+    prereqId: 2, minigame: null
   },
   {
     id: 4, title: 'Florestas de Bornéu',
-    desc: 'Crie composteiras em Bornéu para restaurar solos degradados e proteger os orangotangos.',
+    desc: 'Módulo 4: Em desenvolvimento estrutural. Colega responsável: Felipe.',
     location: 'Bornéu, Indonésia',
     photo: 'assets/photo-borneo.jpg',
     costEnergy: 3, rewardCoins: 20, impactCO2: 1.5,
     lat: 1.8166, lng: 109.9767,
-    prereqId: 3, minigame: 'memory'
+    prereqId: 3, minigame: null
   },
   {
     id: 5, title: 'Madagascar',
-    desc: 'Conecte fragmentos de floresta em Madagascar para salvar lêmures e baobás únicos no mundo.',
+    desc: 'Módulo 5: Em desenvolvimento estrutural. Colega responsável: Pedro Borges.',
     location: 'Madagascar',
     photo: 'assets/photo-madagascar.jpg',
     costEnergy: 3, rewardCoins: 35, impactCO2: 2.0,
     lat: -18.7669, lng: 46.8691,
-    prereqId: 4, minigame: 'quiz'
+    prereqId: 4, minigame: null
   },
   {
     id: 6, title: 'Pantanal',
-    desc: 'Instale câmeras no Pantanal — a maior planície alagável do planeta — para monitorar onças e araras.',
+    desc: 'Módulo 6: Em desenvolvimento estrutural. Colega responsável: Pedro Borges.',
     location: 'Pantanal, Brasil',
     photo: 'assets/photo-pantanal.jpg',
     costEnergy: 4, rewardCoins: 40, impactCO2: 1.8,
     lat: -19.0907, lng: -57.6534,
-    prereqId: 5, minigame: 'sorting'
+    prereqId: 5, minigame: null
   },
   {
     id: 7, title: 'Grande Barreira de Coral',
-    desc: 'Estabeleça proteção permanente no ecossistema marinho mais extraordinário do planeta.',
+    desc: 'Módulo 7: Em desenvolvimento estrutural. Colega responsável: Thiago.',
     location: 'Queensland, Austrália',
     photo: 'assets/photo-coral.jpg',
     costEnergy: 5, rewardCoins: 60, impactCO2: 3.0,
     lat: -18.2871, lng: 147.6992,
-    prereqId: 6, minigame: 'memory'
+    prereqId: 6, minigame: null
+  },
+  {
+    id: 8, title: 'Cordilheira dos Andes',
+    desc: 'Módulo 8: Em desenvolvimento estrutural. Colega responsável: Thiago.',
+    location: 'Andes, Chile/Peru',
+    photo: null,
+    costEnergy: 5, rewardCoins: 75, impactCO2: 3.5,
+    lat: -13.1631, lng: -72.5450,
+    prereqId: 7, minigame: null
   }
 ];
 
