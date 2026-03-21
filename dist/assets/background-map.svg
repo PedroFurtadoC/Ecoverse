@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4DA8DA"/>
+      <stop offset="25%" stop-color="#7EC8E3"/>
+      <stop offset="50%" stop-color="#B5E3D8"/>
+      <stop offset="75%" stop-color="#7DBD7F"/>
+      <stop offset="100%" stop-color="#4A9356"/>
+    </linearGradient>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#FFF" stop-opacity="0.08"/>
+      <stop offset="65%" stop-color="#FFF" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.06"/>
+    </linearGradient>
+    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5DAA68"/>
+      <stop offset="100%" stop-color="#3E8A4A"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4E9A58"/>
+      <stop offset="100%" stop-color="#3A7D42"/>
+    </linearGradient>
+    <radialGradient id="cl" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#A8D86E" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#5DAA68" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+
+  <!-- Distant rolling hills -->
+  <path d="M0,410 Q200,360 450,390 Q700,420 960,370 Q1250,320 1500,380 Q1700,410 1920,390 L1920,500 L0,500Z" fill="#7FC88A" opacity="0.30"/>
+  <path d="M0,440 Q300,395 600,425 Q850,450 1100,405 Q1400,360 1650,420 Q1820,445 1920,430 L1920,520 L0,520Z" fill="#6AB87A" opacity="0.38"/>
+  <path d="M0,465 Q250,440 500,460 Q780,480 1020,445 Q1300,410 1550,455 Q1760,475 1920,460 L1920,540 L0,540Z" fill="#5CAF6D" opacity="0.42"/>
+
+  <!-- Main ground -->
+  <path d="M0,500 Q280,475 600,492 Q920,510 1220,485 Q1500,465 1920,495 L1920,1080 L0,1080Z" fill="url(#g1)"/>
+  <!-- Ground texture -->
+  <path d="M0,545 Q380,525 780,540 Q1180,555 1580,530 Q1800,520 1920,535 L1920,1080 L0,1080Z" fill="url(#g2)" opacity="0.45"/>
+
+  <!-- Subtle terrain contours -->
+  <path d="M0,620 Q400,605 800,618 Q1200,632 1600,612 Q1800,604 1920,615 L1920,1080 L0,1080Z" fill="#3E8A4A" opacity="0.15"/>
+  <path d="M0,740 Q350,725 700,738 Q1050,750 1400,732 Q1700,720 1920,735 L1920,1080 L0,1080Z" fill="#367740" opacity="0.10"/>
+
+  <!-- Haze overlay -->
+  <rect width="1920" height="1080" fill="url(#haze)"/>
+
+  <!-- Clearings (light patches where nodes sit) -->
+  <circle cx="192" cy="821" r="52" fill="url(#cl)"/>
+  <circle cx="499" cy="767" r="48" fill="url(#cl)"/>
+  <circle cx="499" cy="400" r="45" fill="url(#cl)"/>
+  <circle cx="806" cy="680" r="48" fill="url(#cl)"/>
+  <circle cx="960" cy="378" r="50" fill="url(#cl)"/>
+  <circle cx="1306" cy="680" r="48" fill="url(#cl)"/>
+  <circle cx="1690" cy="734" r="52" fill="url(#cl)"/>
+</svg>

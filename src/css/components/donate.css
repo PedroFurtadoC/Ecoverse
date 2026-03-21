@@ -1,0 +1,32 @@
+/* ======== DONATE ======== */
+
+.donate-options {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.donate-option {
+  flex: 1;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--c-yellow);
+  transition: background var(--transition), transform var(--transition);
+}
+
+.donate-option:hover {
+  background: rgba(241, 196, 15, 0.15);
+  transform: scale(1.04);
+}
+
+.donate-note {
+  font-size: 12px;
+  color: var(--c-text-dim);
+  text-align: center;
+  margin: 8px 0 16px;
+}
+
+

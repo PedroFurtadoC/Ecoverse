@@ -1,0 +1,100 @@
+/* ======== MISSION MODAL ======== */
+
+.mission-modal {
+  max-width: 460px;
+}
+
+.mission-location {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-blue);
+  margin-bottom: 12px;
+  letter-spacing: 0.3px;
+}
+
+.mission-desc {
+  font-size: 14px;
+  color: var(--c-text-dim);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.mission-stats {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.mission-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mission-stat img {
+  width: 16px;
+  height: 16px;
+}
+
+.mission-stat.cost span {
+  color: #ff7043;
+}
+
+.mission-stat.reward span {
+  color: var(--c-yellow);
+}
+
+.mission-stat.impact-stat span {
+  color: var(--c-blue);
+}
+
+.mission-game-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-green);
+  margin-bottom: 14px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--c-green), var(--c-green-dark));
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+  box-shadow: 0 4px 20px rgba(46, 204, 113, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(46, 204, 113, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  font-weight: 700;
+  transition: background var(--transition);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+

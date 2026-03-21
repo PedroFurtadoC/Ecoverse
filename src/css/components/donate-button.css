@@ -1,0 +1,30 @@
+/* ======== Donate Button ======== */
+
+.donate-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 100;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF7043, #E64A19);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 24px rgba(255, 112, 67, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.donate-btn:hover {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 8px 32px rgba(255, 112, 67, 0.5);
+}
+
+.donate-btn img {
+  width: 24px;
+  height: 24px;
+}
+
+

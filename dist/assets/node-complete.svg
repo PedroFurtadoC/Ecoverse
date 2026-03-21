@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <defs>
+    <linearGradient id="completeBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F1C40F"/>
+      <stop offset="100%" stop-color="#D4A80E"/>
+    </linearGradient>
+    <radialGradient id="completeGlow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="completeShadow" x="-20%" y="-10%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#8B7300" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <g filter="url(#completeShadow)">
+    <circle cx="40" cy="40" r="30" fill="url(#completeBg)" stroke="#C9A10C" stroke-width="2.5"/>
+    <circle cx="40" cy="40" r="30" fill="url(#completeGlow)"/>
+    <circle cx="40" cy="40" r="25" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.3"/>
+    <!-- Checkmark -->
+    <polyline points="28,40 36,48 52,32" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

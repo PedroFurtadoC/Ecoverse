@@ -1,0 +1,121 @@
+/* ======== GLOBE WRAPPER ======== */
+
+.globe-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Globe.GL canvas inherits size from wrapper */
+.globe-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+/* ======== GLOBE MARKERS ======== */
+
+.globe-marker {
+  text-align: center;
+  pointer-events: auto;
+  transition: transform 0.3s ease;
+  transform-origin: center bottom;
+}
+
+.globe-marker:hover {
+  transform: scale(1.15);
+  z-index: 100;
+}
+
+.gm-pin {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 4px;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.globe-marker.available .gm-pin {
+  background: linear-gradient(135deg, #2ECC71, #27AE60);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.globe-marker.locked .gm-pin {
+  background: rgba(100, 100, 100, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.globe-marker.complete .gm-pin {
+  background: linear-gradient(135deg, #F1C40F, #D4A80E);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.gm-icon {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.gm-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.gm-location {
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+}
+
+/* Pulse for available markers */
+.gm-pulse .gm-pin::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--c-green);
+  animation: markerPulse 2s ease-in-out infinite;
+}
+
+@keyframes markerPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* Locked marker style */
+.globe-marker.locked .gm-label {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.globe-marker.locked .gm-location {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.globe-marker.locked .gm-icon {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+

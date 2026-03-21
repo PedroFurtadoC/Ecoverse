@@ -1,0 +1,178 @@
+/* ======== HUD ======== */
+
+.hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 80%, transparent 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hud>* {
+  flex-shrink: 0;
+}
+
+.hud-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hud-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform var(--transition);
+}
+
+.hud-stat:hover {
+  transform: scale(1.06);
+}
+
+.hud-stat img {
+  width: 18px;
+  height: 18px;
+}
+
+.hud-stat span {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.hud-stat.energy span {
+  color: var(--c-green);
+}
+
+.hud-stat.coins span {
+  color: var(--c-yellow);
+}
+
+.hud-stat.impact span {
+  color: var(--c-blue);
+}
+
+.hud-progress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hud-progress-track {
+  width: 80px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.hud-progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--c-green), var(--c-blue));
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.hud-progress-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-text-dim);
+}
+
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.hud-btn:hover {
+  background: rgba(46, 204, 113, 0.25);
+  transform: scale(1.1);
+}
+
+.hud-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Pomodoro CTA — prominent labeled pill */
+.hud-btn--pomo {
+  width: auto;
+  height: auto;
+  border-radius: 22px;
+  padding: 8px 18px;
+  gap: 6px;
+  flex-direction: column;
+  background: linear-gradient(135deg, #FF7043, #E64A19);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 16px rgba(255, 112, 67, 0.35), 0 0 24px rgba(255, 112, 67, 0.15);
+  animation: pomoPulse 3s ease-in-out infinite;
+}
+
+.hud-btn--pomo:hover {
+  background: linear-gradient(135deg, #FF8A65, #F4511E);
+  transform: scale(1.08);
+  box-shadow: 0 4px 24px rgba(255, 112, 67, 0.5);
+}
+
+.hud-btn--pomo img {
+  width: 18px;
+  height: 18px;
+}
+
+@keyframes pomoPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 2px 16px rgba(255, 112, 67, 0.35), 0 0 24px rgba(255, 112, 67, 0.15);
+  }
+
+  50% {
+    box-shadow: 0 2px 20px rgba(255, 112, 67, 0.55), 0 0 32px rgba(255, 112, 67, 0.25);
+  }
+}
+
+.hud-btn-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.hud-btn-sub {
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.3px;
+  margin-top: -4px;
+}
+
+

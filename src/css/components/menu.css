@@ -1,0 +1,34 @@
+/* ======== MENU ======== */
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 14px;
+  font-weight: 700;
+  transition: background var(--transition);
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menu-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--c-green);
+  background: rgba(46, 204, 113, 0.12);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+

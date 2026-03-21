@@ -1,0 +1,15 @@
+/* ======== GAME CONTAINER ======== */
+
+#game-container {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  background: #000;
+}
+
+#game-container.visible {
+  opacity: 1;
+}
+
+

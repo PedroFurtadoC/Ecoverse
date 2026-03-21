@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 28" width="44" height="28">
+  <defs>
+    <linearGradient id="rk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9E9E8A"/>
+      <stop offset="100%" stop-color="#757568"/>
+    </linearGradient>
+  </defs>
+  <!-- Main rock -->
+  <path d="M6,28 Q2,22 4,16 Q6,10 14,8 Q20,6 28,8 Q36,10 40,16 Q42,22 38,28Z" fill="url(#rk)"/>
+  <!-- Smaller rock -->
+  <path d="M30,28 Q30,22 34,20 Q38,18 42,20 Q44,24 42,28Z" fill="#8A8A78" opacity="0.8"/>
+  <!-- Crack detail -->
+  <path d="M18,14 Q20,18 22,22" stroke="#6B6B5C" stroke-width="0.8" fill="none" opacity="0.4"/>
+  <path d="M10,18 Q12,22 11,26" stroke="#6B6B5C" stroke-width="0.6" fill="none" opacity="0.3"/>
+  <!-- Highlight -->
+  <path d="M12,12 Q16,10 22,10" stroke="#B8B8A6" stroke-width="1.2" fill="none" opacity="0.3" stroke-linecap="round"/>
+  <!-- Moss -->
+  <ellipse cx="16" cy="12" rx="4" ry="2" fill="#6B9E5C" opacity="0.25"/>
+</svg>
