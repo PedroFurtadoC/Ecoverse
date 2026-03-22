@@ -417,9 +417,7 @@ const TIPS = [
 
 const ASSET_LIST = [
   'assets/loading-bg.svg','assets/logo.svg',
-  'assets/node-locked.svg','assets/node-available.svg','assets/node-complete.svg',
-  'assets/pin-shadow.svg','assets/cloud-1.svg','assets/cloud-2.svg',
-  'assets/leaf-particle.svg','assets/icon-seed.svg','assets/icon-coin.svg',
+  'assets/icon-seed.svg','assets/icon-coin.svg',
   'assets/icon-impact.svg','assets/icon-menu.svg','assets/icon-donate.svg',
   'assets/icon-timer.svg','assets/icon-trophy.svg',
   'assets/earth-texture.jpg'
