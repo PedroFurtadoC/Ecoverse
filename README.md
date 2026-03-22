@@ -1,47 +1,53 @@
-# 🌍 Ecoverse — Floresta do Futuro
+# Ecoverse — Floresta do Futuro
 
-O **Ecoverse** é uma plataforma educacional interativa que utiliza a técnica de Pomodoro e mini-games para engajar estudantes na preservação de ecossistemas reais e no aprendizado sobre os **Objetivos de Desenvolvimento Sustentável (ODS)** da ONU.
+O Ecoverse é um projeto desenvolvido para a disciplina de Sustentabilidade Ambiental. O objetivo da plataforma é integrar a técnica de Pomodoro com mini-games interativos para conscientizar sobre a preservação de ecossistemas reais, fundamentado nos Objetivos de Desenvolvimento Sustentável (ODS) da ONU.
 
-## 🚀 Como Iniciar (Desenvolvimento)
+## Como executar o projeto localmente
 
-1. **Instale as dependências:**  
+1. Instalar as dependências:
    `npm install`
-2. **Inicie o servidor local:**  
+2. Iniciar o servidor de desenvolvimento:
    `npm run dev`
-3. **Build para produção:**  
+3. Gerar a versão final para produção:
    `npm run build`
 
 ---
 
-## 👩‍🏫 Guia para a Professora (Manutenção e Deploy)
+## Guia para a Professora Isadora (Manutenção e Deploy)
 
-Este projeto foi construído para ser **perpétuo, gratuito e de fácil manutenção**. Abaixo, os passos para garantir que o Ecoverse continue online e funcional para futuras turmas:
+Professora Isadora, este projeto foi estruturado para ser uma ferramenta educacional contínua e de fácil gerenciamento pela senhora ou por futuras turmas:
 
-### 1. Como manter o site no ar (Deploy)
-Recomendamos o uso da **Vercel** (ou Netlify). 
-- Faça login na Vercel com sua conta GitHub.
-- Clique em "Add New" -> "Project".
-- Selecione este repositório (`Ecoverse`).
-- A Vercel detectará automaticamente as configurações do **Vite**. Clique em "Deploy".
-- **Pronto!** A partir de agora, qualquer alteração no código feita pelos alunos colaboradores atualizará o site automaticamente.
+### 1. Publicação do site (Deploy)
+Utilizamos a plataforma Vercel para a hospedagem. O processo é simplificado:
+- Realizar login na Vercel utilizando a conta do GitHub.
+- Importar este repositório (Ecoverse).
+- O sistema reconhecerá as configurações do Vite automaticamente. Basta clicar em "Deploy".
+- Após a configuração inicial, qualquer atualização realizada aqui no GitHub será refletida no site oficial de forma automática.
 
-### 2. Domínio Próprio
-Se desejar comprar um domínio (ex: `www.ecoverse.com.br`), você pode adicioná-lo gratuitamente na aba **Settings > Domains** dentro do painel da Vercel. Não há custos de hospedagem no plano Hobby.
+### 2. Configuração de Domínio
+Caso deseje utilizar um domínio personalizado (como www.ecoverse.com.br), a configuração pode ser feita sem custos adicionais de servidor na aba Settings > Domains dentro do painel da Vercel.
 
-### 3. Colaboração
-Os alunos devem ser adicionados como "Collaborators" no repositório do GitHub. Isso permite que eles enviem suas atualizações de mini-games diretamente para a branch principal, mantendo o site sempre atualizado sem intervenção manual.
-
----
-
-## 🛠️ Arquitetura do Projeto
-
-- **Frontend:** HTML5, CSS3 (Vanilla), JavaScript (ES6+).
-- **Globo 3D:** [Globe.GL](https://globe.gl/) (Three.js).
-- **Build Tool:** Vite.
-- **Estado:** Gerenciado via `localStorage` (o progresso do aluno é salvo no próprio navegador).
-
-## 👥 Equipe e Módulos
-O projeto está dividido de forma que cada desenvolvedor possui seu próprio arquivo isolado em `src/js/modules/minigames/`, evitando conflitos de código.
+### 3. Gestão Colaborativa
+Cada aluno foi adicionado como colaborador no repositório do GitHub. Isso permite que a equipe implemente as missões e mini-games de forma independente, garantindo que o site oficial permaneça atualizado sem a necessidade de intervenções manuais constantes.
 
 ---
-*Projeto acadêmico focado em Sustentabilidade Ambiental.*
+
+## Arquitetura e Tecnologias
+
+- Desenvolvedor Geral: Pedro Furtado
+- Tecnologias Base: HTML5, CSS3 e JavaScript (ES6+).
+- Visualização 3D: Biblioteca Globe.GL baseada em Three.js.
+- Persistência de Dados: O progresso e as estatísticas de energia e moedas são armazenados via localStorage no navegador do usuário.
+
+## Organização da Equipe e Módulos
+O projeto utiliza uma estrutura modular localizada em `src/js/modules/minigames/`, onde cada desenvolvedor possui um arquivo isolado para implementar suas missões específicas:
+
+- André: Missões 1 e 2
+- Felipe: Missões 3 e 4
+- Pedro Borges: Missões 5 e 6
+- Thiago: Missões 7 e 8
+
+Essa estrutura, concebida por Pedro Furtado, garante o isolamento do código e a integridade do sistema global durante o desenvolvimento colaborativo.
+
+---
+Projeto acadêmico de Sustentabilidade Ambiental - 2026.
