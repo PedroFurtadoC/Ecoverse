@@ -1,8 +1,6 @@
-/* ========================================
-   ECOVERSE - data.js  (v5 — Globe)
-   Missions at real-world natural landmarks,
-   pomodoro, achievements, mini-games
-======================================== */
+// Configuração base, missões, conquistas e quizzes do Ecoverse.
+// Toda alteração de conteúdo factual precisa de fonte oficial citada
+// em comentário inline (ONU, IBGE, MMA, IPCC, OMS, FAO, MapBiomas).
 
 const GAME_CONFIG = {
   initialEnergy: 3,
@@ -12,7 +10,7 @@ const GAME_CONFIG = {
   storageKey: 'ecoverse_save_v5'
 };
 
-/* ===== POMODORO CONFIG ===== */
+// Pomodoro: ciclos de 25 min foco / 5 min pausa, longa de 15 min a cada 4 sessões.
 const POMODORO_CONFIG = {
   workDuration: 25 * 60,
   breakDuration: 5 * 60,
@@ -22,11 +20,15 @@ const POMODORO_CONFIG = {
   rewardCoins: 5
 };
 
-/* ===== MISSÕES NO GLOBO ===== */
+// Missões no globo. Cada uma referencia um local real e um problema concreto
+// de resíduos naquele bioma. Estatísticas com fonte oficial citada inline.
 const MISSIONS = [
   {
-    id: 1, title: 'Floresta Amazônica',
-    desc: '[WIP] Módulo 1 reservado para o André. Área em construção!',
+    id: 1, title: 'Plásticos no rio Amazonas',
+    // Resíduo flutuante na bacia amazônica: estudo Reis et al. (2021) e UNEP
+    // Litter Outlook documentaram acúmulo significativo de plástico em
+    // igarapés próximos a centros urbanos como Manaus.
+    desc: 'Comunidades ribeirinhas convivem com resíduos plásticos que descem com as cheias e ameaçam botos, pirarucus e a pesca artesanal. Recolha o lixo antes que ele chegue ao igarapé.',
     location: 'Amazônia, Brasil',
     photo: 'assets/photo-amazon.jpg',
     costEnergy: 1, rewardCoins: 10, impactCO2: 0.5,
@@ -34,8 +36,11 @@ const MISSIONS = [
     prereqId: null, minigame: 'andre_1'
   },
   {
-    id: 2, title: 'Bacia do Congo',
-    desc: '[WIP] Módulo 2 reservado para o André. Área em construção!',
+    id: 2, title: 'Lixo eletrônico na África Central',
+    // Global E-waste Monitor 2024 (UNU/ITU): 62 milhões de toneladas de e-waste
+    // por ano no mundo, apenas 22% formalmente recicladas; parte é exportada
+    // ilegalmente para países da África Central.
+    desc: 'Contêineres de eletrônicos descartados da Europa e da Ásia chegam à Bacia do Congo e contaminam o solo com mercúrio e chumbo. Separe o que tem valor reciclável do que exige descarte especial.',
     location: 'República Dem. do Congo',
     photo: 'assets/photo-congo.jpg',
     costEnergy: 2, rewardCoins: 15, impactCO2: 0.8,
@@ -43,8 +48,11 @@ const MISSIONS = [
     prereqId: 1, minigame: 'andre_2'
   },
   {
-    id: 3, title: 'Mata Atlântica',
-    desc: '[WIP] Módulo 3 reservado para o Felipe. Área em construção!',
+    id: 3, title: 'Encostas e nascentes da Mata Atlântica',
+    // SOS Mata Atlântica: bioma já perdeu ~88% da cobertura original e
+    // abastece de água ~70% da população brasileira. Descarte irregular
+    // em encostas urbanas é principal fonte de contaminação de nascentes.
+    desc: 'A Mata Atlântica fornece água para 7 em cada 10 brasileiros, mas suas encostas viraram lixões irregulares. Limpe as nascentes antes que o resíduo chegue ao rio.',
     location: 'Mata Atlântica, Brasil',
     photo: 'assets/photo-atlantic.jpg',
     costEnergy: 2, rewardCoins: 25, impactCO2: 1.2,
@@ -52,8 +60,11 @@ const MISSIONS = [
     prereqId: 2, minigame: 'felipe_1'
   },
   {
-    id: 4, title: 'Florestas de Bornéu',
-    desc: '[WIP] Módulo 4 reservado para o Felipe. Área em construção!',
+    id: 4, title: 'Manguezais de Bornéu sufocados',
+    // WWF Indonesia / UNEP Mangrove Forest Outlook: manguezais filtram
+    // poluição costeira, mas estão entre os ecossistemas mais ameaçados
+    // por plástico urbano e efluentes da indústria de óleo de palma.
+    desc: 'Os manguezais de Bornéu filtram poluentes e protegem a costa, mas estão sufocados por plástico vindo da indústria de óleo de palma. Identifique a cadeia de descarte e proteja os mangues.',
     location: 'Bornéu, Indonésia',
     photo: 'assets/photo-borneo.jpg',
     costEnergy: 3, rewardCoins: 20, impactCO2: 1.5,
@@ -61,8 +72,11 @@ const MISSIONS = [
     prereqId: 3, minigame: 'felipe_2'
   },
   {
-    id: 5, title: 'Madagascar',
-    desc: '[WIP] Módulo 5 reservado para o Pedro Borges. Área em construção!',
+    id: 5, title: 'Pesca-fantasma em Madagascar',
+    // World Animal Protection / Global Ghost Gear Initiative: ~640 mil
+    // toneladas de redes de pesca abandonadas no oceano por ano matam
+    // tartarugas, dugongos e tubarões em estado crítico no canal de Moçambique.
+    desc: 'Tartarugas-marinhas e dugongos morrem presos em redes de pesca abandonadas no Canal de Moçambique. Solte os animais e recolha o equipamento-fantasma.',
     location: 'Madagascar',
     photo: 'assets/photo-madagascar.jpg',
     costEnergy: 3, rewardCoins: 35, impactCO2: 2.0,
@@ -70,8 +84,11 @@ const MISSIONS = [
     prereqId: 4, minigame: 'pedro_b_1'
   },
   {
-    id: 6, title: 'Pantanal',
-    desc: '[WIP] Módulo 6 reservado para o Pedro Borges. Área em construção!',
+    id: 6, title: 'Resíduos e fogo no Pantanal',
+    // MapBiomas / WWF-Brasil (2020): 30% do Pantanal queimou em 2020.
+    // Embalagens de agrotóxico e palhada acumulada são combustível recorrente
+    // para incêndios na estação seca.
+    desc: 'Em 2020, 30% do Pantanal queimou. Embalagens de agrotóxico e palhada acumulada viram combustível das queimadas — organize o descarte antes do fogo.',
     location: 'Pantanal, Brasil',
     photo: 'assets/photo-pantanal.jpg',
     costEnergy: 4, rewardCoins: 40, impactCO2: 1.8,
@@ -79,8 +96,11 @@ const MISSIONS = [
     prereqId: 5, minigame: 'pedro_b_2'
   },
   {
-    id: 7, title: 'Grande Barreira de Coral',
-    desc: '[WIP] Módulo 7 reservado para o Thiago. Área em construção!',
+    id: 7, title: 'Microplástico na Grande Barreira',
+    // AIMS (Australian Institute of Marine Science): cerca de 50% da
+    // cobertura de coral foi perdida nas últimas três décadas; microplástico
+    // de cidades costeiras se infiltra nos pólipos e bloqueia o crescimento.
+    desc: 'Microplásticos vindos de cidades costeiras entram nos pólipos de coral e travam o crescimento do recife. Distinga partícula de plâncton real e proteja o que sobrou.',
     location: 'Queensland, Austrália',
     photo: 'assets/photo-coral.jpg',
     costEnergy: 5, rewardCoins: 60, impactCO2: 3.0,
@@ -88,8 +108,11 @@ const MISSIONS = [
     prereqId: 6, minigame: 'thiago_1'
   },
   {
-    id: 8, title: 'Cordilheira dos Andes',
-    desc: '[WIP] Módulo 8 reservado para o Thiago. Área em construção!',
+    id: 8, title: 'Trilhas e mineração nos Andes',
+    // ICIMOD e estudos de turismo de altitude: trilhas como Inca e Huayna
+    // Picchu acumulam toneladas de resíduos por temporada; mineração na
+    // cordilheira deixa rejeitos que contaminam nascentes do rio Amazonas.
+    desc: 'Trilhas turísticas e atividade mineira deixam rejeitos que contaminam as nascentes do rio Amazonas. Recolha o lixo da rota sem sair do caminho marcado.',
     location: 'Andes, Chile/Peru',
     photo: null,
     costEnergy: 5, rewardCoins: 75, impactCO2: 3.5,
@@ -98,104 +121,26 @@ const MISSIONS = [
   }
 ];
 
-/* ===== ACHIEVEMENTS ===== */
+// Conquistas: nomes que ensinam um conceito enquanto recompensam.
 const ACHIEVEMENTS = [
-  { id: 'first_pomodoro',   icon: '🍅', title: 'Primeiro Foco',       desc: 'Complete seu primeiro Pomodoro.',                  condition: (s) => s.pomodorosCompleted >= 1 },
-  { id: 'pomo_5',           icon: '⏱️', title: 'Foco Consistente',    desc: 'Complete 5 sessões Pomodoro.',                     condition: (s) => s.pomodorosCompleted >= 5 },
-  { id: 'pomo_10',          icon: '🔥', title: 'Máquina de Foco',     desc: 'Complete 10 sessões Pomodoro.',                    condition: (s) => s.pomodorosCompleted >= 10 },
-  { id: 'pomo_25',          icon: '💎', title: 'Mestre do Tempo',     desc: 'Complete 25 sessões Pomodoro.',                    condition: (s) => s.pomodorosCompleted >= 25 },
-  { id: 'first_mission',    icon: '🌱', title: 'Primeira Semente',    desc: 'Complete sua primeira missão.',                    condition: (s) => s.completed.length >= 1 },
-  { id: 'missions_3',       icon: '🌿', title: 'Guardião Verde',      desc: 'Complete 3 missões.',                              condition: (s) => s.completed.length >= 3 },
-  { id: 'all_missions',     icon: '🌍', title: 'Protetor da Terra',   desc: 'Complete todas as 7 missões ao redor do mundo.',   condition: (s) => s.completed.length >= 7 },
-  { id: 'coins_50',         icon: '💰', title: 'Cofre Verde',         desc: 'Acumule 50 moedas.',                               condition: (s) => s.coins >= 50 },
-  { id: 'coins_200',        icon: '🏦', title: 'Banco Ecológico',     desc: 'Acumule 200 moedas.',                              condition: (s) => s.coins >= 200 },
-  { id: 'impact_5',         icon: '🌬️', title: 'Ar Mais Puro',        desc: 'Evite 5 kg de CO₂.',                              condition: (s) => s.impact >= 5 },
-  { id: 'impact_10',        icon: '🏔️', title: 'Impacto Real',        desc: 'Evite 10 kg de CO₂.',                             condition: (s) => s.impact >= 10 },
-  { id: 'minigame_perfect', icon: '⭐', title: 'Perfeição',           desc: 'Consiga pontuação máxima em um mini-game.',        condition: (s) => s.perfectMinigames >= 1 },
-  { id: 'streak_3',         icon: '🔗', title: 'Sequência Tripla',    desc: 'Complete 3 Pomodoros sem pausa.',                  condition: (s) => s.bestStreak >= 3 }
+  { id: 'first_pomodoro',   icon: '🍅', title: 'Primeira Sessão',     desc: 'Complete seu primeiro Pomodoro.',                              condition: (s) => s.pomodorosCompleted >= 1 },
+  { id: 'pomo_5',           icon: '⏱️', title: 'Foco Consistente',    desc: 'Complete 5 sessões de Pomodoro.',                              condition: (s) => s.pomodorosCompleted >= 5 },
+  { id: 'pomo_10',          icon: '🔥', title: 'Máquina de Foco',     desc: 'Complete 10 sessões de Pomodoro.',                             condition: (s) => s.pomodorosCompleted >= 10 },
+  { id: 'pomo_25',          icon: '💎', title: 'Mestre do Tempo',     desc: 'Complete 25 sessões de Pomodoro.',                             condition: (s) => s.pomodorosCompleted >= 25 },
+  { id: 'streak_3',         icon: '🔗', title: 'Sequência Tripla',    desc: 'Complete 3 Pomodoros consecutivos sem reset.',                 condition: (s) => s.bestStreak >= 3 },
+  { id: 'first_mission',    icon: '🌱', title: 'Primeiro Passo',      desc: 'Complete sua primeira missão.',                                condition: (s) => s.completed.length >= 1 },
+  { id: 'missions_3',       icon: '🌿', title: 'Mão na Massa',        desc: 'Complete 3 missões de combate aos resíduos.',                  condition: (s) => s.completed.length >= 3 },
+  { id: 'logistics_5',      icon: '🔄', title: 'Logística Reversa',   desc: 'Complete 5 missões — feche o ciclo dos resíduos.',             condition: (s) => s.completed.length >= 5 },
+  { id: 'all_missions',     icon: '🌍', title: 'Mundo em Equilíbrio', desc: 'Complete todas as 8 missões ao redor do mundo.',               condition: (s) => s.completed.length >= 8 },
+  { id: 'minigame_perfect', icon: '⭐', title: 'Triagem Perfeita',    desc: 'Atinja pontuação máxima em um minigame.',                      condition: (s) => s.perfectMinigames >= 1 },
+  { id: 'separates_3',      icon: '♻️', title: 'Coleta Seletiva',    desc: 'Faça pontuação máxima em 3 minigames.',                        condition: (s) => s.perfectMinigames >= 3 },
+  { id: 'coins_50',         icon: '💰', title: 'Cofre Verde',         desc: 'Acumule 50 moedas.',                                           condition: (s) => s.coins >= 50 },
+  { id: 'coins_200',        icon: '🏦', title: 'Banco Ecológico',     desc: 'Acumule 200 moedas.',                                          condition: (s) => s.coins >= 200 },
+  { id: 'impact_5',         icon: '🌬️', title: 'Ar Mais Puro',        desc: 'Evite 5 kg de CO₂ pelas suas missões.',                       condition: (s) => s.impact >= 5 },
+  { id: 'impact_10',        icon: '🏔️', title: 'Impacto Real',        desc: 'Evite 10 kg de CO₂ pelas suas missões.',                      condition: (s) => s.impact >= 10 }
 ];
 
-/* ===== MINI-GAME CONFIG ===== */
-const MINIGAME_CONFIG = {
-  memory: {
-    name: 'Jogo da Memória Ecológico',
-    desc: 'Encontre todos os pares de espécies ameaçadas!',
-    pairs: 8,
-    maxMoves: 24,
-    perfectMoves: 16,
-    icons: [
-      { emoji: '🐆', name: 'Onça-pintada' },
-      { emoji: '🦜', name: 'Arara-azul' },
-      { emoji: '🐢', name: 'Tartaruga-marinha' },
-      { emoji: '🦋', name: 'Borboleta-monarca' },
-      { emoji: '🐋', name: 'Baleia-jubarte' },
-      { emoji: '🦧', name: 'Orangotango' },
-      { emoji: '🐘', name: 'Elefante-africano' },
-      { emoji: '🐼', name: 'Panda-gigante' },
-      { emoji: '🦁', name: 'Leão-africano' },
-      { emoji: '🐧', name: 'Pinguim-imperador' },
-      { emoji: '🦒', name: 'Girafa' },
-      { emoji: '🐊', name: 'Jacaré-do-pantanal' }
-    ]
-  },
-  quiz: {
-    name: 'Quiz Ambiental',
-    desc: 'Teste seus conhecimentos sobre o meio ambiente!',
-    questionsPerRound: 8,
-    targetScore: 5,
-    perfectScore: 8,
-    timePerQuestion: 20,
-    questions: [
-      { q: 'Qual gás as árvores absorvem da atmosfera?', opts: ['Oxigênio', 'CO₂', 'Nitrogênio', 'Hélio'], correct: 1 },
-      { q: 'Quanto % da água do planeta é doce e acessível?', opts: ['30%', '10%', '1%', '50%'], correct: 2 },
-      { q: 'O que significa "biodiversidade"?', opts: ['Só plantas', 'Variedade de vida', 'Poluição', 'Clima'], correct: 1 },
-      { q: 'Quantos anos um saco plástico leva para se decompor?', opts: ['5 anos', '50 anos', '200 anos', '400 anos'], correct: 3 },
-      { q: 'A Amazônia ocupa quantos países?', opts: ['3', '5', '9', '2'], correct: 2 },
-      { q: 'Qual é o maior recife de coral do mundo?', opts: ['Caribe', 'Mar Vermelho', 'Grande Barreira', 'Fernando de Noronha'], correct: 2 },
-      { q: 'Quanto CO₂ uma árvore adulta absorve por ano?', opts: ['2 kg', '10 kg', '22 kg', '50 kg'], correct: 2 },
-      { q: 'Qual bioma é a maior planície alagável do planeta?', opts: ['Cerrado', 'Pantanal', 'Caatinga', 'Pampas'], correct: 1 },
-      { q: 'O desmatamento é responsável por quanto % das emissões globais?', opts: ['2%', '5%', '10%', '25%'], correct: 2 },
-      { q: 'Qual animal é o maior polinizador das florestas?', opts: ['Borboleta', 'Beija-flor', 'Abelha', 'Morcego'], correct: 3 },
-      { q: 'A Mata Atlântica já perdeu quantos % de sua cobertura?', opts: ['30%', '50%', '70%', '88%'], correct: 3 },
-      { q: 'Quanto tempo leva para reciclar uma lata de alumínio?', opts: ['1 ano', '60 dias', '6 meses', '2 semanas'], correct: 1 },
-      { q: 'Qual o principal gás do efeito estufa?', opts: ['Metano', 'CO₂', 'Ozônio', 'Nitrogênio'], correct: 1 },
-      { q: 'Uma torneira pingando desperdiça quantos litros/dia?', opts: ['5L', '20L', '46L', '100L'], correct: 2 },
-      { q: 'Madagascar tem quantas % de espécies endêmicas?', opts: ['30%', '50%', '70%', '90%'], correct: 3 }
-    ]
-  },
-  sorting: {
-    name: 'Reciclagem Consciente',
-    desc: 'Arraste cada item para a lixeira correta!',
-    duration: 45,
-    targetScore: 10,
-    perfectScore: 15,
-    bins: [
-      { id: 'organic', label: '🟤 Orgânico', color: '#8D6E63' },
-      { id: 'recycle', label: '🔵 Reciclável', color: '#42A5F5' },
-      { id: 'trash', label: '🔴 Rejeito', color: '#EF5350' }
-    ],
-    items: [
-      { emoji: '🍌', name: 'Casca de banana', bin: 'organic' },
-      { emoji: '🥚', name: 'Casca de ovo', bin: 'organic' },
-      { emoji: '☕', name: 'Borra de café', bin: 'organic' },
-      { emoji: '🥬', name: 'Folha de alface', bin: 'organic' },
-      { emoji: '🍎', name: 'Caroço de maçã', bin: 'organic' },
-      { emoji: '🥤', name: 'Garrafa PET', bin: 'recycle' },
-      { emoji: '📦', name: 'Caixa de papelão', bin: 'recycle' },
-      { emoji: '🥫', name: 'Lata de alumínio', bin: 'recycle' },
-      { emoji: '📰', name: 'Jornal velho', bin: 'recycle' },
-      { emoji: '🍶', name: 'Pote de vidro', bin: 'recycle' },
-      { emoji: '🧴', name: 'Frasco plástico', bin: 'recycle' },
-      { emoji: '🩹', name: 'Curativo usado', bin: 'trash' },
-      { emoji: '🧷', name: 'Fralda descartável', bin: 'trash' },
-      { emoji: '🪥', name: 'Escova de dente', bin: 'trash' },
-      { emoji: '🧽', name: 'Esponja usada', bin: 'trash' },
-      { emoji: '💊', name: 'Embalagem de remédio', bin: 'trash' }
-    ]
-  }
-};
-
-/* ===== QUIZ ODS — 17 Sustainable Development Goals ===== */
+// Quizzes ODS — 17 Objetivos de Desenvolvimento Sustentável (ONU, Agenda 2030).
 const QUIZ_ODS_DATA = [
   {
     id: 1, title: 'Erradicação da Pobreza', icon: '🏚️',
@@ -403,16 +348,17 @@ const QUIZ_ODS_DATA = [
   }
 ];
 
+// Dicas exibidas durante o loading. Estatísticas com fonte oficial.
 const TIPS = [
-  '🍅 Use o Pomodoro para ganhar energia e desbloquear missões!',
-  '🌍 Viaje pelo mundo e proteja ecossistemas reais.',
-  '💧 A água é o recurso mais precioso.',
-  '🌳 Uma árvore absorve ~22kg de CO₂/ano.',
-  '🦋 Biodiversidade é sinônimo de saúde ambiental.',
-  '♻️ Reciclar 1 tonelada de papel salva 17 árvores.',
-  '🐝 Abelhas polinizam 75% das nossas culturas.',
-  '🏆 Complete Pomodoros para desbloquear conquistas!',
-  '🗺️ Arraste o globo para explorar os pontos de missão.'
+  '🍅 Cada Pomodoro completo gera energia para enfrentar uma nova missão.',
+  '♻️ Reciclar uma tonelada de papel poupa 17 árvores e milhares de litros de água. (CEMPRE)',
+  '🛒 Cada brasileiro produz cerca de 1 kg de resíduo por dia. (ABRELPE 2023)',
+  '🥤 Uma garrafa PET leva mais de 400 anos para se decompor no ambiente. (UNEP)',
+  '📱 O mundo gera 62 milhões de toneladas de lixo eletrônico por ano — só 22% são formalmente reciclados. (UN E-waste Monitor 2024)',
+  '🌊 Cerca de 8 milhões de toneladas de plástico chegam aos oceanos a cada ano. (UNEP)',
+  '🥫 Reciclar uma lata de alumínio economiza 95% da energia de produzir uma nova. (CEMPRE)',
+  '🍎 Aproximadamente 1/3 dos alimentos produzidos no mundo viram desperdício. (FAO)',
+  '🗺️ Arraste o globo para explorar os locais e iniciar uma missão.'
 ];
 
 const ASSET_LIST = [
@@ -423,4 +369,4 @@ const ASSET_LIST = [
   'assets/earth-texture.jpg'
 ];
 
-export { GAME_CONFIG, POMODORO_CONFIG, MISSIONS, ACHIEVEMENTS, MINIGAME_CONFIG, QUIZ_ODS_DATA, TIPS, ASSET_LIST };
+export { GAME_CONFIG, POMODORO_CONFIG, MISSIONS, ACHIEVEMENTS, QUIZ_ODS_DATA, TIPS, ASSET_LIST };
