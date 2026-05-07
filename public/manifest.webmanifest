@@ -1,0 +1,28 @@
+{
+  "name": "Ecoverse — combate aos resíduos pelo mundo",
+  "short_name": "Ecoverse",
+  "description": "Plataforma educacional gamificada da UNAERP sobre resíduos, biomas e ODS.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0B2E1A",
+  "theme_color": "#0B2E1A",
+  "categories": ["education", "games", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
