@@ -11,7 +11,7 @@ Ponto de partida para os 4 colegas. **Regra de ouro:** cada um mexe só nos pró
 | Pedro Borges | `pedro_borges/` | 5 (Madagascar) e 6 (Pantanal) |
 | Thiago | `thiago/` | 7 (Grande Barreira) e 8 (Andes) |
 
-A spec detalhada de cada par de minigames está no `README.md` dentro da pasta de cada dev.
+O contexto e os sprites disponíveis para cada missão estão no `README.md` dentro da pasta de cada dev. Mecânica, narrativa, regras e dificuldade ficam a critério de quem implementa.
 
 ## Contrato técnico
 
@@ -34,9 +34,19 @@ export class Modulo1 {
 - `success: false` → missão falhou, energia gasta é devolvida.
 - `perfect: true` → pontuação máxima, conta para a conquista "Triagem Perfeita".
 
-## Estilo do código
+## Padrão visual
 
-- CSS em arquivo próprio: `src/css/components/minigame-<dev>-<n>.css`. Importe no `src/css/main.css`.
+Pra que os 8 minigames tenham coerência entre si:
+
+- Fundo: verde escuro `#0B2E1A` — cor base do app, definida em `src/css/variables.css`.
+- Container do jogo: centralizado com `max-width` pra ficar bom em desktop.
+- Pode adicionar uma textura ou overlay temático sutil por cima do fundo, sem comprometer legibilidade.
+
+Tem ideia de tratamento visual diferente que funcione melhor pra um jogo específico? Fala antes de implementar — a gente decide junto.
+
+## Boas práticas
+
+- CSS em arquivo próprio: `src/css/components/minigame-<dev>-<n>.css`. Importe em `src/css/main.css`.
 - Classes com prefixo do dev: `.andre-1-canvas`, `.felipe-3-bin` — evita colisão entre módulos.
 - Sem `window.<algo>` global. Use propriedades da classe ou `let`/`const` locais.
 - Pointer events (`pointerdown`/`move`/`up`) cobrem mouse e touch — não use `mouse*`/`touch*` separados.
@@ -48,12 +58,12 @@ export class Modulo1 {
 1. `npm run dev` na raiz.
 2. Abra `http://localhost:3000/?dev=free` (energia liberada, não precisa Pomodoro).
 3. Clique no marcador da sua missão no globo → "Iniciar Missão".
-4. Sua tela aparece — substitua o stub pela mecânica.
+4. Sua tela aparece — substitua o stub pela sua implementação.
 5. Edite o arquivo, recarregue (Vite faz HMR automático).
 
 ## Sprites
 
-Versões com fundo transparente (prontas para o jogo) ficam em `public/assets/generated/cutouts/`. Originais com fundo branco ficam em `public/assets/generated/originals/`. A lista específica de sprites recomendados para cada missão está no README de cada dev.
+Versões com fundo transparente (prontas pra usar) em `public/assets/generated/cutouts/`. Originais com fundo branco em `public/assets/generated/originals/`. A lista específica de sprites já gerados para cada missão está no README de cada dev.
 
 Se precisar de um sprite que não existe, fale com o Pedro Furtado.
 
