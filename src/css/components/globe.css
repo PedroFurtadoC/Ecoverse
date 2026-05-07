@@ -119,4 +119,16 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
+/* Em telas pequenas, trunca labels longos pra evitar overflow do viewport. */
+@media (max-width: 600px) {
+  .gm-label,
+  .gm-location {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 

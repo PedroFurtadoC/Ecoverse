@@ -28,4 +28,12 @@
   height: 24px;
 }
 
+/* Em mobile o botão fica escondido — a opção Doar vive dentro do Menu
+   pra liberar a área de baixo da tela pro bottom nav. */
+@media (max-width: 768px) {
+  .donate-btn {
+    display: none;
+  }
+}
+
 

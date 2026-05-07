@@ -42,19 +42,6 @@
     font-size: 12px;
   }
 
-  .hud-btn--pomo, .hud-btn--quiz {
-    padding: 6px 10px;
-    gap: 4px;
-  }
-
-  .hud-btn-label {
-    font-size: 11px;
-  }
-
-  .hud-btn-sub {
-    display: none;
-  }
-
   .globe-marker {
     transform: scale(0.85);
   }

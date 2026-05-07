@@ -164,15 +164,17 @@
   font-size: 16px;
 }
 
+/* Pulso usa apenas transform — única propriedade composta na GPU
+   sem disparar layout/paint/CLS. O brilho fica estático no box-shadow base. */
 @keyframes pomoPulse {
 
   0%,
   100% {
-    box-shadow: 0 2px 16px rgba(255, 112, 67, 0.35), 0 0 24px rgba(255, 112, 67, 0.15);
+    transform: scale(1);
   }
 
   50% {
-    box-shadow: 0 2px 20px rgba(255, 112, 67, 0.55), 0 0 32px rgba(255, 112, 67, 0.25);
+    transform: scale(1.025);
   }
 }
 
@@ -190,6 +192,80 @@
   background: rgba(0, 0, 0, 0.25);
   padding: 3px 8px;
   border-radius: 12px;
+}
+
+/* ---------- Mobile bottom navigation (≤768px) ----------
+   Padrão de apps modernos: stats no topo compacto,
+   ações principais em barra fixa no rodapé pra alcance do polegar. */
+@media (max-width: 768px) {
+
+  /* Removendo backdrop-filter em mobile pra não criar um containing block
+     pros filhos fixed (a .hud-right precisa se posicionar em relação ao
+     viewport pra virar bottom nav). */
+  .hud {
+    padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 8px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.35) 70%, transparent 100%);
+  }
+
+  .hud-right {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: space-around;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px calc(env(safe-area-inset-bottom, 0px) + 10px);
+    background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.7) 60%,
+      rgba(0, 0, 0, 0) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .hud-btn--pomo,
+  .hud-btn--quiz {
+    flex: 1;
+    max-width: 110px;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    border-radius: 14px;
+  }
+
+  .hud-btn--pomo .hud-btn-label,
+  .hud-btn--quiz .hud-btn-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .hud-btn-emoji {
+    font-size: 18px;
+  }
+
+  .hud-btn--pomo img {
+    display: none;
+  }
+
+  .hud-btn-sub {
+    display: none;
+  }
+
+  /* Trophy e menu mantêm circulares, mas um pouco maiores que o desktop. */
+  .hud-btn:not(.hud-btn--pomo):not(.hud-btn--quiz) {
+    width: 48px;
+    height: 48px;
+  }
+
+  .hud-btn:not(.hud-btn--pomo):not(.hud-btn--quiz) img {
+    width: 22px;
+    height: 22px;
+  }
 }
 
 

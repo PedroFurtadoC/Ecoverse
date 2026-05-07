@@ -22,6 +22,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- CSS crítico inline: posiciona splash e game-container ANTES do CSS principal
+         carregar. visibility:hidden no #game-container exclui ele do layout calc enquanto
+         o splash carrega, evitando shifts internos serem contabilizados no CLS. -->
+    <style>
+        html, body { background: #0B2E1A; margin: 0; height: 100%; overflow: hidden;
+                     font-family: 'Outfit', system-ui, -apple-system, sans-serif; color: #E8F5E9; }
+        .skip-link { position: absolute; top: -100%; left: 0; }
+        #loading-screen { position: fixed; inset: 0; z-index: 9999; background: #0B2E1A; }
+        #game-container { position: fixed; inset: 0; opacity: 0; visibility: hidden; }
+        #game-container.visible { opacity: 1; visibility: visible; }
+    </style>
 </head>
 
 <body>
@@ -29,14 +41,24 @@
     <a class="skip-link" href="#game-container">Pular para o conteúdo</a>
 
     <div id="loading-screen" role="status" aria-label="Carregando o jogo">
-        <img class="loading-bg" src="assets/loading-bg.svg" alt="" aria-hidden="true" />
+        <div class="aurora" aria-hidden="true">
+            <span class="aurora-blob aurora-blob-1"></span>
+            <span class="aurora-blob aurora-blob-2"></span>
+            <span class="aurora-blob aurora-blob-3"></span>
+        </div>
+        <div class="fireflies" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+        </div>
         <div class="loading-content">
             <img class="loading-logo" src="assets/logo.svg" alt="Ecoverse" />
-            <div class="progress-container">
-                <div class="progress-bar-track">
-                    <div class="progress-bar-fill" id="progress-fill"></div>
-                </div>
-                <span class="progress-text" id="progress-text">0%</span>
+            <div class="progress-ring-wrap">
+                <svg class="progress-ring" viewBox="0 0 120 120" aria-hidden="true">
+                    <circle class="progress-ring-track" cx="60" cy="60" r="52" />
+                    <circle class="progress-ring-fill" id="progress-ring-fill" cx="60" cy="60" r="52" />
+                </svg>
+                <span class="progress-text" id="progress-text" aria-live="polite">0%</span>
             </div>
             <p class="loading-tip" id="loading-tip" aria-live="polite"></p>
         </div>
@@ -69,10 +91,11 @@
                 </div>
             </div>
             <div class="hud-right">
-                <button class="hud-btn hud-btn--pomo" id="btn-pomodoro" aria-label="Pomodoro — estude para ganhar energia">
+                <button class="hud-btn hud-btn--pomo" id="btn-pomodoro" aria-label="Estudar — Pomodoro pra ganhar energia">
                     <img src="assets/icon-timer.svg" alt="" aria-hidden="true" />
-                    <span class="hud-btn-label">🍅 Estudar</span>
-                    <span class="hud-btn-sub">+Energia</span>
+                    <span class="hud-btn-emoji" aria-hidden="true">🍅</span>
+                    <span class="hud-btn-label">Estudar</span>
+                    <span class="hud-btn-sub" aria-hidden="true">+Energia</span>
                 </button>
                 <button class="hud-btn hud-btn--quiz" id="btn-quiz-ods" aria-label="Quizzes ODS">
                     <span class="hud-btn-emoji" aria-hidden="true">📚</span>
@@ -171,7 +194,7 @@
     <div class="modal-overlay" id="modal-mission" role="dialog" aria-modal="true" aria-labelledby="mission-title">
         <div class="modal mission-modal">
             <div class="modal-header">
-                <h2 class="modal-title" id="mission-title"></h2>
+                <h2 class="modal-title" id="mission-title">Missão</h2>
                 <button class="modal-close" data-close="modal-mission" aria-label="Fechar">✕</button>
             </div>
             <div class="modal-body">
@@ -216,7 +239,7 @@
             </div>
             <div class="modal-body">
                 <div class="menu-list">
-                    <button class="menu-item">Globo <span class="menu-badge">Atual</span></button>
+                    <button class="menu-item" data-menu-action="donate">💝 Doar para ONGs <span class="menu-badge">Disponível</span></button>
                     <button class="menu-item">Minigames <span class="menu-badge">Em desenvolvimento</span></button>
                     <button class="menu-item">Leaderboard <span class="menu-badge">Em breve</span></button>
                     <button class="menu-item">Configurações <span class="menu-badge">Em breve</span></button>

@@ -67,7 +67,7 @@ const MISSIONS = [
     desc: 'Os manguezais de Bornéu filtram poluentes e protegem a costa, mas estão sufocados por plástico vindo da indústria de óleo de palma. Identifique a cadeia de descarte e proteja os mangues.',
     location: 'Bornéu, Indonésia',
     photo: 'assets/photo-borneo.jpg',
-    costEnergy: 3, rewardCoins: 20, impactCO2: 1.5,
+    costEnergy: 3, rewardCoins: 28, impactCO2: 1.5,
     lat: 1.8166, lng: 109.9767,
     prereqId: 3, minigame: 'felipe_2'
   },
@@ -91,7 +91,7 @@ const MISSIONS = [
     desc: 'Em 2020, 30% do Pantanal queimou. Embalagens de agrotóxico e palhada acumulada viram combustível das queimadas — organize o descarte antes do fogo.',
     location: 'Pantanal, Brasil',
     photo: 'assets/photo-pantanal.jpg',
-    costEnergy: 4, rewardCoins: 40, impactCO2: 1.8,
+    costEnergy: 4, rewardCoins: 40, impactCO2: 2.4,
     lat: -19.0907, lng: -57.6534,
     prereqId: 5, minigame: 'pedro_b_2'
   },
@@ -113,7 +113,7 @@ const MISSIONS = [
     // Picchu acumulam toneladas de resíduos por temporada; mineração na
     // cordilheira deixa rejeitos que contaminam nascentes do rio Amazonas.
     desc: 'Trilhas turísticas e atividade mineira deixam rejeitos que contaminam as nascentes do rio Amazonas. Recolha o lixo da rota sem sair do caminho marcado.',
-    location: 'Andes, Chile/Peru',
+    location: 'Andes, Peru',
     photo: null,
     costEnergy: 5, rewardCoins: 75, impactCO2: 3.5,
     lat: -13.1631, lng: -72.5450,
@@ -133,7 +133,7 @@ const ACHIEVEMENTS = [
   { id: 'logistics_5',      icon: '🔄', title: 'Logística Reversa',   desc: 'Complete 5 missões — feche o ciclo dos resíduos.',             condition: (s) => s.completed.length >= 5 },
   { id: 'all_missions',     icon: '🌍', title: 'Mundo em Equilíbrio', desc: 'Complete todas as 8 missões ao redor do mundo.',               condition: (s) => s.completed.length >= 8 },
   { id: 'minigame_perfect', icon: '⭐', title: 'Triagem Perfeita',    desc: 'Atinja pontuação máxima em um minigame.',                      condition: (s) => s.perfectMinigames >= 1 },
-  { id: 'separates_3',      icon: '♻️', title: 'Coleta Seletiva',    desc: 'Faça pontuação máxima em 3 minigames.',                        condition: (s) => s.perfectMinigames >= 3 },
+  { id: 'separates_3',      icon: '♻️', title: 'Triagem Mestre',     desc: 'Faça pontuação máxima em 3 minigames de triagem.',             condition: (s) => s.perfectMinigames >= 3 },
   { id: 'coins_50',         icon: '💰', title: 'Cofre Verde',         desc: 'Acumule 50 moedas.',                                           condition: (s) => s.coins >= 50 },
   { id: 'coins_200',        icon: '🏦', title: 'Banco Ecológico',     desc: 'Acumule 200 moedas.',                                          condition: (s) => s.coins >= 200 },
   { id: 'impact_5',         icon: '🌬️', title: 'Ar Mais Puro',        desc: 'Evite 5 kg de CO₂ pelas suas missões.',                       condition: (s) => s.impact >= 5 },
@@ -362,7 +362,7 @@ const TIPS = [
 ];
 
 const ASSET_LIST = [
-  'assets/loading-bg.svg','assets/logo.svg',
+  'assets/logo.svg',
   'assets/icon-seed.svg','assets/icon-coin.svg',
   'assets/icon-impact.svg','assets/icon-menu.svg','assets/icon-donate.svg',
   'assets/icon-timer.svg','assets/icon-trophy.svg',

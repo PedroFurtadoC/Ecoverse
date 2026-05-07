@@ -15,7 +15,7 @@ body {
   overflow: hidden;
   font-family: var(--font);
   color: var(--c-text);
-  background: #000;
+  background: var(--c-bg-dark);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

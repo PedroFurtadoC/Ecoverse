@@ -19,8 +19,13 @@ const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
 const loadScreen     = $('#loading-screen');
-const progressFill   = $('#progress-fill');
+const progressRing   = $('#progress-ring-fill');
 const progressText   = $('#progress-text');
+const RING_CIRCUMFERENCE = 326.73; // 2π × r(52)
+const setProgress = (pct) => {
+  if (progressRing) progressRing.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - pct / 100);
+  if (progressText) progressText.textContent = pct + '%';
+};
 const tipEl          = $('#loading-tip');
 const gameContainer  = $('#game-container');
 const globeWrapper   = $('#globe-wrapper');
@@ -114,6 +119,15 @@ if ($('#btn-achievements')) $('#btn-achievements').addEventListener('click', () 
 });
 $$('.donate-option').forEach((btn) => {
   btn.addEventListener('click', () => { showToast('Obrigado pelo interesse! Em breve.', 'info'); closeModal('modal-donate'); });
+});
+
+// Atalho do Menu: itens com data-menu-action abrem outros modais.
+$$('[data-menu-action]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const action = btn.dataset.menuAction;
+    closeModal('modal-menu');
+    if (action === 'donate') setTimeout(() => openModal('modal-donate'), 220);
+  });
 });
 const btnQuiz = $('#btn-quiz-ods');
 if (btnQuiz) btnQuiz.addEventListener('click', () => {
@@ -517,19 +531,16 @@ function showTip() {
 async function loadAssets() {
   showTip(); tipInterval = setInterval(showTip, 2500);
   let loaded = 0; const total = ASSET_LIST.length;
-  const promises = ASSET_LIST.map((url) =>
-    fetch(url).then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
-      .then(() => { loaded++; const pct = Math.round((loaded / total) * 100);
-        if (progressFill) progressFill.style.width = pct + '%'; 
-        if (progressText) progressText.textContent = pct + '%'; })
-      .catch(() => { loaded++; const pct = Math.round((loaded / total) * 100);
-        if (progressFill) progressFill.style.width = pct + '%'; 
-        if (progressText) progressText.textContent = pct + '%'; })
-  );
+  const tick = () => { loaded++; setProgress(Math.round((loaded / total) * 100)); };
+  // Pré-carga via Image() — entra no cache HTTP normal e os <img> reusam sem refetch.
+  const promises = ASSET_LIST.map((url) => new Promise((resolve) => {
+    const img = new Image();
+    img.onload = img.onerror = () => { tick(); resolve(); };
+    img.src = url;
+  }));
   await Promise.all(promises);
-  clearInterval(tipInterval); 
-  if (progressText) progressText.textContent = '100%'; 
-  if (progressFill) progressFill.style.width = '100%';
+  clearInterval(tipInterval);
+  setProgress(100);
   if (tipEl) {
     tipEl.style.animation = 'none'; tipEl.textContent = '';
     const completeEl = document.createElement('span');
