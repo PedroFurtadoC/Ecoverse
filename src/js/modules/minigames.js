@@ -6,6 +6,7 @@ import { Modulo5 } from './minigames/pedro_borges/modulo5.js';
 import { Modulo6 } from './minigames/pedro_borges/modulo6.js';
 import { Modulo7 } from './minigames/thiago/modulo7.js';
 import { Modulo8 } from './minigames/thiago/modulo8.js';
+import { TriagemDemo } from './minigames/_demo/triagem-demo.js';
 
 const ROUTES = {
   andre_1:    { Cls: Modulo1, owner: 'André',         label: 'Amazônia' },
@@ -15,7 +16,8 @@ const ROUTES = {
   pedro_b_1:  { Cls: Modulo5, owner: 'Pedro Borges',  label: 'Madagascar' },
   pedro_b_2:  { Cls: Modulo6, owner: 'Pedro Borges',  label: 'Pantanal' },
   thiago_1:   { Cls: Modulo7, owner: 'Thiago',        label: 'Grande Barreira de Coral' },
-  thiago_2:   { Cls: Modulo8, owner: 'Thiago',        label: 'Cordilheira dos Andes' }
+  thiago_2:   { Cls: Modulo8, owner: 'Thiago',        label: 'Cordilheira dos Andes' },
+  demo_triagem: { Cls: TriagemDemo, owner: 'Demo',    label: 'Triagem de resíduos' }
 };
 
 let callback = null;

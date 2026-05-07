@@ -10,8 +10,11 @@ import * as Auth from './services/auth.js';
 import * as Sync from './services/sync.js';
 
 // Modo de teste — `?dev=free` na URL libera energia infinita pra revisar o jogo.
-// Ex.: http://localhost:3000/?dev=free
-const DEV_FREE = new URLSearchParams(location.search).has('dev');
+// `?demo=triagem` abre direto o minigame demo de triagem (pra validar UI).
+// Ex.: http://localhost:3000/?dev=free   |   http://localhost:3000/?demo=triagem
+const URL_PARAMS = new URLSearchParams(location.search);
+const DEV_FREE = URL_PARAMS.has('dev');
+const DEMO_GAME = URL_PARAMS.get('demo');
 if (DEV_FREE) console.info('[ecoverse] modo dev: energia liberada');
 
 /* ---------- DOM refs ---------- */
@@ -585,6 +588,13 @@ async function startGame() {
   await initGlobe();
   running = true;
   requestAnimationFrame(gameLoop);
+
+  // Modo demo — abre direto o minigame de validação de UI.
+  if (DEMO_GAME === 'triagem') {
+    setTimeout(() => MiniGames.open('demo_triagem', () => {
+      showToast('Demo encerrado. Recarregue sem ?demo na URL pra voltar ao globo.', 'info');
+    }), 800);
+  }
 }
 
 function delay(ms) { return new Promise((r) => setTimeout(r, ms)); }
