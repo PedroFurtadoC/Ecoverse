@@ -1,10 +1,18 @@
 import '../css/main.css';
-import { GAME_CONFIG, MISSIONS, MINIGAME_CONFIG, TIPS, ASSET_LIST } from './config/data.js';
+import { MISSIONS, TIPS, ASSET_LIST, POMODORO_CONFIG } from './config/data.js';
 import { state, saveState, loadState } from './store/state.js';
+import { on, EVENTS } from './store/events.js';
 import { Pomodoro } from './modules/pomodoro.js';
 import { MiniGames } from './modules/minigames.js';
 import { QuizODS } from './modules/quizzes.js';
 import { AchievementSystem } from './modules/achievements.js';
+import * as Auth from './services/auth.js';
+import * as Sync from './services/sync.js';
+
+// Modo de teste — `?dev=free` na URL libera energia infinita pra revisar o jogo.
+// Ex.: http://localhost:3000/?dev=free
+const DEV_FREE = new URLSearchParams(location.search).has('dev');
+if (DEV_FREE) console.info('[ecoverse] modo dev: energia liberada');
 
 /* ---------- DOM refs ---------- */
 const $ = (sel) => document.querySelector(sel);
@@ -74,8 +82,7 @@ function syncHUDImmediate() {
   hudProgressText.textContent = `${state.completed.length}/${MISSIONS.length}`;
 }
 
-/* ---------- Toast ---------- */
-export function showToast(msg, type = 'info') {
+function showToast(msg, type = 'info') {
   if (!toastContainer) return;
   const t = document.createElement('div');
   t.className = `toast ${type}`;
@@ -121,16 +128,17 @@ function getNodeState(mission) {
 }
 
 /* ---------- Globe.GL Setup ---------- */
-function initGlobe() {
+// Pré-carrega o módulo Globe.GL em paralelo com a tela de carregamento.
+const globePromise = import('globe.gl');
+
+async function initGlobe() {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
-  if (typeof Globe === 'undefined') return;
+  const { default: Globe } = await globePromise;
 
-  globe = Globe()
+  globe = new Globe(globeWrapper)
     .globeImageUrl('assets/earth-texture.jpg')
-    .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-    .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
     .showAtmosphere(true)
     .atmosphereColor('#4dd0e1')
     .atmosphereAltitude(0.18)
@@ -177,19 +185,19 @@ function initGlobe() {
       }
 
       return el;
-    })
-    (globeWrapper);
+    });
 
-  // Auto-rotate
-  globe.controls().autoRotate = true;
+  // Auto-rotate respeitando preferência de movimento reduzido.
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  globe.controls().autoRotate = !prefersReducedMotion;
   globe.controls().autoRotateSpeed = 0.5;
   globe.controls().enableDamping = true;
   globe.controls().dampingFactor = 0.1;
 
-  // Offset for header: shift camera slightly down
+  // Offset visual do canvas pra dar respiro ao HUD fixo no topo.
   const renderer = globe.renderer();
   if (renderer && renderer.domElement) {
-    renderer.domElement.style.marginTop = '30px';
+    renderer.domElement.style.marginTop = 'calc(env(safe-area-inset-top, 0px) + clamp(1rem, 4vh, 2rem))';
   }
 
   // Start looking at first available mission
@@ -223,7 +231,7 @@ function initGlobe() {
     .arcStroke('stroke')
     .arcDashLength('dashLen')
     .arcDashGap('dashGap')
-    .arcDashAnimateTime(3000);
+    .arcDashAnimateTime(prefersReducedMotion ? 0 : 3000);
 
   // Planted trees as points on globe
   renderPlantedTreesOnGlobe();
@@ -319,14 +327,14 @@ function openMissionCard(mission) {
     missionPhoto.style.display = '';
   }
 
-  const gameConfig = MINIGAME_CONFIG[mission.minigame];
-  if (gameConfig && missionGame) {
-    missionGame.textContent = `🎮 Mini-game: ${gameConfig.name}`;
+  if (mission.minigame && missionGame) {
+    missionGame.textContent = `🎮 Mini-game disponível`;
     missionGame.style.display = '';
   }
 
-  btnStartMission.disabled = state.energy < mission.costEnergy;
-  btnStartMission.textContent = state.energy < mission.costEnergy ? 'Energia insuficiente' : 'Iniciar Missão';
+  const podeIniciar = DEV_FREE || state.energy >= mission.costEnergy;
+  btnStartMission.disabled = !podeIniciar;
+  btnStartMission.textContent = podeIniciar ? 'Iniciar Missão' : 'Energia insuficiente';
   openModal('modal-mission');
 }
 
@@ -335,8 +343,11 @@ if (btnStartMission) {
   btnStartMission.addEventListener('click', () => {
     if (!state.currentMission) return;
     const m = state.currentMission;
-    if (state.energy < m.costEnergy) { showToast('Energia insuficiente! Use o Pomodoro.', 'info'); return; }
-    state.energy -= m.costEnergy;
+    if (!DEV_FREE && state.energy < m.costEnergy) {
+      showToast('Energia insuficiente! Use o Pomodoro.', 'info');
+      return;
+    }
+    if (!DEV_FREE) state.energy -= m.costEnergy;
     updateHUD();
     closeModal('modal-mission');
     if (m.minigame) {
@@ -344,7 +355,7 @@ if (btnStartMission) {
         if (success) {
           completeMission(m, perfect);
         } else {
-          state.energy += m.costEnergy;
+          if (!DEV_FREE) state.energy += m.costEnergy;
           updateHUD(); saveState();
           showToast('Missão falhou. Energia devolvida. Tente novamente!', 'info');
         }
@@ -372,17 +383,17 @@ function completeMission(mission, perfect) {
     showToast(`🌳 +${treeCount} árvores plantadas em ${mission.location}!`, 'success');
   }, 3500);
 
-  showToast(`✦ Missão "${mission.title}" completa!`, 'success');
+  showToast(`Missão "${mission.title}" completa!`, 'success');
   setTimeout(() => showToast(`+${mission.rewardCoins} moedas  •  −${mission.impactCO2} kg CO₂`, 'reward'), 700);
 
   if (state.completed.length === MISSIONS.length) {
-    setTimeout(() => showToast('🌍 Parabéns! Você protegeu ecossistemas ao redor do mundo!', 'success'), 4500);
+    setTimeout(() => showToast('Você combateu resíduos em 8 biomas. Parabéns!', 'success'), 4500);
   }
 
   refreshGlobeMarkers();
   const next = MISSIONS.find(m => getNodeState(m) === 'available');
   if (next) setTimeout(() => flyToMission(next), 5000);
-  exportCheckAchievements();
+  checkAchievements();
 }
 
 /* ---------- Completion Photo Modal ---------- */
@@ -394,7 +405,7 @@ function showCompletionPhoto(mission) {
     <div class="completion-card">
       <div class="completion-img-wrap">
         <img src="${mission.photo}" alt="${mission.location}" class="completion-img"/>
-        <div class="completion-badge">✅ MISSÃO COMPLETA</div>
+        <div class="completion-badge">Missão completa</div>
       </div>
       <div class="completion-info">
         <h3>🌍 ${mission.title}</h3>
@@ -415,31 +426,22 @@ function showCompletionPhoto(mission) {
   });
 }
 
-/* ---------- Pomodoro Integration ---------- */
-export function addReward(energy, coins) {
+function addReward(energy, coins) {
   state.energy += energy;
   state.coins += coins;
   saveState(); updateHUD();
 }
 
-export function onPomodoroComplete(streak) {
+function onPomodoroComplete(streak) {
   state.pomodorosCompleted++;
   if (streak > state.bestStreak) state.bestStreak = streak;
-  saveState(); exportCheckAchievements();
-  // Plant a tree at a random location in a important biome
-  const biomes = [
-    { lat: -3.47, lng: -62.22 }, { lat: -0.79, lng: 23.66 },
-    { lat: -22.95, lng: -43.21 }, { lat: 1.82, lng: 109.98 },
-    { lat: -18.77, lng: 46.87 }, { lat: -19.09, lng: -57.65 },
-    { lat: -18.29, lng: 147.70 }
-  ];
-  const biome = biomes[Math.floor(Math.random() * biomes.length)];
+  saveState(); checkAchievements();
+  const biome = MISSIONS[Math.floor(Math.random() * MISSIONS.length)];
   plantTree(biome.lat, biome.lng, 1);
   showToast('🌳 Uma nova árvore foi plantada no planeta!', 'success');
 }
 
-/* ---------- Achievement Integration ---------- */
-export function exportCheckAchievements() {
+function checkAchievements() {
   const newUnlocks = AchievementSystem.check(state);
   newUnlocks.forEach((a) => {
     state.achievements.push(a.id);
@@ -448,12 +450,22 @@ export function exportCheckAchievements() {
   if (newUnlocks.length > 0) saveState();
 }
 
+on(EVENTS.REWARD, ({ energy = 0, coins = 0 }) => { addReward(energy, coins); Sync.scheduleSync(); });
+on(EVENTS.TOAST, ({ message, type = 'info' }) => showToast(message, type));
+on(EVENTS.POMODORO_COMPLETE, ({ streak, taskName }) => {
+  onPomodoroComplete(streak);
+  Sync.recordPomodoro({ durationSeconds: POMODORO_CONFIG.workDuration, taskName });
+  Sync.scheduleSync();
+});
+on(EVENTS.ACHIEVEMENT_CHECK, () => checkAchievements());
+
 /* ---------- Celebration ---------- */
 const celebParticles = [];
 function celebrate() {
   if (!celebOverlay) return;
   celebOverlay.classList.add('active');
   setTimeout(() => celebOverlay.classList.remove('active'), 800);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   for (let i = 0; i < 24; i++) {
     celebParticles.push({
       x: window.innerWidth / 2 + (Math.random() - 0.5) * 250,
@@ -521,29 +533,55 @@ async function loadAssets() {
   if (tipEl) {
     tipEl.style.animation = 'none'; tipEl.textContent = '';
     const completeEl = document.createElement('span');
-    completeEl.className = 'loading-complete-text'; completeEl.textContent = '✦ PRONTO ✦';
+    completeEl.className = 'loading-complete-text'; completeEl.textContent = 'Pronto';
     tipEl.parentElement.appendChild(completeEl);
   }
   await delay(1200); 
   if (loadScreen) loadScreen.classList.add('fade-out'); 
   if (gameContainer) gameContainer.classList.add('visible');
-  await delay(900); 
-  if (loadScreen) loadScreen.style.display = 'none'; 
-  startGame();
+  await delay(900);
+  if (loadScreen) loadScreen.style.display = 'none';
+  await startGame();
 }
 
-function startGame() {
+async function startGame() {
   loadState();
   AchievementSystem.init(state.achievements);
   Pomodoro.init();
   syncHUDImmediate();
   resizeCanvas();
-  initGlobe();
+  Auth.init().then(async (user) => {
+    if (!user) return;
+    const cloudState = await Sync.pullState();
+    if (cloudState && new Date(cloudState.updated_at) > new Date(state.lastSavedAt ?? 0)) {
+      // Estado de nuvem mais recente — adota.
+      state.energy = cloudState.energy ?? state.energy;
+      state.coins = cloudState.coins ?? state.coins;
+      state.impact = Number(cloudState.impact ?? state.impact);
+      state.completed = cloudState.completed ?? state.completed;
+      state.achievements = cloudState.achievements ?? state.achievements;
+      state.plantedTrees = cloudState.planted_trees ?? state.plantedTrees;
+      state.pomodorosCompleted = cloudState.pomodoros_completed ?? state.pomodorosCompleted;
+      state.bestStreak = cloudState.best_streak ?? state.bestStreak;
+      state.perfectMinigames = cloudState.perfect_minigames ?? state.perfectMinigames;
+      saveState();
+      syncHUDImmediate();
+      refreshGlobeMarkers();
+    } else {
+      Sync.scheduleSync();
+    }
+  });
+  await initGlobe();
   running = true;
   requestAnimationFrame(gameLoop);
 }
 
 function delay(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
-// Initialize
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => { /* ignore */ });
+  });
+}
+
 loadAssets();

@@ -1,29 +1,29 @@
-// Felipe - Módulo 4 (Florestas de Bornéu)
+// Missão 4 — Florestas de Bornéu. Implementação a cargo de Felipe.
+// Contrato e exemplos: src/js/modules/minigames/README.md
+// Sprites disponíveis em: public/assets/generated/cutouts/
 
 export class Modulo4 {
-    constructor(containerElement, onGameEnd) {
-        this.container = containerElement;
-        this.onGameEnd = onGameEnd;
-    }
+  constructor(container, onGameEnd) {
+    this.container = container;
+    this.onGameEnd = onGameEnd;
+  }
 
-    start() {
-        // 👇 ========================================================= 👇
-        // 🚀 [IMPLEMENTE AQUI - MÓDULO 4] 
-        // Apague este HTML de teste e crie a lógica (Canvas/HTML) do Módulo 4 abaixo.
-        // 👆 ========================================================= 👆
+  start() {
+    // Stub temporário — substituir pela mecânica do minigame.
+    this.container.innerHTML = `
+      <div class="minigame-stub felipe-4">
+        <h3>Bornéu — minigame em desenvolvimento</h3>
+        <p>Tema: plástico em manguezais e cadeia do óleo de palma.</p>
+        <button class="minigame-stub__finish" data-score="70">Finalizar (teste)</button>
+      </div>
+    `;
+    this.container.querySelector('.minigame-stub__finish').addEventListener('click', (e) => {
+      const score = Number(e.currentTarget.dataset.score) || 0;
+      this.finishGame(true, score);
+    });
+  }
 
-        this.container.innerHTML = `
-            <div style="text-align: center; padding: 2rem;">
-                <h3>Módulo 4: Florestas de Bornéu</h3>
-                <button id="btn-win-4" style="padding: 10px; background: #0A97D9; color: white;"> Finalizar Partida (Teste) </button>
-            </div>
-        `;
-        this.container.querySelector('#btn-win-4').addEventListener('click', () => {
-            this.finishGame(true, 70); 
-        });
-    }
-
-    finishGame(isSuccess, score) {
-        this.onGameEnd({ success: isSuccess, finalScore: score });
-    }
+  finishGame(success, score) {
+    this.onGameEnd({ success, finalScore: score, perfect: false });
+  }
 }

@@ -1,5 +1,5 @@
 import { POMODORO_CONFIG } from '../config/data.js';
-import { addReward, showToast, onPomodoroComplete } from '../main.js'; // To be exported from main.js
+import { emit, EVENTS } from '../store/events.js';
 
 let timer = null;
 let remaining = POMODORO_CONFIG.workDuration;
@@ -10,25 +10,25 @@ let sessionCount = 0;
 let currentStreak = 0;
 let taskName = '';
 
-// DOM
 let overlay, ring, timeText, phaseText, sessionText, taskInput;
 let btnStart, btnPause, btnReset, btnSkip, streakText;
-const CIRCUMFERENCE = 2 * Math.PI * 54; // r=54
+
+const CIRCUMFERENCE = 2 * Math.PI * 54;
 
 export function init() {
-  overlay  = document.getElementById('modal-pomodoro');
-  ring     = document.getElementById('pomo-ring');
-  timeText = document.getElementById('pomo-time');
-  phaseText = document.getElementById('pomo-phase');
+  overlay     = document.getElementById('modal-pomodoro');
+  ring        = document.getElementById('pomo-ring');
+  timeText    = document.getElementById('pomo-time');
+  phaseText   = document.getElementById('pomo-phase');
   sessionText = document.getElementById('pomo-sessions');
-  taskInput = document.getElementById('pomo-task-input');
-  btnStart = document.getElementById('pomo-btn-start');
-  btnPause = document.getElementById('pomo-btn-pause');
-  btnReset = document.getElementById('pomo-btn-reset');
-  btnSkip  = document.getElementById('pomo-btn-skip');
-  streakText = document.getElementById('pomo-streak');
+  taskInput   = document.getElementById('pomo-task-input');
+  btnStart    = document.getElementById('pomo-btn-start');
+  btnPause    = document.getElementById('pomo-btn-pause');
+  btnReset    = document.getElementById('pomo-btn-reset');
+  btnSkip     = document.getElementById('pomo-btn-skip');
+  streakText  = document.getElementById('pomo-streak');
 
-  if (!ring) return; // safeguard
+  if (!ring) return;
 
   ring.style.strokeDasharray = CIRCUMFERENCE;
   ring.style.strokeDashoffset = 0;
@@ -37,7 +37,7 @@ export function init() {
   btnPause.addEventListener('click', pause);
   btnReset.addEventListener('click', reset);
   btnSkip.addEventListener('click', skip);
-  taskInput.addEventListener('input', (e) => { taskName = e.target.value; });
+  taskInput.addEventListener('input', (e) => { taskName = e.target.value.trim(); });
 
   updateDisplay();
 }
@@ -118,9 +118,15 @@ function onPhaseComplete() {
     sessionCount++;
     currentStreak++;
 
-    addReward(POMODORO_CONFIG.rewardEnergy, POMODORO_CONFIG.rewardCoins);
-    showToast(`🍅 Pomodoro completo! +${POMODORO_CONFIG.rewardEnergy} energia, +${POMODORO_CONFIG.rewardCoins} moedas`, 'success');
-    onPomodoroComplete(currentStreak);
+    emit(EVENTS.REWARD, {
+      energy: POMODORO_CONFIG.rewardEnergy,
+      coins: POMODORO_CONFIG.rewardCoins
+    });
+    emit(EVENTS.TOAST, {
+      message: `🍅 Pomodoro completo! +${POMODORO_CONFIG.rewardEnergy} energia, +${POMODORO_CONFIG.rewardCoins} moedas`,
+      type: 'success'
+    });
+    emit(EVENTS.POMODORO_COMPLETE, { streak: currentStreak, taskName });
 
     const isLongBreak = sessionCount % POMODORO_CONFIG.longBreakInterval === 0;
     isBreak = true;
@@ -131,7 +137,7 @@ function onPhaseComplete() {
     setTimeout(start, 1500);
   } else {
     startWorkPhase();
-    showToast('☕ Pausa encerrada! Hora de focar.', 'info');
+    emit(EVENTS.TOAST, { message: '☕ Pausa encerrada! Hora de focar.', type: 'info' });
   }
 }
 
@@ -145,7 +151,7 @@ function startWorkPhase() {
 function playBeep() {
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
+    const frequencies = [523.25, 659.25, 783.99];
     frequencies.forEach((freq, i) => {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -158,7 +164,7 @@ function playBeep() {
       osc.start(audioCtx.currentTime + i * 0.15);
       osc.stop(audioCtx.currentTime + i * 0.15 + 0.4);
     });
-  } catch (e) { /* silent */ }
+  } catch (e) { /* WebAudio indisponível — segue sem som */ }
 }
 
 export function getStats() {

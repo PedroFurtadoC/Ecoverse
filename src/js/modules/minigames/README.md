@@ -1,50 +1,62 @@
-# Guia de Desenvolvimento de Mini-games (Equipe Ecoverse)
+# Minigames
 
-Este documento orienta a implementação das missões de forma organizada, garantindo que o desenvolvimento individual não gere conflitos no repositório principal do GitHub. A regra fundamental é: uma missão corresponde a um arquivo JavaScript isolado.
+Ponto de partida para os 4 colegas. **Regra de ouro:** cada um mexe só nos próprios arquivos, dentro da pasta com o seu nome.
 
-## Divisão de Arquivos por Desenvolvedor
+## Divisão
 
-- André: modulo1.js e modulo2.js
-- Felipe: modulo3.js e modulo4.js
-- Pedro Borges: modulo5.js e modulo6.js
-- Thiago: modulo7.js e modulo8.js
+| Dev | Pasta | Missões |
+|---|---|---|
+| André | `andre/` | 1 (Amazônia) e 2 (Bacia do Congo) |
+| Felipe | `felipe/` | 3 (Mata Atlântica) e 4 (Bornéu) |
+| Pedro Borges | `pedro_borges/` | 5 (Madagascar) e 6 (Pantanal) |
+| Thiago | `thiago/` | 7 (Grande Barreira) e 8 (Andes) |
 
----
+A spec detalhada de cada par de minigames está no `README.md` dentro da pasta de cada dev.
 
-## Instruções de Implementação
+## Contrato técnico
 
-O sistema de integração já está configurado. O desenvolvedor deve focar apenas na lógica interna do seu mini-game dentro da classe correspondente.
+Toda classe `ModuloN` recebe um `container` (DIV vazia) e um `onGameEnd` (callback). Você implementa `start()` e chama `onGameEnd({ success, finalScore, perfect })` quando o jogo termina.
 
-### Passo a Passo
+```js
+export class Modulo1 {
+  constructor(container, onGameEnd) {
+    this.container = container;
+    this.onGameEnd = onGameEnd;
+  }
 
-1. Localize o seu arquivo em `src/js/modules/minigames/`.
-2. Implemente a lógica do jogo (HTML, Canvas ou lógica JS) dentro do método `start()`.
-3. Utilize o marcador [IMPLEMENTE AQUI] dentro do código como referência.
-
-### Exemplo de Estrutura:
-
-```javascript
-    start() {
-        // Injeção de interface ou inicialização de Canvas:
-        this.container.innerHTML = `
-            <div class="interface-jogo">
-                <h3>Título da Missão</h3>
-                <button id="finalizar-teste">Finalizar Missão</button>
-            </div>
-        `;
-        
-        document.getElementById('finalizar-teste').addEventListener('click', () => {
-            // Obrigatório: Notificar o sistema sobre o fim da partida
-            // Parâmetros: Sucesso (boolean) e Pontuação Final (number)
-            this.finishGame(true, 100);
-        });
-    }
+  start() {
+    // construir UI, configurar listeners, iniciar a mecânica
+  }
+}
 ```
 
-### Regras de Conduta no Código:
+- `success: true` → missão completa, jogador ganha as moedas/CO₂.
+- `success: false` → missão falhou, energia gasta é devolvida.
+- `perfect: true` → pontuação máxima, conta para a conquista "Triagem Perfeita".
 
-1. Escopo Local: Evite o uso de variáveis globais (window). Utilize propriedades da própria classe ou declarações locais (let/const).
-2. Estilização: Utilize prefixos em classes CSS (ex: .andre-game-button) para evitar que o seu estilo interfira nos outros módulos ou na interface global do site.
-3. Fluxo de Git: Mantenha as alterações estritamente nos arquivos designados a você.
+## Estilo do código
 
-O ambiente está configurado para que cada módulo funcione de forma independente assim que o código for enviado ao repositório.
+- CSS em arquivo próprio: `src/css/components/minigame-<dev>-<n>.css`. Importe no `src/css/main.css`.
+- Classes com prefixo do dev: `.andre-1-canvas`, `.felipe-3-bin` — evita colisão entre módulos.
+- Sem `window.<algo>` global. Use propriedades da classe ou `let`/`const` locais.
+- Pointer events (`pointerdown`/`move`/`up`) cobrem mouse e touch — não use `mouse*`/`touch*` separados.
+- Touch targets ≥ 44×44 px.
+- Respeite `prefers-reduced-motion: reduce` nas animações.
+
+## Como rodar e testar
+
+1. `npm run dev` na raiz.
+2. Abra `http://localhost:3000/?dev=free` (energia liberada, não precisa Pomodoro).
+3. Clique no marcador da sua missão no globo → "Iniciar Missão".
+4. Sua tela aparece — substitua o stub pela mecânica.
+5. Edite o arquivo, recarregue (Vite faz HMR automático).
+
+## Sprites
+
+Versões com fundo transparente (prontas para o jogo) ficam em `public/assets/generated/cutouts/`. Originais com fundo branco ficam em `public/assets/generated/originals/`. A lista específica de sprites recomendados para cada missão está no README de cada dev.
+
+Se precisar de um sprite que não existe, fale com o Pedro Furtado.
+
+## Antes do PR
+
+Veja o checklist em [`.github/PULL_REQUEST_TEMPLATE.md`](../../../.github/PULL_REQUEST_TEMPLATE.md) — aparece automaticamente quando você abre o PR.

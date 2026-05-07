@@ -1,34 +1,29 @@
-// André - Módulo 1 (Floresta Amazônica)
-// O arquivo principal (minigames.js) já está apontando pra cá!
+// Missão 1 — Amazônia. Implementação a cargo de André.
+// Contrato e exemplos: src/js/modules/minigames/README.md
+// Sprites disponíveis em: public/assets/generated/cutouts/
 
 export class Modulo1 {
-    /**
-     * @param {HTMLElement} containerElement - Div vazia para você injetar seu jogo.
-     * @param {Function} onGameEnd - Callback de finalização: onGameEnd({ success: boolean, finalScore: number }).
-     */
-    constructor(containerElement, onGameEnd) {
-        this.container = containerElement;
-        this.onGameEnd = onGameEnd;
-    }
+  constructor(container, onGameEnd) {
+    this.container = container;
+    this.onGameEnd = onGameEnd;
+  }
 
-    start() {
-        // 👇 ========================================================= 👇
-        // 🚀 [IMPLEMENTE AQUI - MÓDULO 1] 
-        // Apague este HTML de teste e crie a lógica (Canvas/HTML) do Módulo 1 abaixo.
-        // 👆 ========================================================= 👆
+  start() {
+    // Stub temporário — substituir pela mecânica do minigame.
+    this.container.innerHTML = `
+      <div class="minigame-stub andre-1">
+        <h3>Amazônia — minigame em desenvolvimento</h3>
+        <p>Tema: pesca de resíduos no rio.</p>
+        <button class="minigame-stub__finish" data-score="50">Finalizar (teste)</button>
+      </div>
+    `;
+    this.container.querySelector('.minigame-stub__finish').addEventListener('click', (e) => {
+      const score = Number(e.currentTarget.dataset.score) || 0;
+      this.finishGame(true, score);
+    });
+  }
 
-        this.container.innerHTML = `
-            <div style="text-align: center; padding: 2rem;">
-                <h3>Módulo 1: Floresta Amazônica</h3>
-                <button id="btn-win-1" style="padding: 10px; background: #2ECC71; color: white;"> Finalizar Partida (Teste) </button>
-            </div>
-        `;
-        this.container.querySelector('#btn-win-1').addEventListener('click', () => {
-            this.finishGame(true, 50); 
-        });
-    }
-
-    finishGame(isSuccess, score) {
-        this.onGameEnd({ success: isSuccess, finalScore: score });
-    }
+  finishGame(success, score) {
+    this.onGameEnd({ success, finalScore: score, perfect: false });
+  }
 }

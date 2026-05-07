@@ -1,6 +1,6 @@
 import { QUIZ_ODS_DATA } from '../config/data.js';
 import { state } from '../store/state.js';
-import { addReward } from '../main.js';
+import { emit, EVENTS } from '../store/events.js';
 
 let container, gallery, headerCount, headerPhase, closeBtn, playerEl;
 
@@ -338,7 +338,7 @@ function startQuiz(ods) {
 
     if (reward > 0) {
       resultReward.innerHTML = `<span class="qop-reward-coins">🪙 +${reward} moedas</span>`;
-      addReward(0, reward);
+      emit(EVENTS.REWARD, { energy: 0, coins: reward });
     } else {
       resultReward.innerHTML = '<span class="qop-reward-none">Acerte pelo menos 3 para ganhar recompensa!</span>';
     }

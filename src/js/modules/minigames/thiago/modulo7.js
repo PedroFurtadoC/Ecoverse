@@ -1,29 +1,29 @@
-// Thiago - Módulo 7 (Grande Barreira de Coral)
+// Missão 7 — Grande Barreira de Coral. Implementação a cargo de Thiago.
+// Contrato e exemplos: src/js/modules/minigames/README.md
+// Sprites disponíveis em: public/assets/generated/cutouts/
 
 export class Modulo7 {
-    constructor(containerElement, onGameEnd) {
-        this.container = containerElement;
-        this.onGameEnd = onGameEnd;
-    }
+  constructor(container, onGameEnd) {
+    this.container = container;
+    this.onGameEnd = onGameEnd;
+  }
 
-    start() {
-        // 👇 ========================================================= 👇
-        // 🚀 [IMPLEMENTE AQUI - MÓDULO 7] 
-        // Apague este HTML de teste e crie a lógica (Canvas/HTML) do Módulo 7 abaixo.
-        // 👆 ========================================================= 👆
+  start() {
+    // Stub temporário — substituir pela mecânica do minigame.
+    this.container.innerHTML = `
+      <div class="minigame-stub thiago-7">
+        <h3>Grande Barreira — minigame em desenvolvimento</h3>
+        <p>Tema: microplástico e poluição costeira.</p>
+        <button class="minigame-stub__finish" data-score="100">Finalizar (teste)</button>
+      </div>
+    `;
+    this.container.querySelector('.minigame-stub__finish').addEventListener('click', (e) => {
+      const score = Number(e.currentTarget.dataset.score) || 0;
+      this.finishGame(true, score);
+    });
+  }
 
-        this.container.innerHTML = `
-            <div style="text-align: center; padding: 2rem;">
-                <h3>Módulo 7: Grande Barreira de Coral</h3>
-                <button id="btn-win-7" style="padding: 10px; background: #9C27B0; color: white;"> Finalizar Partida (Teste) </button>
-            </div>
-        `;
-        this.container.querySelector('#btn-win-7').addEventListener('click', () => {
-            this.finishGame(true, 100); 
-        });
-    }
-
-    finishGame(isSuccess, score) {
-        this.onGameEnd({ success: isSuccess, finalScore: score });
-    }
+  finishGame(success, score) {
+    this.onGameEnd({ success, finalScore: score, perfect: false });
+  }
 }
