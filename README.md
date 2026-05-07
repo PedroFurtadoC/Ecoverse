@@ -35,7 +35,7 @@ npm run preview     # serve dist/ localmente
 - **Pomodoro** integrado — sessões de 25/5/15 minutos geram energia e moedas para iniciar missões.
 - **Quizzes ODS** — 17 quizzes baseados nos Objetivos de Desenvolvimento Sustentável da ONU, desbloqueados em três fases conforme você completa missões.
 - **15 conquistas** que ensinam conceitos de resíduos enquanto recompensam.
-- **Leaderboard de turma** opcional via Supabase — para que a UNAERP possa acompanhar o progresso coletivo.
+- **Leaderboard de turma** opcional via Supabase — para acompanhar o progresso coletivo.
 
 ---
 
@@ -67,22 +67,19 @@ Setup, branches, commits, code review: [`docs/contribuindo.md`](./docs/contribui
 
 ## Deploy
 
-Hospedagem na **Vercel**, com deploy automático a partir da branch `main`. O fluxo é:
+Hospedagem na **Vercel**, com deploy automático a partir da branch `main`:
 
-1. Você abre um Pull Request para `main`.
-2. CI no GitHub Actions roda `npm run build` e valida.
-3. PR revisado e merged em `main`.
-4. Vercel publica em ~1 minuto.
-
-Guia operacional não-técnico (primeira publicação, domínio, variáveis de ambiente): [`docs/professora-isadora.md`](./docs/professora-isadora.md).
+1. Pull Request aberto para `main`.
+2. CI no GitHub Actions roda `npm run build`.
+3. Após merge, a Vercel publica em ~1 minuto.
 
 ---
 
 ## Banco de dados (Supabase)
 
-O leaderboard de turma e a sincronização de progresso entre dispositivos são **opcionais** e usam Supabase (Postgres + Auth gerenciados). Sem configurar Supabase, o jogo continua funcionando — apenas usa `localStorage` no navegador.
+O leaderboard de turma e a sincronização de progresso entre dispositivos são **opcionais** e usam Supabase. Sem configurar, o jogo roda usando `localStorage` no navegador.
 
-Passo a passo de setup: [`supabase/README.md`](./supabase/README.md).
+Setup em [`supabase/README.md`](./supabase/README.md).
 
 ---
 
@@ -90,8 +87,6 @@ Passo a passo de setup: [`supabase/README.md`](./supabase/README.md).
 
 - [`docs/arquitetura.md`](./docs/arquitetura.md) — fluxo de dados, decisões de design.
 - [`docs/contribuindo.md`](./docs/contribuindo.md) — guia para a equipe (setup, branches, commits).
-- [`docs/professora-isadora.md`](./docs/professora-isadora.md) — operação não-técnica (Vercel, domínio).
-- [`docs/parceria-unaerp.md`](./docs/parceria-unaerp.md) — proposta institucional para a faculdade.
 
 ---
 

@@ -1,14 +1,12 @@
 # Supabase do Ecoverse
 
-Setup do banco e da autenticação. Você só precisa rodar isso uma vez por ambiente (dev e prod podem ser projetos Supabase diferentes).
+Setup do banco e da autenticação. Rode uma vez por ambiente (dev e prod podem ser projetos separados).
 
 ## 1. Criar projeto
 
 1. Acesse https://supabase.com → **New project**.
-2. Nome: `ecoverse-unaerp` (ou similar).
-3. Region: `South America (São Paulo)`.
-4. Plano: **Free**.
-5. Salve a senha gerada do banco (não vai precisar pra rodar o app).
+2. Nome: `ecoverse`. Region: `South America (São Paulo)`. Plano: Free.
+3. Salve a senha do banco assim que aparecer — ela só aparece uma vez.
 
 ## 2. Pegar URL e anon key
 
@@ -17,30 +15,26 @@ Setup do banco e da autenticação. Você só precisa rodar isso uma vez por amb
 - **Project URL** → vai pro `.env` como `VITE_SUPABASE_URL`.
 - **anon / public key** → vai pro `.env` como `VITE_SUPABASE_ANON_KEY`.
 
-## 3. Rodar o schema
+## 3. Rodar os SQLs
 
-**SQL Editor → New query** e cole, em ordem:
+**SQL Editor → New query**, cole e rode em ordem:
 
-1. Conteúdo de `schema.sql` — cria tabelas, view e triggers.
-2. Conteúdo de `policies.sql` — habilita RLS e define políticas.
+1. `schema.sql` — cria tabelas, view e triggers.
+2. `policies.sql` — habilita RLS e define as políticas.
 
-Cada bloco é idempotente — pode rodar de novo sem problema.
+Os dois são idempotentes — rodar de novo não quebra nada.
 
-## 4. Configurar autenticação
+## 4. Configurar Auth
 
-**Authentication → Providers**:
-
-- **Email** já vem ativado. Suficiente pra magic-link e signup.
-- **Google OAuth** (opcional): mais ergonômico pra apresentação. Configure se quiser.
+**Authentication → Providers**: deixe **Email** ativo (já vem). Suficiente pra magic-link e signup.
 
 **Authentication → URL Configuration**:
+- **Site URL**: `https://ecoverse-bice.vercel.app`
+- **Redirect URLs**: adicione `http://localhost:3000` pra dev funcionar também.
 
-- **Site URL**: a URL pública da aplicação (ex.: `https://ecoverse.unaerp.edu.br` ou a URL Vercel).
-- **Redirect URLs**: adicione `http://localhost:3000` para dev e a URL de produção.
+## 5. Trigger de novo usuário
 
-## 5. Configurar trigger pra criar profile no signup
-
-Cada vez que um novo usuário se cadastra, queremos uma linha em `profiles` automaticamente. **SQL Editor**:
+Toda nova conta precisa de uma linha em `profiles` e `progress`. Cole no **SQL Editor**:
 
 ```sql
 create or replace function public.handle_new_user()
@@ -60,9 +54,16 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 ```
 
-Isso garante que toda nova conta tenha `profiles` e `progress` populados.
+## 6. Adicionar ao `.env`
 
-## 6. Testar
+```env
+VITE_SUPABASE_URL=https://xxxxxxxxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=sb_publishable_...
+```
+
+Reinicie o `npm run dev` pra o Vite reler as variáveis.
+
+## 7. Validar
 
 No SQL Editor:
 
@@ -70,24 +71,4 @@ No SQL Editor:
 select * from public.leaderboard;
 ```
 
-Deve retornar zero linhas (nenhum usuário ainda) sem erro de permissão. Se retornar erro, alguma policy não foi aplicada.
-
-## 7. Adicionar ao .env do projeto
-
-```env
-VITE_SUPABASE_URL=https://xxxxxxxxxxx.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
-```
-
-Reinicie o `npm run dev` para o Vite reler as variáveis.
-
-## Estrutura
-
-- `profiles` — perfil público do aluno (nome, avatar, escola).
-- `progress` — estado serializado do jogo por usuário.
-- `pomodoro_sessions` — histórico de sessões de foco para leaderboard de horas.
-- `leaderboard` (view) — projeção pública usada pelo ranking da turma.
-
-## Em ambiente de prova
-
-Se a apresentação na UNAERP for offline ou o WiFi falhar, o app continua jogável — Supabase é **opcional**, fica no nível de "save em nuvem". O localStorage continua sendo a fonte primária.
+Deve retornar zero linhas sem erro de permissão. Se der erro, alguma policy não foi aplicada.

@@ -1,6 +1,6 @@
 # Aviso de autoria e parceria
 
-O Ecoverse é o trabalho final da disciplina de Sustentabilidade Ambiental da **Universidade de Ribeirão Preto (UNAERP)**, sob orientação da professora **Isadora**, em 2026. A UNAERP é parceira institucional do projeto e mantenedora de longo prazo — detalhes em [`docs/parceria-unaerp.md`](./docs/parceria-unaerp.md).
+O Ecoverse é o trabalho final da disciplina de Sustentabilidade Ambiental da **Universidade de Ribeirão Preto (UNAERP)**, sob orientação da professora **Isadora**, em 2026.
 
 ## Autores
 
