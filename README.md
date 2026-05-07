@@ -1,53 +1,100 @@
-# Ecoverse — Floresta do Futuro
+# Ecoverse
 
-O Ecoverse é um projeto desenvolvido para a disciplina de Sustentabilidade Ambiental. O objetivo da plataforma é integrar a técnica de Pomodoro com mini-games interativos para conscientizar sobre a preservação de ecossistemas reais, fundamentado nos Objetivos de Desenvolvimento Sustentável (ODS) da ONU.
+Plataforma educacional gamificada sobre resíduos e sustentabilidade. Você viaja por 8 biomas reais, cada um com um problema concreto de resíduos, e enfrenta minigames temáticos para protegê-los. Entre missões, o Pomodoro recompensa sessões de foco com energia para a próxima missão.
 
-## Como executar o projeto localmente
-
-1. Instalar as dependências:
-   `npm install`
-2. Iniciar o servidor de desenvolvimento:
-   `npm run dev`
-3. Gerar a versão final para produção:
-   `npm run build`
+Trabalho final da disciplina de Sustentabilidade Ambiental da **UNAERP — Universidade de Ribeirão Preto**, em 2026, sob orientação da professora **Isadora**.
 
 ---
 
-## Guia para a Professora Isadora (Manutenção e Deploy)
+## Como rodar localmente
 
-Professora Isadora, este projeto foi estruturado para ser uma ferramenta educacional contínua e de fácil gerenciamento pela senhora ou por futuras turmas:
+Pré-requisitos: Node.js 20 ou superior.
 
-### 1. Publicação do site (Deploy)
-Utilizamos a plataforma Vercel para a hospedagem. O processo é simplificado:
-- Realizar login na Vercel utilizando a conta do GitHub.
-- Importar este repositório (Ecoverse).
-- O sistema reconhecerá as configurações do Vite automaticamente. Basta clicar em "Deploy".
-- Após a configuração inicial, qualquer atualização realizada aqui no GitHub será refletida no site oficial de forma automática.
+```bash
+git clone https://github.com/PedroFurtadoC/Ecoverse.git
+cd Ecoverse
+npm install
+npm run dev
+```
 
-### 2. Configuração de Domínio
-Caso deseje utilizar um domínio personalizado (como www.ecoverse.com.br), a configuração pode ser feita sem custos adicionais de servidor na aba Settings > Domains dentro do painel da Vercel.
+A aplicação abre em `http://localhost:3000`. Para testar missões sem fazer Pomodoro, use `http://localhost:3000/?dev=free` (energia liberada).
 
-### 3. Gestão Colaborativa
-Cada aluno foi adicionado como colaborador no repositório do GitHub. Isso permite que a equipe implemente as missões e mini-games de forma independente, garantindo que o site oficial permaneça atualizado sem a necessidade de intervenções manuais constantes.
+Para gerar o build de produção:
+
+```bash
+npm run build       # gera dist/
+npm run preview     # serve dist/ localmente
+```
+
+---
+
+## O que tem dentro
+
+- **Globo 3D interativo** com 8 missões em locais reais (Amazônia, Bacia do Congo, Mata Atlântica, Bornéu, Madagascar, Pantanal, Grande Barreira de Coral, Cordilheira dos Andes).
+- **Minigames temáticos** focados em problemas reais de resíduos por bioma (plástico no rio, e-waste, microplástico, pesca-fantasma, etc.).
+- **Pomodoro** integrado — sessões de 25/5/15 minutos geram energia e moedas para iniciar missões.
+- **Quizzes ODS** — 17 quizzes baseados nos Objetivos de Desenvolvimento Sustentável da ONU, desbloqueados em três fases conforme você completa missões.
+- **15 conquistas** que ensinam conceitos de resíduos enquanto recompensam.
+- **Leaderboard de turma** opcional via Supabase — para que a UNAERP possa acompanhar o progresso coletivo.
 
 ---
 
-## Arquitetura e Tecnologias
+## Stack
 
-- Desenvolvedor Geral: Pedro Furtado
-- Tecnologias Base: HTML5, CSS3 e JavaScript (ES6+).
-- Visualização 3D: Biblioteca Globe.GL baseada em Three.js.
-- Persistência de Dados: O progresso e as estatísticas de energia e moedas são armazenados via localStorage no navegador do usuário.
-
-## Organização da Equipe e Módulos
-O projeto utiliza uma estrutura modular localizada em `src/js/modules/minigames/`, onde cada desenvolvedor possui um arquivo isolado para implementar suas missões específicas:
-
-- André: Missões 1 e 2
-- Felipe: Missões 3 e 4
-- Pedro Borges: Missões 5 e 6
-- Thiago: Missões 7 e 8
-
-Essa estrutura, concebida por Pedro Furtado, garante o isolamento do código e a integridade do sistema global durante o desenvolvimento colaborativo.
+- **Vite + JavaScript ES Modules** (sem framework — projeto leve e didático).
+- **Globe.GL** (Three.js por baixo) para a visualização 3D.
+- **Supabase** para Auth e leaderboard (opcional — o jogo roda sem isso usando localStorage).
+- **CSS puro** com design system em variáveis (`src/css/variables.css`), mobile-first, modo escuro.
+- **PWA** instalável com manifest e service worker para funcionamento offline básico.
+- **Hospedagem na Vercel** com headers de segurança (CSP, etc.) configurados em `vercel.json`.
 
 ---
-Projeto acadêmico de Sustentabilidade Ambiental - 2026.
+
+## Como contribuir (equipe)
+
+Cada colega tem uma pasta exclusiva em `src/js/modules/minigames/` e implementa os 2 minigames das missões correspondentes. Veja o `README.md` da sua pasta:
+
+| Dev | Pasta | Missões |
+|---|---|---|
+| André | `andre/` | 1 e 2 |
+| Felipe | `felipe/` | 3 e 4 |
+| Pedro Borges | `pedro_borges/` | 5 e 6 |
+| Thiago | `thiago/` | 7 e 8 |
+
+Setup, branches, commits, code review: [`docs/contribuindo.md`](./docs/contribuindo.md).
+
+---
+
+## Deploy
+
+Hospedagem na **Vercel**, com deploy automático a partir da branch `main`. O fluxo é:
+
+1. Você abre um Pull Request para `main`.
+2. CI no GitHub Actions roda `npm run build` e valida.
+3. PR revisado e merged em `main`.
+4. Vercel publica em ~1 minuto.
+
+Guia operacional não-técnico (primeira publicação, domínio, variáveis de ambiente): [`docs/professora-isadora.md`](./docs/professora-isadora.md).
+
+---
+
+## Banco de dados (Supabase)
+
+O leaderboard de turma e a sincronização de progresso entre dispositivos são **opcionais** e usam Supabase (Postgres + Auth gerenciados). Sem configurar Supabase, o jogo continua funcionando — apenas usa `localStorage` no navegador.
+
+Passo a passo de setup: [`supabase/README.md`](./supabase/README.md).
+
+---
+
+## Documentação
+
+- [`docs/arquitetura.md`](./docs/arquitetura.md) — fluxo de dados, decisões de design.
+- [`docs/contribuindo.md`](./docs/contribuindo.md) — guia para a equipe (setup, branches, commits).
+- [`docs/professora-isadora.md`](./docs/professora-isadora.md) — operação não-técnica (Vercel, domínio).
+- [`docs/parceria-unaerp.md`](./docs/parceria-unaerp.md) — proposta institucional para a faculdade.
+
+---
+
+## Licença e parceria
+
+[MIT](./LICENSE) com atribuição UNAERP. Créditos completos e parceria institucional em [`NOTICE.md`](./NOTICE.md).
