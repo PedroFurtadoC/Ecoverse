@@ -1,4 +1,4 @@
-/* ======== LOADING SCREEN ======== */
+/* Tela de carregamento — primeira impressão do jogo. */
 
 #loading-screen {
   position: fixed;
@@ -7,6 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: env(safe-area-inset-top, 0px) var(--space-4) env(safe-area-inset-bottom, 0px);
   transition: opacity 0.8s ease;
 }
 
@@ -32,8 +33,9 @@
 }
 
 .loading-logo {
-  width: 180px;
-  margin-bottom: 24px;
+  width: clamp(140px, 38vw, 200px);
+  height: auto;
+  margin-bottom: var(--space-5);
   filter: drop-shadow(0 4px 24px rgba(46, 204, 113, 0.3));
   animation: logoPulse 2.5s ease-in-out infinite;
 }

@@ -1,4 +1,4 @@
-/* ======== MENU ======== */
+/* Menu lateral acessado pelo ícone do HUD. */
 
 .menu-list {
   display: flex;
@@ -10,15 +10,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: var(--touch-target);
   padding: 14px 18px;
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.04);
   font-size: 14px;
   font-weight: 700;
   transition: background var(--transition);
+  width: 100%;
+  text-align: left;
 }
 
-.menu-item:hover {
+.menu-item:hover,
+.menu-item:focus-visible {
   background: rgba(255, 255, 255, 0.08);
 }
 

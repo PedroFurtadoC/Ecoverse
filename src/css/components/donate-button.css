@@ -1,14 +1,14 @@
-/* ======== Donate Button ======== */
+/* Botão flutuante de doação no canto inferior esquerdo. */
 
 .donate-btn {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 100;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-5));
+  left: calc(env(safe-area-inset-left, 0px) + var(--space-5));
+  z-index: var(--z-hud);
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF7043, #E64A19);
+  background: linear-gradient(135deg, var(--c-orange), #E64A19);
   border: 2px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 4px 24px rgba(255, 112, 67, 0.4);
   display: flex;
@@ -17,7 +17,8 @@
   transition: transform var(--transition), box-shadow var(--transition);
 }
 
-.donate-btn:hover {
+.donate-btn:hover,
+.donate-btn:focus-visible {
   transform: scale(1.08) translateY(-2px);
   box-shadow: 0 8px 32px rgba(255, 112, 67, 0.5);
 }

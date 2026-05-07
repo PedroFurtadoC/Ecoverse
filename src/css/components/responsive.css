@@ -1,4 +1,4 @@
-/* ======== RESPONSIVE ======== */
+/* Breakpoints centralizados — fonte da verdade do mobile. */
 
 @media (max-width: 600px) {
   .hud {
@@ -66,9 +66,7 @@
   }
 }
 
-/* ===============================================
-   POMODORO MODAL
-=============================================== */
+/* Pomodoro — modal e ring de progresso. */
 .pomo-modal {
   max-width: 400px;
 }
@@ -221,9 +219,7 @@
   color: #FF7043;
 }
 
-/* ===============================================
-   ACHIEVEMENTS MODAL
-=============================================== */
+/* Conquistas — galeria, pop-up de desbloqueio e contador. */
 .achievements-modal {
   max-width: 480px;
 }
@@ -336,13 +332,11 @@
   margin-top: 2px;
 }
 
-/* ===============================================
-   MINI-GAME CONTAINER
-=============================================== */
+/* Container fullscreen onde os minigames da equipe rodam. */
 .minigame-container {
   position: fixed;
   inset: 0;
-  z-index: 400;
+  z-index: var(--z-minigame);
   background: linear-gradient(135deg, #0a2a14 0%, #0f3d1e 50%, #0a2a14 100%);
   display: none;
   flex-direction: column;
