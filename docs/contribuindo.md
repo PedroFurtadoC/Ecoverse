@@ -18,6 +18,7 @@ Abre em `http://localhost:3000`. Use `?dev=free` na URL durante o desenvolviment
 
 1. Leia `src/js/modules/minigames/<seu-nome>/README.md` (tema, mecânicas, sprites disponíveis).
 2. Confira os sprites prontos em `public/assets/generated/cutouts/`.
+3. (Opcional) Veja o minigame de **inspiração** na branch `demo/triagem-inspiracao` — é só referência de estrutura, não entra em produção.
 
 ## Branches e commits
 
