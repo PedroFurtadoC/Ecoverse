@@ -7,22 +7,37 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
+# Dependências e build
 node_modules/
 dist/
 dist-ssr/
 *.local
 
-# Editor directories and files
+# Variáveis de ambiente — nunca commitar segredos
+.env
+.env.local
+.env.*.local
+
+# Editor / IDE
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.code-workspace
 
-# Vite / Build Artifacts
-update_data.js
+# Cache do bundler
+.vite/
+.cache/
+
+# Ferramentas de assistente que possam ser instaladas localmente
+# (mantém o repo livre de configs específicas de qualquer agente/IDE)
+.claude/
+.mcp.json
+.agents/
+skills-lock.json

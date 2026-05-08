@@ -1,15 +1,16 @@
-/* ======== MODALS ======== */
+/* Modais — overlay com blur e transição de escala. */
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 500;
+  z-index: var(--z-modal);
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
@@ -51,8 +52,9 @@
 }
 
 .modal-close {
-  width: 32px;
-  height: 32px;
+  position: relative;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.06);
   display: flex;
@@ -62,7 +64,15 @@
   transition: background var(--transition);
 }
 
-.modal-close:hover {
+/* Expande a hit-area do botão fechar para 44px sem mudar o visual. */
+.modal-close::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+
+.modal-close:hover,
+.modal-close:focus-visible {
   background: rgba(255, 255, 255, 0.12);
 }
 

@@ -1,15 +1,18 @@
-/* ======== GAME CONTAINER ======== */
+/* Container raiz do jogo — globo, HUD e overlays. */
 
 #game-container {
   position: fixed;
   inset: 0;
   opacity: 0;
-  transition: opacity 0.8s ease;
-  background: #000;
+  visibility: hidden;
+  transition: opacity 0.8s ease, visibility 0s linear 0.8s;
+  background: var(--c-bg-dark);
 }
 
 #game-container.visible {
   opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s ease, visibility 0s linear 0s;
 }
 
 

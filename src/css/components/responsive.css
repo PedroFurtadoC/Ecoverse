@@ -1,4 +1,4 @@
-/* ======== RESPONSIVE ======== */
+/* Breakpoints centralizados — fonte da verdade do mobile. */
 
 @media (max-width: 600px) {
   .hud {
@@ -42,19 +42,6 @@
     font-size: 12px;
   }
 
-  .hud-btn--pomo, .hud-btn--quiz {
-    padding: 6px 10px;
-    gap: 4px;
-  }
-
-  .hud-btn-label {
-    font-size: 11px;
-  }
-
-  .hud-btn-sub {
-    display: none;
-  }
-
   .globe-marker {
     transform: scale(0.85);
   }
@@ -66,9 +53,7 @@
   }
 }
 
-/* ===============================================
-   POMODORO MODAL
-=============================================== */
+/* Pomodoro — modal e ring de progresso. */
 .pomo-modal {
   max-width: 400px;
 }
@@ -221,9 +206,7 @@
   color: #FF7043;
 }
 
-/* ===============================================
-   ACHIEVEMENTS MODAL
-=============================================== */
+/* Conquistas — galeria, pop-up de desbloqueio e contador. */
 .achievements-modal {
   max-width: 480px;
 }
@@ -336,13 +319,11 @@
   margin-top: 2px;
 }
 
-/* ===============================================
-   MINI-GAME CONTAINER
-=============================================== */
+/* Container fullscreen onde os minigames da equipe rodam. */
 .minigame-container {
   position: fixed;
   inset: 0;
-  z-index: 400;
+  z-index: var(--z-minigame);
   background: linear-gradient(135deg, #0a2a14 0%, #0f3d1e 50%, #0a2a14 100%);
   display: none;
   flex-direction: column;
@@ -354,10 +335,10 @@
 }
 
 .mg-header {
-  padding: 20px;
+  padding: 16px 20px;
   text-align: center;
   width: 100%;
-  max-width: 500px;
+  max-width: 860px;
 }
 
 .mg-title {
@@ -396,9 +377,9 @@
   display: none;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  max-width: 320px;
-  width: 90%;
-  margin: 20px auto;
+  max-width: 860px;
+  width: 98%;
+  margin: 0 auto;
 }
 
 .mg-grid.active {

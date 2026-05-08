@@ -10,11 +10,13 @@ export const state = {
   bestStreak: 0,
   perfectMinigames: 0,
   achievements: [],
-  plantedTrees: []
+  plantedTrees: [],
+  lastSavedAt: null
 };
 
 export function saveState() {
   try {
+    state.lastSavedAt = new Date().toISOString();
     localStorage.setItem(GAME_CONFIG.storageKey, JSON.stringify({
       energy: state.energy, coins: state.coins,
       impact: state.impact, completed: state.completed,
@@ -22,7 +24,8 @@ export function saveState() {
       bestStreak: state.bestStreak,
       perfectMinigames: state.perfectMinigames,
       achievements: state.achievements,
-      plantedTrees: state.plantedTrees
+      plantedTrees: state.plantedTrees,
+      lastSavedAt: state.lastSavedAt
     }));
   } catch (e) { /* silent */ }
 }
@@ -41,6 +44,7 @@ export function loadState() {
       state.perfectMinigames    = s.perfectMinigames ?? 0;
       state.achievements        = s.achievements ?? [];
       state.plantedTrees        = s.plantedTrees ?? [];
+      state.lastSavedAt         = s.lastSavedAt ?? null;
     }
   } catch (e) { /* start fresh */ }
 }

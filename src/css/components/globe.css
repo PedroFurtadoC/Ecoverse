@@ -1,4 +1,4 @@
-/* ======== GLOBE WRAPPER ======== */
+/* Wrapper do globo Globe.GL e marcadores das missões. */
 
 .globe-wrapper {
   position: absolute;
@@ -8,14 +8,15 @@
   z-index: 1;
 }
 
-/* Globe.GL canvas inherits size from wrapper */
-.globe-wrapper canvas {
-  width: 100% !important;
-  height: 100% !important;
+/* O canvas do Globe.GL é injetado pelo runtime; o wrapper já dita o tamanho. */
+.globe-wrapper > canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 
-/* ======== GLOBE MARKERS ======== */
+/* Pinos clicáveis das missões em cada coordenada. */
 
 .globe-marker {
   text-align: center;
@@ -116,6 +117,18 @@
 
 .globe-marker.locked .gm-icon {
   color: rgba(255, 255, 255, 0.4);
+}
+
+/* Em telas pequenas, trunca labels longos pra evitar overflow do viewport. */
+@media (max-width: 600px) {
+  .gm-label,
+  .gm-location {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 

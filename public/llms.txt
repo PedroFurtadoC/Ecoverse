@@ -1,0 +1,28 @@
+# Ecoverse
+
+> Plataforma educacional gamificada sobre resíduos e sustentabilidade. 8 missões em biomas reais com minigames temáticos, Pomodoro integrado e quizzes ODS. Trabalho final da disciplina de Sustentabilidade Ambiental — UNAERP 2026.
+
+## Sobre
+
+Aplicação web criada por Pedro Furtado Cunha e equipe da Universidade de Ribeirão Preto (UNAERP), sob orientação da professora Isadora. Apresenta um globo 3D interativo com missões em locais reais (Amazônia, Bacia do Congo, Mata Atlântica, Bornéu, Madagascar, Pantanal, Grande Barreira de Coral e Andes) e mecânicas de combate aos resíduos por bioma. O ciclo de jogo combina sessões de foco no estilo Pomodoro com minigames temáticos e quizzes baseados nos 17 Objetivos de Desenvolvimento Sustentável da ONU.
+
+## Stack
+
+- Vite + JavaScript ES Modules (sem framework, projeto leve e didático)
+- Globe.GL e Three.js para a visualização 3D
+- Supabase (Auth e leaderboard) — opcional
+- CSS puro com design system mobile-first
+- PWA instalável com service worker
+
+## Documentação
+
+- [README principal](https://github.com/PedroFurtadoC/Ecoverse/blob/main/README.md): visão geral, setup local e estrutura do projeto.
+- [Arquitetura](https://github.com/PedroFurtadoC/Ecoverse/blob/main/docs/arquitetura.md): camadas, fluxo de dados, decisões de design e build.
+- [Como contribuir](https://github.com/PedroFurtadoC/Ecoverse/blob/main/docs/contribuindo.md): setup, branches, Conventional Commits e code review.
+- [NOTICE](https://github.com/PedroFurtadoC/Ecoverse/blob/main/NOTICE.md): autores, parceria institucional UNAERP e créditos.
+
+## Repositório
+
+- GitHub: https://github.com/PedroFurtadoC/Ecoverse
+- Deploy: https://ecoverse-bice.vercel.app
+- Licença: MIT (com atribuição UNAERP)

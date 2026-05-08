@@ -1,18 +1,27 @@
 {
   "name": "ecoverse",
   "version": "1.0.0",
-  "description": "Ecoverse - Viaje pelo mundo e proteja ecossistemas",
-  "main": "index.js",
+  "description": "Ecoverse — combate aos resíduos pelo mundo, com Pomodoro e minigames. Projeto acadêmico UNAERP.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "sustentabilidade",
+    "residuos",
+    "ods",
+    "educacao-ambiental",
+    "unaerp"
+  ],
+  "author": "Pedro Furtado Cunha e equipe Ecoverse",
+  "license": "MIT",
   "devDependencies": {
     "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.3",
+    "globe.gl": "^2.45.3"
   }
 }
