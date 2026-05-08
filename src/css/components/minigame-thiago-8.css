@@ -1,0 +1,256 @@
+/* Minigame 8 — Cordilheira dos Andes | Endurance & Precision Update */
+.minigame-container.active:has(.thiago-8-wrapper) .mg-grid,
+.minigame-container.active:has(.thiago-8-container) .mg-grid {
+    display: block !important;
+    max-width: 1200px !important;
+    width: 95% !important;
+    height: 800px !important; /* Aumentado para dar mais céu e montanha */
+    background: transparent;
+    position: relative;
+    overflow: visible !important; 
+    margin: 10px auto;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 100;
+}
+.thiago-8-wrapper {
+    position: relative; display: block; width: 100%; height: 100%; z-index: 100;
+}
+
+.thiago-8-container {
+    position: relative; width: 100%; height: 100%; overflow: hidden;
+    background: linear-gradient(to bottom, #0d1e4c 0%, #3b82f6 40%, #c9dfff 80%, #ffffff 100%);
+    border-radius: 12px; border: 3px solid #60a5fa;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), inset 0 0 40px rgba(0, 150, 255, 0.2);
+    cursor: grab;
+}
+.thiago-8-container:active { cursor: grabbing; }
+
+.thiago-8-btn--exit {
+    position: absolute; top: -55px; right: 0; padding: 10px 24px;
+    border: 2px solid #ef4444; border-radius: 8px; background: rgba(239, 68, 68, 0.1);
+    color: #ef4444; font-weight: 900; font-size: 16px; cursor: pointer;
+    z-index: 99999; transition: all 0.2s; backdrop-filter: blur(5px);
+}
+.thiago-8-btn--exit:hover { background: #ef4444; color: white; }
+
+/* 1. MONTANHA COM PICOS NEVADOS */
+.thiago-8-mountains {
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 85%; /* Subiu de 78% para 85% */
+    background: #94a3b8;
+    clip-path: polygon(0% 100%, 0% 80%, 15% 40%, 30% 70%, 50% 10%, 70% 60%, 85% 20%, 100% 70%, 100% 100%);
+    z-index: 1;
+}
+
+/* 2. LIXEIRAS DE RECICLAGEM */
+.thiago-8-bins-container {
+    position: absolute; 
+    bottom: 15px; /* Mais coladas no chão */
+    left: 50%; 
+    transform: translateX(-50%);
+    display: flex; 
+    gap: 80px; /* Maior espaçamento entre elas */
+    z-index: 60;
+}
+
+.thiago-8-bin {
+    width: 85px; /* Reduzido de 110px para 85px */
+    height: 110px; /* Reduzido de 140px para 110px */
+    border-radius: 5px 5px 12px 12px;
+    box-shadow: inset -10px -10px 20px rgba(0,0,0,0.3), 0 10px 15px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    padding-bottom: 15px; position: relative;
+    border-top: 14px solid rgba(255,255,255,0.3);
+}
+
+.thiago-8-bin::before { content: '♻️'; font-size: 24px; opacity: 0.6; position: absolute; top: 10px; }
+.thiago-8-bin::after { font-size: 35px; z-index: 2; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); }
+.thiago-8-bin--plastic { background: linear-gradient(145deg, #ef4444, #b91c1c); } .thiago-8-bin--plastic::after { content: '🧴'; }
+.thiago-8-bin--metal { background: linear-gradient(145deg, #f59e0b, #b45309); } .thiago-8-bin--metal::after { content: '🛢️'; }
+.thiago-8-bin--organic { background: linear-gradient(145deg, #22c55e, #15803d); } .thiago-8-bin--organic::after { content: '🍎'; }
+
+.thiago-8-hud {
+    position: absolute; top: 25px; left: 25px; right: 25px;
+    display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 9999;
+}
+.thiago-8-stat {
+    background: rgba(10, 20, 45, 0.85); padding: 12px 25px; border-radius: 12px;
+    color: white; font-weight: 800; border: 2px solid #60a5fa;
+    backdrop-filter: blur(8px); box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    display: flex; flex-direction: column; align-items: center; position: relative;
+}
+.thiago-8-timer { color: #38bdf8; font-size: 1.2em; }
+.thiago-8-combo {
+    color: #fbbf24; font-size: 1.4em; text-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); white-space: nowrap; margin-top: 25px;
+}
+.thiago-8-combo.bump { animation: comboBump 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes comboBump { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.4); } 100% { transform: translateX(-50%) scale(1); } }
+
+.thiago-8-health-bar { width: 190px; height: 16px; background: rgba(0,0,0,0.8); border-radius: 8px; overflow: hidden; margin-top: 8px; border: 2px solid #222; }
+.thiago-8-health-fill { height: 100%; background: linear-gradient(90deg, #38bdf8, #a78bfa); width: 100%; transition: width 0.3s; }
+.thiago-8-health-low { animation: healthPulse 0.8s infinite alternate; }
+@keyframes healthPulse { from { box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); } to { box-shadow: 0 0 25px rgba(255, 0, 0, 0.9); } }
+
+/* 4. O NOVO ALPINISTA PROFISSIONAL */
+.thiago-8-tourist {
+    position: absolute; width: 30px; height: 45px; z-index: 10;
+    /* Ponto de origem EXATAMENTE no pé dele */
+    transform-origin: bottom center; 
+}
+
+/* Mochila */
+.t8-backpack {
+    position: absolute; bottom: 10px; left: -10px; width: 50px; height: 35px;
+    background: #334155; border-radius: 8px; z-index: 1; box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+}
+
+/* Jaqueta e Pernas */
+.t8-body {
+    position: absolute; bottom: 8px; left: 0; width: 30px; height: 30px;
+    background: var(--t-color, #e11d48); border-radius: 12px 12px 6px 6px; z-index: 2;
+    box-shadow: inset -4px -4px 8px rgba(0,0,0,0.3);
+}
+.t8-body::after {
+    content: ''; position: absolute; bottom: -8px; left: 4px; width: 22px; height: 10px;
+    box-shadow: -6px 0 0 #1e293b, 6px 0 0 #1e293b; /* Calças escuras */
+}
+
+/* Cabeça, Gorro e Máscara reflexiva */
+.t8-head {
+    position: absolute; top: -16px; left: 3px; width: 24px; height: 26px;
+    background: var(--t-hat, #fbbf24); border-radius: 50% 50% 40% 40%; z-index: 3;
+    border: 3px solid #0f172a; border-top-color: var(--t-hat, #fbbf24);
+}
+.t8-goggles {
+    position: absolute; top: 8px; left: 0px; width: 18px; height: 10px;
+    background: linear-gradient(135deg, #fff 0%, #38bdf8 30%, #1e3a8a 100%);
+    border-radius: 4px; overflow: hidden;
+}
+.t8-goggles::after {
+    content: ''; position: absolute; top: 0; left: -5px; width: 10px; height: 15px;
+    background: rgba(255,255,255,0.7); transform: rotate(30deg);
+}
+
+/* Bastões de Caminhada */
+.t8-pole {
+    position: absolute; bottom: -5px; width: 3px; height: 50px; background: #94a3b8; z-index: 4; border-radius: 2px;
+}
+.t8-pole-left { left: -8px; transform: rotate(15deg); }
+.t8-pole-right { right: -8px; transform: rotate(-15deg); }
+.t8-pole::after {
+    content: ''; position: absolute; top: 15px; left: -2px; width: 7px; height: 6px; background: #111; border-radius: 2px;
+}
+
+/* Cores das Roupas */
+.thiago-8-tourist--red { --t-color: #e11d48; --t-hat: #fbbf24; }
+.thiago-8-tourist--blue { --t-color: #2563eb; --t-hat: #ef4444; }
+.thiago-8-tourist--green { --t-color: #16a34a; --t-hat: #f59e0b; }
+.thiago-8-tourist--orange { --t-color: #ea580c; --t-hat: #9333ea; }
+
+/* Efeito de caminhar balançando levemente */
+@keyframes walkBob {
+    0% { padding-bottom: 0px; }
+    100% { padding-bottom: 4px; }
+}
+
+/* 5. ANIMAÇÕES DE ESCALADA PRECISA (Matemática pura com a montanha) */
+/*
+  Montanha real (clip-path): (0%, 60%) -> (25%, 20%) -> (50%, 70%) -> (75%, 15%) -> (100%, 50%)
+  As alturas (bottom) são multiplicadas pela altura da montanha (70% do container).
+*/
+@keyframes climbMountainRight {
+    0% { left: -10%; bottom: 16.8%; }
+    29.16% { left: 25%; bottom: 56%; }     /* Pico 1 */
+    50% { left: 50%; bottom: 21%; }        /* Vale */
+    70.83% { left: 75%; bottom: 59.5%; }   /* Pico 2 */
+    100% { left: 110%; bottom: 25.2%; }
+}
+
+@keyframes climbMountainLeft {
+    0% { left: 110%; bottom: 25.2%; }
+    29.16% { left: 75%; bottom: 59.5%; }   /* Pico 2 invertido */
+    50% { left: 50%; bottom: 21%; }        /* Vale invertido */
+    70.83% { left: 25%; bottom: 56%; }     /* Pico 1 invertido */
+    100% { left: -10%; bottom: 16.8%; }
+}
+
+/* 6. LIXOS (Reaproveitamento) */
+.thiago-8-item {
+    position: absolute; width: 60px; height: 60px; z-index: 150;
+    cursor: grab; transition: transform 0.1s, opacity 0.2s;
+    /* Força GPU e impede engasgo de CPU (Layout Thrashing) */
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0); 
+}
+.thiago-8-item.dragging { z-index: 1000; cursor: grabbing; filter: drop-shadow(0 20px 20px rgba(0,0,0,0.7)); }
+
+.thiago-8-can {
+    width: 35px; height: 50px; border-radius: 6px;
+    background: linear-gradient(to right, #94a3b8 0%, #f8fafc 30%, #94a3b8 100%);
+    box-shadow: inset 0 5px 10px rgba(255,255,255,0.7), inset 0 -5px 10px rgba(0,0,0,0.6), 2px 2px 8px rgba(0,0,0,0.4);
+    position: relative;
+}
+
+.thiago-8-can::before {
+    content: ''; position: absolute; top: -4px; left: 0; width: 100%; height: 8px;
+    background: #cbd5e1; border-radius: 50%; border: 1px solid #64748b;
+}
+/* Tampa de baixo da lata */
+.thiago-8-can::after {
+    content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 8px;
+    background: #64748b; border-radius: 50%; border-bottom: 1px solid #334155;
+}
+
+.thiago-8-apple { 
+    background: #dc2626; border-radius: 50%; width: 45px; height: 45px; 
+    box-shadow: inset -5px -5px 15px rgba(0,0,0,0.5), 2px 2px 5px rgba(0,0,0,0.4); 
+    position: relative;
+}
+.thiago-8-apple::before { content: ''; position: absolute; top: -10px; left: 20px; width: 4px; height: 16px; background: #654321; transform: rotate(15deg); }
+.thiago-8-apple::after { content: ''; position: absolute; top: -7px; left: 22px; width: 16px; height: 12px; background: #16a34a; border-radius: 50% 0 50% 0; transform: rotate(-20deg); pointer-events: none; opacity: 1; }
+
+.thiago-7-bag { width: 50px; height: 60px; background: rgba(255, 255, 255, 0.5); border-radius: 10px 10px 30% 30%; border: 1px solid rgba(255, 255, 255, 0.8); position: relative; box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.6); }
+.thiago-7-bag::before { content: ''; position: absolute; top: -15px; left: 10px; right: 10px; height: 20px; border: 4px solid rgba(255, 255, 255, 0.6); border-bottom: none; border-radius: 10px 10px 0 0; }
+.thiago-7-jug { width: 45px; height: 65px; background: #eee; border-radius: 8px; position: relative; box-shadow: inset -5px -5px 12px rgba(0,0,0,0.3); }
+.thiago-7-jug::before { content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 18px; height: 12px; background: #ff4b2b; border-radius: 3px; }
+.thiago-7-jug::after { content: ''; position: absolute; right: -12px; top: 15px; width: 16px; height: 28px; border: 6px solid #ddd; border-left: none; border-radius: 0 12px 12px 0; }
+.thiago-7-straw { width: 8px; height: 60px; background: repeating-linear-gradient(45deg, #bbb, #bbb 10px, #eee 10px, #eee 20px); border-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); position: relative; } 
+.thiago-7-straw::before { content: ''; position: absolute; top: -15px; bottom: -15px; left: -20px; right: -20px; }
+
+/* 7. POPUPS E NEVE */
+.thiago-8-score-pop { position: absolute; font-weight: 900; font-size: 28px; pointer-events: none; z-index: 1000; animation: scorePop8 0.8s forwards; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }
+@keyframes scorePop8 { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { transform: translateY(-20px) scale(1.2); opacity: 1; } 100% { transform: translateY(-70px) scale(1); opacity: 0; } }
+.pop-plus { color: #4ade80; } .pop-minus { color: #ef4444; }
+
+.thiago-8-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(10, 20, 40, 0.96); z-index: 9000; text-align: center; padding: 40px; color: white; backdrop-filter: blur(15px); }
+.thiago-8-btn { margin-top: 25px; padding: 18px 60px; border: none; border-radius: 40px; background: linear-gradient(135deg, #60a5fa, #3b82f6); color: #fff; font-weight: 900; font-size: 24px; cursor: pointer; box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5); transition: transform 0.2s, box-shadow 0.2s; }
+.thiago-8-btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 30px rgba(59, 130, 246, 0.7); }
+
+.thiago-8-snowflake { position: absolute; background: #fff; border-radius: 50%; pointer-events: none; box-shadow: 0 0 5px rgba(255,255,255,0.8); animation: snowFall var(--d) linear infinite; }
+@keyframes snowFall { 0% { transform: translateY(0) translateX(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(750px) translateX(var(--tx)); opacity: 0; } }
+.thiago-8-damage-flash { position: absolute; inset: 0; background: rgba(255, 0, 0, 0.2); pointer-events: none; z-index: 1000; opacity: 0; transition: opacity 0.1s; }
+.thiago-8-damage-flash.active { opacity: 1; }
+
+/* 5. ANIMAÇÕES DE ESCALADA PRECISA (Matemática pura sincronizada com o clip-path) */
+/* 5. ANIMAÇÕES DE ESCALADA PRECISA (Linha extrapolada matematicamente) */
+@keyframes climbMountainRight {
+    0%   { left: -5%; bottom: 5.66%; }
+    15%  { left: 15%; bottom: 51%; }
+    30%  { left: 30%; bottom: 25.5%; }
+    50%  { left: 50%; bottom: 76.5%; }
+    70%  { left: 70%; bottom: 34%; }
+    85%  { left: 85%; bottom: 68%; }
+    100% { left: 105%; bottom: 11.33%; }
+}
+
+@keyframes climbMountainLeft {
+    0%   { left: 105%; bottom: 11.33%; }
+    15%  { left: 85%; bottom: 68%; }
+    30%  { left: 70%; bottom: 34%; }
+    50%  { left: 50%; bottom: 76.5%; }
+    70%  { left: 30%; bottom: 25.5%; }
+    85%  { left: 15%; bottom: 51%; }
+    100% { left: -5%; bottom: 5.66%; }
+}
