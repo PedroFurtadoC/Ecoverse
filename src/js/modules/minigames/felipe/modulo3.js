@@ -14,6 +14,7 @@ import {
     EcosystemMeter,
     EventScheduler,
     WaveSystem,
+    emojiSprite,
 } from './gamekit.js';
 
 /* ── Definições de ondas ────────────────────────── */
@@ -58,7 +59,10 @@ export class Modulo3 extends CanvasMinigame {
         this.isRaining        = false;
         this._waveBreak       = false;
 
-        this._store = new PersistenceStore('m3');
+        this._store          = new PersistenceStore('m3');
+        this._bgCache        = null;
+        this._bgCacheRaining = undefined;
+        this._bgCacheW       = 0;
     }
 
     start() {
@@ -517,46 +521,57 @@ export class Modulo3 extends CanvasMinigame {
         const h   = this.canvas.height;
         const t   = Date.now() / 1000;
 
-        // Fundo: gradiente céu/água
-        const grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0,    '#1a6b3c');
-        grad.addColorStop(0.12, '#1a6b3c');
-        grad.addColorStop(0.12, this.isRaining ? '#1a5080' : '#1b6fa0');
-        grad.addColorStop(0.88, this.isRaining ? '#0d2a60' : '#1040a0');
-        grad.addColorStop(0.88, '#1a6b3c');
-        grad.addColorStop(1,    '#1a6b3c');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, w, h);
-
         const bankH = h * 0.12;
 
-        // Shimmer da água
+        // ── Background cacheado (gradiente + margens + árvores) ────────────
+        // Recria apenas quando o estado de chuva muda ou o canvas muda de tamanho
+        if (this._bgCacheRaining !== this.isRaining || this._bgCacheW !== w) {
+            const oc  = new OffscreenCanvas(w, h);
+            const oc2 = oc.getContext('2d');
+
+            const grad = oc2.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0,    '#1a6b3c');
+            grad.addColorStop(0.12, '#1a6b3c');
+            grad.addColorStop(0.12, this.isRaining ? '#1a5080' : '#1b6fa0');
+            grad.addColorStop(0.88, this.isRaining ? '#0d2a60' : '#1040a0');
+            grad.addColorStop(0.88, '#1a6b3c');
+            grad.addColorStop(1,    '#1a6b3c');
+            oc2.fillStyle = grad;
+            oc2.fillRect(0, 0, w, h);
+
+            // Margens
+            oc2.fillStyle = '#14532d';
+            oc2.fillRect(0, 0, w, bankH);
+            oc2.fillRect(0, h - bankH, w, bankH);
+
+            // Árvores
+            oc2.fillStyle = '#0f4023';
+            for (const tx of [0.04,0.12,0.21,0.32,0.43,0.54,0.65,0.76,0.87,0.95]) {
+                const px = tx * w;
+                oc2.beginPath(); oc2.moveTo(px, bankH); oc2.lineTo(px-14,0); oc2.lineTo(px+14,0); oc2.closePath(); oc2.fill();
+                oc2.beginPath(); oc2.moveTo(px, h-bankH); oc2.lineTo(px-14,h); oc2.lineTo(px+14,h); oc2.closePath(); oc2.fill();
+            }
+
+            this._bgCache        = oc;
+            this._bgCacheRaining = this.isRaining;
+            this._bgCacheW       = w;
+        }
+        ctx.drawImage(this._bgCache, 0, 0);
+
+        // ── Shimmer da água (reduzido: 4 ondas, passo=12 → 7× menos lineTo) ──
         ctx.save();
         ctx.beginPath(); ctx.rect(0, bankH, w, h - bankH * 2); ctx.clip();
         ctx.strokeStyle = 'rgba(255,255,255,0.07)'; ctx.lineWidth = 1.5;
-        for (let i = 0; i < 7; i++) {
-            const yw = bankH + ((h - bankH * 2) / 7) * i + 10;
+        for (let i = 0; i < 4; i++) {
+            const yw = bankH + ((h - bankH * 2) / 4) * i + 10;
             ctx.beginPath();
-            for (let x = 0; x <= w; x += 3) {
-                const wy = yw + Math.sin(x * 0.025 + t * 1.8 + i * 0.9) * 3;
-                x === 0 ? ctx.moveTo(x, wy) : ctx.lineTo(x, wy);
+            ctx.moveTo(0, yw + Math.sin(t * 1.8 + i * 0.9) * 3);
+            for (let x = 12; x <= w; x += 12) {
+                ctx.lineTo(x, yw + Math.sin(x * 0.025 + t * 1.8 + i * 0.9) * 3);
             }
             ctx.stroke();
         }
         ctx.restore();
-
-        // Margens (floresta)
-        ctx.fillStyle = '#14532d';
-        ctx.fillRect(0, 0, w, bankH);
-        ctx.fillRect(0, h - bankH, w, bankH);
-
-        // Silhuetas de árvores
-        ctx.fillStyle = '#0f4023';
-        for (const tx of [0.04,0.12,0.21,0.32,0.43,0.54,0.65,0.76,0.87,0.95]) {
-            const px = tx * w;
-            ctx.beginPath(); ctx.moveTo(px, bankH); ctx.lineTo(px-14,0); ctx.lineTo(px+14,0); ctx.closePath(); ctx.fill();
-            ctx.beginPath(); ctx.moveTo(px, h-bankH); ctx.lineTo(px-14,h); ctx.lineTo(px+14,h); ctx.closePath(); ctx.fill();
-        }
 
         // Gotas de chuva
         if (this.isRaining && this.rainDrops.length > 0) {
@@ -589,24 +604,32 @@ export class Modulo3 extends CanvasMinigame {
 
         // Itens
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        const hardMode  = this.combo.combo >= 3;
+        const hardMode     = this.combo.combo >= 3;
         const bigNetActive = this.powerups.isActive('big_net');
         for (const item of this.items) {
-            ctx.save();
             const baseAlpha = item.type === 'legendary' ? 0.15
                 : item.type === 'powerup' ? 1
                 : hardMode ? 0.35 : 1;
-            ctx.globalAlpha = item.fadeOut ? item.alpha : baseAlpha;
-            if (item.type === 'special') {
-                ctx.shadowBlur  = 18 + Math.sin(t * 4) * 6;
-                ctx.shadowColor = '#ff9800';
+            const drawAlpha = item.fadeOut ? item.alpha : baseAlpha;
+
+            // Brilho sem shadowBlur — anel de alpha simples (GPU-friendly)
+            if ((item.type === 'special' || item.type === 'powerup') && drawAlpha > 0) {
+                const glowColor  = item.type === 'special' ? '#ff9800' : '#a78bfa';
+                const glowAlpha  = (0.22 + Math.sin(t * (item.type === 'special' ? 4 : 5)) * 0.08) * drawAlpha;
+                const glowRadius = item.size * 0.75;
+                ctx.save();
+                ctx.globalAlpha = glowAlpha;
+                ctx.fillStyle   = glowColor;
+                ctx.beginPath();
+                ctx.arc(Math.round(item.x), Math.round(item.y), glowRadius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
             }
-            if (item.type === 'powerup') {
-                ctx.shadowBlur  = 12 + Math.sin(t * 5) * 5;
-                ctx.shadowColor = '#a78bfa';
-            }
-            ctx.font = `${item.size}px serif`;
-            ctx.fillText(item.emoji, item.x, item.y);
+
+            ctx.save();
+            ctx.globalAlpha = drawAlpha;
+            const sp3 = emojiSprite(item.emoji, item.size);
+            ctx.drawImage(sp3, Math.round(item.x - sp3.width / 2), Math.round(item.y - sp3.height / 2));
             ctx.restore();
         }
 
@@ -782,6 +805,7 @@ export class Modulo3 extends CanvasMinigame {
         this._waveBreak       = false;
         this.legendarySpawned = false;
         this.isReplay         = true;
+        this._bgCacheRaining  = undefined; // invalida cache do fundo
 
         this.score.reset();
         this.combo.reset();

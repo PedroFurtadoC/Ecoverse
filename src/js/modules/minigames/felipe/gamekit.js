@@ -14,10 +14,46 @@
  *   MinigameBase      [ABSTRATA]
  *   CanvasMinigame    [ABSTRATA] extends MinigameBase
  *   GridCanvasGame    [ABSTRATA] extends CanvasMinigame
+ *   PhysicsBody
+ *   PlatformWorld
+ *   InputController
+ *   PlatformMinigame  [ABSTRATA] extends CanvasMinigame
  *
- * Uso: importar as classes necessárias em modulo3.js / modulo4.js
- *   import { ScoreSystem, ComboSystem, ... } from './gamekit.js';
+ * Uso: importar as classes necessárias em modulo3.js / modulo4.js / modulo5.js
+ *   import { ScoreSystem, ComboSystem, PlatformMinigame, ... } from './gamekit.js';
  */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   emojiSprite — cache de OffscreenCanvas para renderização rápida de emoji.
+   Usar ctx.drawImage(emojiSprite(glyph, size), x - size, y - size) em vez de
+   ctx.fillText() poupa o parse do glyph Unicode a cada frame.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const _emojiSpriteCache = new Map();
+
+/**
+ * Retorna um OffscreenCanvas (2× o tamanho do emoji) com o glyph pré-renderizado.
+ * O canvas resultante tem dimensões (size*2) × (size*2); o emoji fica centralizado.
+ * Cache por (glyph, size arredondado) — cada combinação é criada uma única vez.
+ *
+ * @param {string} glyph  Emoji ou caractere Unicode
+ * @param {number} size   Tamanho da fonte em px (será arredondado)
+ * @returns {OffscreenCanvas}
+ */
+export function emojiSprite(glyph, size) {
+    size = Math.round(size);
+    const key = `${glyph}:${size}`;
+    let oc = _emojiSpriteCache.get(key);
+    if (oc) return oc;
+    const dim = size * 2;
+    oc = new OffscreenCanvas(dim, dim);
+    const c = oc.getContext('2d');
+    c.font          = `${size}px serif`;
+    c.textAlign     = 'center';
+    c.textBaseline  = 'middle';
+    c.fillText(glyph, dim / 2, dim / 2);
+    _emojiSpriteCache.set(key, oc);
+    return oc;
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    EventEmitter — base de eventos para classes que emitem notificações
@@ -484,14 +520,40 @@ export class ParticleSystem {
     /**
      * @param {number} [particleFadeRate=0.04]  alpha decrementado por frame nas partículas
      * @param {number} [textFadeRate=0.022]      alpha decrementado por frame nos textos flutuantes
+     * @param {number} [maxParticles=80]         limite global de partículas simultâneas
      */
-    constructor(particleFadeRate = 0.04, textFadeRate = 0.022) {
+    constructor(particleFadeRate = 0.04, textFadeRate = 0.022, maxParticles = 80) {
         this._particleFadeRate = particleFadeRate;
         this._textFadeRate     = textFadeRate;
-        /** @type {Array<{x,y,vx,vy,alpha,color,r,gravity}>} */
-        this._particles = [];
+        this._maxParticles     = maxParticles;
+        /** @type {Float32Array} pool fixo: [x, y, vx, vy, alpha, r, gravity] × maxParticles */
+        this._pool      = new Float32Array(maxParticles * 7);
+        this._colors    = new Array(maxParticles);
+        this._active    = new Uint8Array(maxParticles);
+        this._count     = 0;
         /** @type {Array<{x,y,vy,text,color,alpha,size}>} */
         this._floatingTexts = [];
+        // Free list para alocação O(1) em vez de scan linear O(N)
+        this._freeList  = [];
+        for (let i = maxParticles - 1; i >= 0; i--) this._freeList.push(i);
+    }
+
+    /* ── Alocação de slot no pool ────────────── */
+
+    _alloc(x, y, vx, vy, color, r, gravity) {
+        if (this._freeList.length === 0) return; // pool cheio — descarta
+        const i    = this._freeList.pop();
+        const base = i * 7;
+        this._pool[base]     = x;
+        this._pool[base + 1] = y;
+        this._pool[base + 2] = vx;
+        this._pool[base + 3] = vy;
+        this._pool[base + 4] = 1;
+        this._pool[base + 5] = r;
+        this._pool[base + 6] = gravity;
+        this._colors[i]  = color;
+        this._active[i]  = 1;
+        this._count++;
     }
 
     /* ── Emissores ───────────────────────────── */
@@ -511,15 +573,8 @@ export class ParticleSystem {
         for (let i = 0; i < count; i++) {
             const angle = (Math.PI * 2 / count) * i;
             const speed = speedMin + Math.random() * (speedMax - speedMin);
-            this._particles.push({
-                x, y,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
-                alpha: 1,
-                color,
-                r: rMin + Math.random() * (rMax - rMin),
-                gravity: 0,
-            });
+            this._alloc(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed,
+                color, rMin + Math.random() * (rMax - rMin), 0);
         }
     }
 
@@ -534,15 +589,10 @@ export class ParticleSystem {
     spawnBurst(x, y, color, count = 14, gravity = 0.1) {
         for (let i = 0; i < count; i++) {
             const a = (Math.PI * 2 / count) * i;
-            this._particles.push({
-                x, y,
-                vx: Math.cos(a) * (2 + Math.random() * 2),
-                vy: Math.sin(a) * (2 + Math.random() * 2),
-                alpha: 1,
-                color,
-                r: 3 + Math.random() * 3,
-                gravity,
-            });
+            this._alloc(x, y,
+                Math.cos(a) * (2 + Math.random() * 2),
+                Math.sin(a) * (2 + Math.random() * 2),
+                color, 3 + Math.random() * 3, gravity);
         }
     }
 
@@ -556,6 +606,8 @@ export class ParticleSystem {
      * @param {number} [vy=-1.5]
      */
     spawnFloat(x, y, text, color, size = 13, vy = -1.5) {
+        // Descarta o mais antigo quando cheio para evitar acúmulo
+        if (this._floatingTexts.length >= 10) this._floatingTexts.shift();
         this._floatingTexts.push({ x, y, vy, text, color, alpha: 1, size });
     }
 
@@ -566,56 +618,96 @@ export class ParticleSystem {
      * Deve ser chamado uma vez por frame.
      */
     update() {
-        for (const p of this._particles) {
-            p.x  += p.vx;
-            p.y  += p.vy;
-            p.vy += p.gravity;
-            p.alpha -= this._particleFadeRate;
+        const pool  = this._pool;
+        const rate  = this._particleFadeRate;
+        for (let i = 0; i < this._maxParticles; i++) {
+            if (!this._active[i]) continue;
+            const base = i * 7;
+            pool[base]     += pool[base + 2];
+            pool[base + 1] += pool[base + 3];
+            pool[base + 3] += pool[base + 6];
+            pool[base + 4] -= rate;
+            if (pool[base + 4] <= 0) {
+                this._active[i] = 0;
+                this._count--;
+                this._freeList.push(i); // devolve slot para reutilização O(1)
+            }
         }
-        this._particles = this._particles.filter(p => p.alpha > 0);
 
-        for (const ft of this._floatingTexts) {
-            ft.y     += ft.vy;
-            ft.alpha -= this._textFadeRate;
+        const texts    = this._floatingTexts;
+        const textRate = this._textFadeRate;
+        let hasExpired = false;
+        for (let i = 0; i < texts.length; i++) {
+            texts[i].y     += texts[i].vy;
+            texts[i].alpha -= textRate;
+            if (texts[i].alpha <= 0) hasExpired = true;
         }
-        this._floatingTexts = this._floatingTexts.filter(ft => ft.alpha > 0);
+        // Remoção in-place sem criar novo array (evita GC)
+        if (hasExpired) {
+            let w = 0;
+            for (let i = 0; i < texts.length; i++) {
+                if (texts[i].alpha > 0) texts[w++] = texts[i];
+            }
+            texts.length = w;
+        }
     }
 
     /**
      * Renderiza partículas e textos flutuantes no contexto fornecido.
+     * Partículas são desenhadas como fillRect (muito mais rápido que arc+fill).
      * @param {CanvasRenderingContext2D} ctx
      */
     draw(ctx) {
-        for (const p of this._particles) {
+        if (this._count > 0) {
+            const pool = this._pool;
             ctx.save();
-            ctx.globalAlpha = p.alpha;
-            ctx.fillStyle   = p.color;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fill();
+            // Agrupa por cor para minimizar mudanças de fillStyle
+            let lastColor = null;
+            // Ordenar por cor seria O(n log n); com N≤80 uma passagem direta é suficiente
+            for (let i = 0; i < this._maxParticles; i++) {
+                if (!this._active[i]) continue;
+                const base = i * 7;
+                const col  = this._colors[i];
+                if (col !== lastColor) { ctx.fillStyle = col; lastColor = col; }
+                ctx.globalAlpha = pool[base + 4];
+                const r = pool[base + 5];
+                // fillRect é ~3× mais rápido que beginPath+arc+fill
+                ctx.fillRect(
+                    Math.round(pool[base]     - r),
+                    Math.round(pool[base + 1] - r),
+                    Math.round(r * 2),
+                    Math.round(r * 2),
+                );
+            }
             ctx.restore();
         }
 
-        ctx.textAlign    = 'center';
-        ctx.textBaseline = 'middle';
-        for (const ft of this._floatingTexts) {
+        if (this._floatingTexts.length) {
             ctx.save();
-            ctx.globalAlpha = ft.alpha;
-            ctx.fillStyle   = ft.color;
-            ctx.font        = `bold ${ft.size}px sans-serif`;
-            ctx.fillText(ft.text, ft.x, ft.y);
+            ctx.textAlign    = 'center';
+            ctx.textBaseline = 'middle';
+            for (const ft of this._floatingTexts) {
+                ctx.globalAlpha = ft.alpha;
+                ctx.fillStyle   = ft.color;
+                ctx.font        = `bold ${ft.size}px sans-serif`;
+                ctx.fillText(ft.text, ft.x, ft.y);
+            }
             ctx.restore();
         }
     }
 
     /** Remove todas as partículas e textos ativos (ex: reinício). */
     clear() {
-        this._particles    = [];
+        this._active.fill(0);
+        this._count         = 0;
         this._floatingTexts = [];
+        // Reconstrói free list
+        this._freeList = [];
+        for (let i = this._maxParticles - 1; i >= 0; i--) this._freeList.push(i);
     }
 
     /** Número de partículas ativas. */
-    get particleCount() { return this._particles.length; }
+    get particleCount() { return this._count; }
 
     /** Número de textos flutuantes ativos. */
     get textCount() { return this._floatingTexts.length; }
@@ -1730,5 +1822,638 @@ export class ToolSystem extends EventEmitter {
     reset() {
         for (const t of this._tools) t._qty = t.quantity;
         this._activeId = this._tools[0]?.id ?? null;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PhysicsBody — corpo 2D com AABB, velocidade e gravidade.
+   Estrutura de dados pura (sem EventEmitter). Usado por PlatformMinigame.
+   ═══════════════════════════════════════════════════════════════════════════ */
+export class PhysicsBody {
+    /**
+     * @param {{
+     *   x?:       number,
+     *   y?:       number,
+     *   w?:       number,
+     *   h?:       number,
+     *   gravity?: number,   aceleração gravitacional em px/frame²
+     *   maxVY?:  number,   velocidade vertical terminal
+     *   maxVX?:  number,   velocidade horizontal máxima
+     * }} [options]
+     */
+    constructor({
+        x       = 0,
+        y       = 0,
+        w       = 32,
+        h       = 48,
+        gravity = 0.55,
+        maxVY   = 18,
+        maxVX   = 8,
+    } = {}) {
+        this.x       = x;
+        this.y       = y;
+        this.w       = w;
+        this.h       = h;
+        this.vx      = 0;
+        this.vy      = 0;
+        this.gravity = gravity;
+        this.maxVY   = maxVY;
+        this.maxVX   = maxVX;
+        this.onGround = false;
+        /** @private — posição y antes do último applyVelocity, usada anti-tunneling */
+        this._prevY  = y;
+    }
+
+    /** Aplica gravidade: vy += gravity, limitado a maxVY. */
+    applyGravity() {
+        this.vy = Math.min(this.vy + this.gravity, this.maxVY);
+    }
+
+    /** Aplica velocidade: move x/y e registra prevY. */
+    applyVelocity() {
+        this._prevY = this.y;
+        this.x += this.vx;
+        this.y += this.vy;
+    }
+
+    /** @returns {boolean} */
+    isOnGround() { return this.onGround; }
+
+    /**
+     * Teste de sobreposição AABB.
+     * @param {{ x: number, y: number, w: number, h: number }} other
+     * @returns {boolean}
+     */
+    intersects(other) {
+        return (
+            this.x         < other.x + other.w &&
+            this.x + this.w > other.x           &&
+            this.y         < other.y + other.h &&
+            this.y + this.h > other.y
+        );
+    }
+
+    /** Centro geométrico. @returns {{ x: number, y: number }} */
+    getCenter() { return { x: this.x + this.w / 2, y: this.y + this.h / 2 }; }
+
+    /** @returns {number} */
+    getBottom() { return this.y + this.h; }
+
+    /** @returns {number} */
+    getRight()  { return this.x + this.w; }
+
+    /**
+     * Teleporta para (x, y) e zera velocidades e estado de chão.
+     * @param {number} x
+     * @param {number} y
+     */
+    reset(x, y) {
+        this.x = x; this.y = y;
+        this.vx = 0; this.vy = 0;
+        this._prevY   = y;
+        this.onGround = false;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PlatformWorld — gerencia plataformas, resolve colisões AABB e controla câmera.
+   Plataformas: type 'solid' | 'passthrough' | 'hazard'
+   ═══════════════════════════════════════════════════════════════════════════ */
+export class PlatformWorld {
+    /**
+     * @param {{
+     *   worldWidth?:   number,   largura total do mundo em px
+     *   cameraEasing?: number,   fator de interpolação da câmera (0–1)
+     *   cameraLeadX?:  number,   fração da tela onde o player "lidera" (0–1)
+     * }} [options]
+     */
+    constructor({
+        worldWidth   = 4000,
+        cameraEasing = 0.12,
+        cameraLeadX  = 0.35,
+    } = {}) {
+        this.worldWidth   = worldWidth;
+        this._easing      = cameraEasing;
+        this._leadX       = cameraLeadX;
+        this.cameraX      = 0;
+        /**
+         * @type {Array<{x:number,y:number,w:number,h:number,type:string,data:any}>}
+         */
+        this.platforms = [];
+    }
+
+    /**
+     * Adiciona uma plataforma ao mundo.
+     * @param {{ x: number, y: number, w: number, h: number, type?: string, data?: any }} def
+     * @returns {typeof def}
+     */
+    spawnPlatform(def) {
+        const p = { type: 'solid', data: null, ...def };
+        this.platforms.push(p);
+        return p;
+    }
+
+    /**
+     * Remove uma plataforma por referência.
+     * @param {object} def
+     */
+    removePlatform(def) {
+        const i = this.platforms.indexOf(def);
+        if (i !== -1) this.platforms.splice(i, 1);
+    }
+
+    /** Remove todas as plataformas. */
+    clearPlatforms() { this.platforms = []; }
+
+    /**
+     * Resolve colisões entre body e as plataformas.
+     * - 'solid': snap vertical + bloqueio lateral
+     * - 'passthrough': snap vertical descendente apenas
+     * - 'hazard': sem snap (a subclasse testa manualmente com body.intersects)
+     * @param {PhysicsBody} body
+     * @returns {boolean}  true se aterrizou neste frame
+     */
+    resolveCollision(body) {
+        let landed = false;
+        const prevBottom = body._prevY + body.h;
+
+        for (const p of this.platforms) {
+            if (p.type === 'hazard') continue;
+            if (!body.intersects(p)) continue;
+
+            if (p.type === 'passthrough') {
+                // só aterra se estava descendo e pés estavam acima do topo
+                if (body.vy > 0 && prevBottom <= p.y + 1) {
+                    body.y  = p.y - body.h;
+                    body.vy = 0;
+                    body.onGround = true;
+                    landed = true;
+                }
+                continue;
+            }
+
+            // 'solid' — resolução por menor penetração
+            const overlapLeft   = (body.x + body.w) - p.x;
+            const overlapRight  = (p.x + p.w) - body.x;
+            const overlapTop    = (body.y + body.h) - p.y;
+            const overlapBottom = (p.y + p.h) - body.y;
+
+            const minH = Math.min(overlapLeft, overlapRight);
+            const minV = Math.min(overlapTop,  overlapBottom);
+
+            if (minV < minH) {
+                // colisão vertical
+                if (overlapTop < overlapBottom) {
+                    // vindo de cima (aterrissagem)
+                    if (body.vy >= 0 && prevBottom <= p.y + 1) {
+                        body.y  = p.y - body.h;
+                        body.vy = 0;
+                        body.onGround = true;
+                        landed = true;
+                    }
+                } else {
+                    // vindo de baixo (cabeçada)
+                    if (body.vy < 0) {
+                        body.y  = p.y + p.h;
+                        body.vy = 0;
+                    }
+                }
+            } else {
+                // colisão lateral
+                if (overlapLeft < overlapRight) {
+                    body.x  = p.x - body.w;
+                } else {
+                    body.x  = p.x + p.w;
+                }
+                body.vx = 0;
+            }
+        }
+
+        return landed;
+    }
+
+    /**
+     * Atualiza cameraX suavemente para seguir o player.
+     * @param {number} playerX   posição x do player no mundo
+     * @param {number} viewWidth largura do canvas em px
+     */
+    updateCamera(playerX, viewWidth) {
+        const target = playerX - viewWidth * this._leadX;
+        const minCam = 0;
+        const maxCam = Math.max(0, this.worldWidth - viewWidth);
+        const clamped = Math.min(Math.max(target, minCam), maxCam);
+        this.cameraX += (clamped - this.cameraX) * this._easing;
+    }
+
+    /**
+     * Converte coordenada de mundo para tela.
+     * @param {number} worldX
+     * @returns {number}
+     */
+    worldToScreen(worldX) { return worldX - this.cameraX; }
+
+    /**
+     * Converte coordenada de tela para mundo.
+     * @param {number} screenX
+     * @returns {number}
+     */
+    screenToWorld(screenX) { return screenX + this.cameraX; }
+
+    /**
+     * Retorna plataformas visíveis na viewport atual (com margem de 64px).
+     * @param {number} viewWidth
+     * @returns {Array<object>}
+     */
+    getVisiblePlatforms(viewWidth) {
+        const margin = 64;
+        const left   = this.cameraX - margin;
+        const right  = this.cameraX + viewWidth + margin;
+        return this.platforms.filter(p => p.x + p.w >= left && p.x <= right);
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   InputController — captura teclado e touch e expõe estado por ação.
+   Pulo é oneshot: consumeJump() retorna true apenas uma vez por impulso.
+   Chame dispose() ao destruir o jogo para remover os listeners.
+   ═══════════════════════════════════════════════════════════════════════════ */
+export class InputController {
+    /**
+     * @param {HTMLElement|null} [touchTarget=null]  elemento que recebe eventos touch
+     * @param {{
+     *   swipeThreshold?: number,  px mínimos para registrar swipe direcional
+     *   tapMaxDuration?: number,  ms máximos para um toque ser tap (pulo)
+     * }} [options]
+     */
+    constructor(touchTarget = null, { swipeThreshold = 30, tapMaxDuration = 200 } = {}) {
+        this._swipeThreshold = swipeThreshold;
+        this._tapMaxDuration = tapMaxDuration;
+
+        /** @private */
+        this._keys         = new Set();
+        this._jumpPending  = false;
+        this._jumpConsumed = false;
+        this._touchStartX  = 0;
+        this._touchStartY  = 0;
+        this._touchStartT  = 0;
+        this._touchLeft    = false;
+        this._touchRight   = false;
+
+        this._onKeyDown = (e) => {
+            this._keys.add(e.code);
+            if (['ArrowUp', 'KeyW', 'Space'].includes(e.code)) {
+                if (!this._jumpConsumed) this._jumpPending = true;
+                e.preventDefault();
+            }
+            if (['ArrowLeft', 'ArrowRight', 'KeyA', 'KeyD'].includes(e.code)) {
+                e.preventDefault();
+            }
+        };
+
+        this._onKeyUp = (e) => {
+            this._keys.delete(e.code);
+            if (['ArrowUp', 'KeyW', 'Space'].includes(e.code)) {
+                this._jumpConsumed = false;
+            }
+        };
+
+        this._touchActive  = false; // dedo pressionado no canvas (útil para nadar)
+
+        this._onTouchStart = (e) => {
+            const t = e.touches[0];
+            this._touchStartX = t.clientX;
+            this._touchStartY = t.clientY;
+            this._touchStartT = Date.now();
+            this._touchActive = true;
+            // Direção imediata baseada na metade do canvas
+            if (this._touchTarget) {
+                const rect = this._touchTarget.getBoundingClientRect();
+                const rel  = t.clientX - rect.left;
+                this._touchLeft  = rel < rect.width * 0.4;
+                this._touchRight = rel > rect.width * 0.6;
+            }
+            e.preventDefault();
+        };
+
+        this._onTouchMove = (e) => {
+            const t = e.touches[0];
+            if (this._touchTarget) {
+                const rect = this._touchTarget.getBoundingClientRect();
+                const rel  = t.clientX - rect.left;
+                this._touchLeft  = rel < rect.width * 0.4;
+                this._touchRight = rel > rect.width * 0.6;
+            }
+            e.preventDefault();
+        };
+
+        this._onTouchEnd = (e) => {
+            const t = e.changedTouches[0];
+            const dx = t.clientX - this._touchStartX;
+            const dy = t.clientY - this._touchStartY;
+            const dt = Date.now() - this._touchStartT;
+            const moved = Math.abs(dx) >= this._swipeThreshold * 0.5
+                       || Math.abs(dy) >= this._swipeThreshold * 0.5;
+
+            this._touchLeft   = false;
+            this._touchRight  = false;
+            this._touchActive = false;
+
+            // Tap sem movimento = pulo (para jogos de plataforma normal)
+            if (!moved && dt <= this._tapMaxDuration) {
+                this._jumpPending  = true;
+                this._jumpConsumed = false;
+            }
+        };
+
+        document.addEventListener('keydown', this._onKeyDown);
+        document.addEventListener('keyup',   this._onKeyUp);
+
+        if (touchTarget) {
+            touchTarget.addEventListener('touchstart', this._onTouchStart, { passive: false });
+            touchTarget.addEventListener('touchmove',  this._onTouchMove,  { passive: false });
+            touchTarget.addEventListener('touchend',   this._onTouchEnd,   { passive: false });
+        }
+        this._touchTarget = touchTarget;
+    }
+
+    /** @returns {boolean} */
+    get left()  { return this._keys.has('ArrowLeft')  || this._keys.has('KeyA') || this._touchLeft; }
+    /** @returns {boolean} */
+    get right() { return this._keys.has('ArrowRight') || this._keys.has('KeyD') || this._touchRight; }
+    /**
+     * true enquanto um dedo está pressionado no canvas.
+     * Útil para "nadar" contínuo em jogos subaquáticos.
+     * @returns {boolean}
+     */
+    get touchActive() { return this._touchActive; }
+
+    /**
+     * Consome o pulo pendente (oneshot).
+     * Deve ser chamado uma vez por frame no loop de update.
+     * @returns {boolean}  true se havia pulo não consumido
+     */
+    consumeJump() {
+        if (this._jumpPending && !this._jumpConsumed) {
+            this._jumpPending  = false;
+            this._jumpConsumed = true;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Estado bruto de qualquer tecla por e.code.
+     * @param {string} code
+     * @returns {boolean}
+     */
+    isDown(code) { return this._keys.has(code); }
+
+    /** Remove todos os event listeners. Chamar ao destruir o jogo. */
+    dispose() {
+        document.removeEventListener('keydown', this._onKeyDown);
+        document.removeEventListener('keyup',   this._onKeyUp);
+        if (this._touchTarget) {
+            this._touchTarget.removeEventListener('touchstart', this._onTouchStart);
+            this._touchTarget.removeEventListener('touchmove',  this._onTouchMove);
+            this._touchTarget.removeEventListener('touchend',   this._onTouchEnd);
+        }
+        this._touchTarget = null;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PlatformMinigame — ABSTRATA — estende CanvasMinigame com loop completo de
+   plataforma: física, input, câmera, snap de colisão e detecção de queda.
+   A subclasse implementa: spawnPlatforms(), onPlayerLand(), onPlayerFall(),
+   drawBackground(), drawForeground().
+   ═══════════════════════════════════════════════════════════════════════════ */
+export class PlatformMinigame extends CanvasMinigame {
+    /**
+     * @param {HTMLElement} containerElement
+     * @param {Function} onGameEnd  callback({ success: boolean, finalScore: number })
+     * @param {{
+     *   replay?:        boolean,
+     *   gravity?:       number,   px/frame² (default 0.55)
+     *   playerSpeed?:   number,   px/frame de movimento horizontal (default 4.5)
+     *   jumpVelocity?:  number,   vy aplicado no pulo (default -13, negativo = subir)
+     *   playerW?:       number,   largura do player em px (default 32)
+     *   playerH?:       number,   altura do player em px (default 48)
+     *   worldWidth?:    number,   largura total do mundo (default 4000)
+     *   fallThreshold?: number|null   y absoluto que dispara onPlayerFall(); null = canvas.height + 64
+     * }} [options]
+     */
+    constructor(containerElement, onGameEnd, options = {}) {
+        if (new.target === PlatformMinigame) {
+            throw new TypeError('PlatformMinigame é abstrata e não pode ser instanciada diretamente.');
+        }
+        super(containerElement, onGameEnd, options);
+
+        const {
+            gravity       = 0.55,
+            playerSpeed   = 4.5,
+            jumpVelocity  = -13,
+            playerW       = 32,
+            playerH       = 48,
+            worldWidth    = 4000,
+            fallThreshold = null,
+        } = options;
+
+        this._playerSpeed   = playerSpeed;
+        this._jumpVelocity  = jumpVelocity;
+        this._fallThreshold = fallThreshold;
+
+        this.player = new PhysicsBody({ w: playerW, h: playerH, gravity });
+        this.world  = new PlatformWorld({ worldWidth });
+        /** @type {InputController|null} */
+        this.input  = null;
+
+        /** @private — estado de chão no frame anterior para detectar aterrissagem */
+        this._wasOnGround = false;
+    }
+
+    /* ── Interface abstrata ───────────────────── */
+
+    /**
+     * Popula this.world com plataformas iniciais.
+     * Chamado uma vez em start(), antes do gameLoop.
+     * @abstract
+     */
+    spawnPlatforms() {
+        throw new Error(`${this.constructor.name} deve implementar spawnPlatforms()`);
+    }
+
+    /**
+     * Chamado quando o player aterrissa numa plataforma.
+     * @abstract
+     * @param {object|null} platform  referência à plataforma colidida (pode ser null para chão)
+     */
+    onPlayerLand(platform) {
+        throw new Error(`${this.constructor.name} deve implementar onPlayerLand()`);
+    }
+
+    /**
+     * Chamado quando player.y ultrapassa o limiar de queda.
+     * @abstract
+     */
+    onPlayerFall() {
+        throw new Error(`${this.constructor.name} deve implementar onPlayerFall()`);
+    }
+
+    /**
+     * Renderiza o fundo (céu, parallax, etc.) — antes da translação de câmera.
+     * @abstract
+     * @param {CanvasRenderingContext2D} ctx
+     */
+    drawBackground(ctx) {
+        throw new Error(`${this.constructor.name} deve implementar drawBackground()`);
+    }
+
+    /**
+     * Renderiza o HUD e elementos de tela — depois da restauração de câmera.
+     * @abstract
+     * @param {CanvasRenderingContext2D} ctx
+     */
+    drawForeground(ctx) {
+        throw new Error(`${this.constructor.name} deve implementar drawForeground()`);
+    }
+
+    /* ── Hooks opcionais ─────────────────────── */
+
+    /**
+     * Lógica extra por frame (spawnar tiles, verificar coletáveis, etc.).
+     * A subclasse pode sobrescrever — default vazio.
+     */
+    _updatePlatform() {}
+
+    /**
+     * Renderização customizada de cada plataforma.
+     * Default: fillRect com cor por tipo.
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {{ x: number, y: number, w: number, h: number, type: string }} def
+     */
+    _drawPlatform(ctx, def) {
+        ctx.fillStyle =
+            def.type === 'hazard'      ? '#e74c3c' :
+            def.type === 'passthrough' ? '#27ae60' :
+            '#795548';
+        ctx.fillRect(def.x, def.y, def.w, def.h);
+    }
+
+    /**
+     * Renderização customizada do player.
+     * Default: retângulo verde com olho.
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {PhysicsBody} body
+     */
+    _drawPlayer(ctx, body) {
+        ctx.fillStyle = '#4cde7f';
+        ctx.fillRect(body.x, body.y, body.w, body.h);
+        // olho simples
+        ctx.fillStyle = '#000';
+        ctx.fillRect(body.x + body.w * 0.6, body.y + body.h * 0.2, 6, 6);
+    }
+
+    /* ── Ciclo de vida ───────────────────────── */
+
+    /**
+     * Monta o canvas, inicializa o input, spawna plataformas e inicia o loop.
+     * Deve ser chamado pela subclasse após montar o HTML do container.
+     * @param {HTMLCanvasElement} canvasEl
+     * @param {number} [heightRatio=0.52]
+     */
+    start(canvasEl, heightRatio = 0.52) {
+        this._setupCanvas(canvasEl, heightRatio);
+        this.input      = new InputController(this.canvas);
+        this.gameActive = true;
+        this.spawnPlatforms();
+        this.gameLoop();
+    }
+
+    /**
+     * Encerra o jogo: para o loop, descarta o input e limpa timers.
+     * A subclasse deve chamar super.endGame() se sobrescrever.
+     */
+    endGame() {
+        this.gameActive = false;
+        this.stopLoop();
+        this.input?.dispose();
+        this._clearAllTimers();
+        this._dimCanvas();
+    }
+
+    /* ── Loop base ───────────────────────────── */
+
+    /**
+     * Atualiza física, input, câmera e detecta queda.
+     * Implementação de CanvasMinigame.update().
+     */
+    update() {
+        const p = this.player;
+
+        // Movimento horizontal
+        const friction = 0.78;
+        if (this.input.left)  p.vx = Math.max(p.vx - this._playerSpeed * 0.4, -this._playerSpeed);
+        else if (this.input.right) p.vx = Math.min(p.vx + this._playerSpeed * 0.4,  this._playerSpeed);
+        else p.vx *= friction;
+
+        // Pulo (oneshot)
+        if (this.input.consumeJump() && p.onGround) {
+            p.vy = this._jumpVelocity;
+            p.onGround = false;
+        }
+
+        // Física
+        p.applyGravity();
+        const wasOnGround = p.onGround;
+        p.onGround = false;
+        p.applyVelocity();
+
+        // Colisão
+        const landed = this.world.resolveCollision(p);
+        if (landed && !wasOnGround) {
+            // Descobre qual plataforma foi aterrizda (primeira que sobrepõe)
+            const plat = this.world.platforms.find(pl =>
+                pl.type !== 'hazard' && p.intersects(pl)
+            ) ?? null;
+            this.onPlayerLand(plat);
+        }
+
+        // Câmera
+        this.world.updateCamera(p.x, this.canvas.width);
+
+        // Detecção de queda
+        const threshold = this._fallThreshold ?? (this.canvas.height + 64);
+        if (p.y > threshold) this.onPlayerFall();
+
+        // Hook da subclasse
+        this._updatePlatform();
+    }
+
+    /**
+     * Renderiza fundo → plataformas (câmera aplicada) → player → foreground.
+     * Implementação de CanvasMinigame.draw().
+     */
+    draw() {
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // 1. Fundo (sem câmera)
+        this.drawBackground(ctx);
+
+        // 2. Mundo (com câmera)
+        ctx.save();
+        ctx.translate(-Math.round(this.world.cameraX), 0);
+        for (const def of this.world.getVisiblePlatforms(this.canvas.width)) {
+            this._drawPlatform(ctx, def);
+        }
+        this._drawPlayer(ctx, this.player);
+        ctx.restore();
+
+        // 3. HUD (sem câmera)
+        this.drawForeground(ctx);
     }
 }

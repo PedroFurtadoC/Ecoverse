@@ -12,6 +12,7 @@ import {
     ToolSystem,
     EventScheduler,
     WaveSystem,
+    emojiSprite,
 } from './gamekit.js';
 
 const COLS = 13;
@@ -80,7 +81,8 @@ export class Modulo4 extends GridCanvasGame {
         this._keyHandler         = null;
         this._bucketEl           = null;
 
-        this._store = new PersistenceStore('m4');
+        this._store          = new PersistenceStore('m4');
+        this._gridLineCanvas = null;
     }
 
     /* ─── START ──────────────────────────────────────── */
@@ -778,11 +780,27 @@ export class Modulo4 extends GridCanvasGame {
     /* ─── DRAW ───────────────────────────────────────── */
     draw() {
         const ctx = this.ctx;
-        const t   = Date.now() / 1000;
+        const now = Date.now();
+        const t   = now / 1000;
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Heatmap de risco de fogo (toggle H)
         const heatmap = this.showHeatmap ? this._computeHeatmap() : null;
+
+        // Cor da célula em chamas calculada uma única vez por frame (não por célula)
+        const burningHue  = (20 + Math.sin(t * 4) * 10) | 0;
+        const burningLit  = (35 + Math.sin(t * 3) * 8)  | 0;
+        const burningBase = `hsl(${burningHue},90%,${burningLit}%)`;
+
+        const BG = {
+            forest:    '#1a5c2a',
+            trash:     '#5a4a1a',
+            burned:    '#1a1208',
+            wet:       '#1a3a5c',
+            seed:      '#1a6b3c',
+            firebreak: '#2a1a0a',
+            flooded:   '#0d2a40',
+        };
 
         for (let r = 0; r < ROWS; r++) {
             for (let c = 0; c < COLS; c++) {
@@ -790,47 +808,43 @@ export class Modulo4 extends GridCanvasGame {
                 const x    = c * this.cellW, y = r * this.cellH;
                 const cx   = x + this.cellW / 2, cy = y + this.cellH / 2;
 
-                const bgColors = {
-                    forest:    '#1a5c2a',
-                    trash:     '#5a4a1a',
-                    burning:   `hsl(${20+Math.sin(t*4+cell.fireAnim)*10},90%,${35+Math.sin(t*3+cell.fireAnim)*8}%)`,
-                    burned:    '#1a1208',
-                    wet:       '#1a3a5c',
-                    seed:      '#1a6b3c',
-                    firebreak: '#2a1a0a',
-                    flooded:   '#0d2a40',
-                };
-                ctx.fillStyle = bgColors[cell.state] || '#1a5c2a';
+                // Burning usa cor base; variação por célula vem do fireAnim no overlay
+                ctx.fillStyle = cell.state === 'burning' ? burningBase : (BG[cell.state] || '#1a5c2a');
                 ctx.fillRect(x, y, this.cellW, this.cellH);
 
-                ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.lineWidth = 1;
-                ctx.strokeRect(x, y, this.cellW, this.cellH);
-
                 const fs = Math.min(this.cellW, this.cellH) * 0.50;
-                ctx.font = `${fs}px serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.globalAlpha = 1;
+                ctx.globalAlpha = 1;
 
-                if      (cell.state === 'forest')    { ctx.globalAlpha=0.85; ctx.fillText('🌳', cx, cy); }
+                // Helper: drawImage centralizado usando cache de sprite
+                const di = (g, s, dx, dy) => {
+                    const sp = emojiSprite(g, s);
+                    ctx.drawImage(sp, Math.round(dx - sp.width / 2), Math.round(dy - sp.height / 2));
+                };
+
+                if      (cell.state === 'forest')    { ctx.globalAlpha=0.85; di('🌳', fs, cx, cy); }
                 else if (cell.state === 'seed')      {
-                    ctx.fillText('🌱', cx, cy);
+                    di('🌱', fs, cx, cy);
                     ctx.globalAlpha=0.25+Math.sin(t*3)*0.15;
                     ctx.strokeStyle='#7df0c8'; ctx.lineWidth=2;
                     ctx.beginPath(); ctx.arc(cx,cy,fs*0.7,0,Math.PI*2); ctx.stroke();
                 }
-                else if (cell.state === 'trash')     { ctx.fillText(cell.trashEmoji, cx, cy); }
+                else if (cell.state === 'trash')     { di(cell.trashEmoji, fs, cx, cy); }
                 else if (cell.state === 'burning')   {
-                    ctx.fillText('🔥', cx, cy);
-                    ctx.globalAlpha=0.12+Math.random()*0.08; ctx.fillStyle='#ff6b00';
+                    di('🔥', fs, cx, cy);
+                    // Flicker determinístico — sem Math.random() no draw path
+                    ctx.globalAlpha = 0.12 + (Math.sin(t * 23.7 + cell.fireAnim * 7.3) * 0.5 + 0.5) * 0.08;
+                    ctx.fillStyle='#ff6b00';
                     ctx.fillRect(x, y, this.cellW, this.cellH);
                 }
-                else if (cell.state === 'burned')    { ctx.globalAlpha=0.45; ctx.fillText('🪨', cx, cy); }
-                else if (cell.state === 'wet')       { ctx.fillText('💧', cx, cy); }
+                else if (cell.state === 'burned')    { ctx.globalAlpha=0.45; di('🪨', fs, cx, cy); }
+                else if (cell.state === 'wet')       { di('💧', fs, cx, cy); }
                 else if (cell.state === 'firebreak') {
-                    ctx.globalAlpha=0.9; ctx.fillText('🧱', cx, cy);
+                    ctx.globalAlpha=0.9; di('🧱', fs, cx, cy);
                     ctx.strokeStyle='#a78bfa'; ctx.lineWidth=2; ctx.globalAlpha=0.6;
                     ctx.strokeRect(x+2,y+2,this.cellW-4,this.cellH-4);
                 }
                 else if (cell.state === 'flooded' || cell.floodUntil > Date.now()) {
-                    ctx.fillText('🌊', cx, cy);
+                    di('🌊', fs, cx, cy);
                 }
                 ctx.globalAlpha = 1;
 
@@ -848,8 +862,7 @@ export class Modulo4 extends GridCanvasGame {
                     const orang = this.orangList.find(o => o.r===r && o.c===c);
                     const warn  = orang?.warning ?? false;
                     ctx.globalAlpha = warn ? (Math.sin(t*8)>0 ? 1 : 0.35) : 1;
-                    ctx.font = `${fs*0.65}px serif`;
-                    ctx.fillText('🦧', cx+fs*0.28, cy-fs*0.22);
+                    di('🦧', fs * 0.65, cx + fs*0.28, cy - fs*0.22);
                     if (warn) {
                         ctx.strokeStyle='#ff4444'; ctx.lineWidth=2; ctx.globalAlpha=0.7;
                         ctx.strokeRect(x+2,y+2,this.cellW-4,this.cellH-4);
@@ -861,6 +874,10 @@ export class Modulo4 extends GridCanvasGame {
                 }
             }
         }
+
+        // Grade de células pré-renderizada (uma chamada drawImage vs 91 strokeRects)
+        if (!this._gridLineCanvas) this._preRenderGrid();
+        ctx.drawImage(this._gridLineCanvas, 0, 0);
 
         // Pausa entre ondas
         if (this.waves.isInBreak) {
@@ -1028,11 +1045,12 @@ export class Modulo4 extends GridCanvasGame {
         clearInterval(this._orangInterval);
         this._windInterval = this._orangInterval = null;
 
-        this.trashCombo   = 0;
-        this.orangList    = [];
-        this.stormWarning = false;
-        this.showHeatmap  = false;
-        this.isReplay     = true;
+        this.trashCombo      = 0;
+        this.orangList       = [];
+        this.stormWarning    = false;
+        this.showHeatmap     = false;
+        this.isReplay        = true;
+        this._gridLineCanvas = null; // invalida para recriar com dimensões corretas
 
         this.score.reset();
         this.lives.reset();
@@ -1064,6 +1082,18 @@ export class Modulo4 extends GridCanvasGame {
         this.waves.start();
         this.startTimers();
         this.gameLoop();
+    }
+
+    /* ─── Grid overlay pré-renderizado ──────────────── */
+    _preRenderGrid() {
+        const oc  = new OffscreenCanvas(this.canvas.width, this.canvas.height);
+        const c   = oc.getContext('2d');
+        c.strokeStyle = 'rgba(0,0,0,0.18)';
+        c.lineWidth   = 1;
+        for (let r = 0; r < ROWS; r++)
+            for (let col = 0; col < COLS; col++)
+                c.strokeRect(col * this.cellW, r * this.cellH, this.cellW, this.cellH);
+        this._gridLineCanvas = oc;
     }
 
     /* ─── Utils ──────────────────────────────────────── */
