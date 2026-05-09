@@ -335,10 +335,10 @@
 }
 
 .mg-header {
-  padding: 20px;
+  padding: 16px 20px;
   text-align: center;
   width: 100%;
-  max-width: 500px;
+  max-width: 860px;
 }
 
 .mg-title {
@@ -377,9 +377,9 @@
   display: none;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  max-width: 320px;
-  width: 90%;
-  margin: 20px auto;
+  max-width: 860px;
+  width: 98%;
+  margin: 0 auto;
 }
 
 .mg-grid.active {

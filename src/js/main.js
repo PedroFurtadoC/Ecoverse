@@ -193,7 +193,7 @@ async function initGlobe() {
         el.addEventListener('click', (e) => {
           e.stopPropagation();
           flyToMission(d.mission);
-          showToast(`✅ "${d.mission.title}" já completada!`, 'info');
+          setTimeout(() => openMissionCard(d.mission), 1200);
         });
         el.style.cursor = 'pointer';
       }
