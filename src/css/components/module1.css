@@ -1,0 +1,88 @@
+.m1-wrap {
+    min-height: 200px;
+    touch-action: none;         /* evita scroll durante arremesso no mobile */
+    -webkit-tap-highlight-color: transparent;
+}
+
+#m1-canvas {
+    width: 100% !important;
+    height: auto !important;
+    touch-action: none;
+}
+
+@media (max-width: 480px) {
+    .m1-hud {
+        font-size: 0.76rem;
+        padding: 0.35rem 0.7rem;
+        gap: 0.3rem;
+    }
+
+    .m1-hud-item {
+        gap: 0.2rem;
+    }
+
+    .m1-combo {
+        font-size: 0.82rem;
+        min-width: 52px;
+    }
+
+    @media (max-width: 360px) {
+        #m1-best-wrap {
+            display: none !important;
+        }
+    }
+}
+
+
+@media (max-width: 480px) {
+    .m1-mission-bar {
+        font-size: 0.68rem;
+        padding: 0.18rem 0.7rem;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .m1-tip {
+        font-size: 0.68rem;
+        padding: 0.2rem 0.5rem;
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .m1-combo,
+    .m1-combo.bump,
+    .m1-mission-fill {
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
+
+@media (forced-colors: active) {
+    .m1-wrap {
+        border: 2px solid ButtonText;
+    }
+
+    .m1-hud,
+    .m1-mission-bar {
+        background: Canvas;
+        color: ButtonText;
+    }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .m1-hud {
+        padding: 0.2rem 0.7rem;
+        font-size: 0.72rem;
+    }
+
+    .m1-mission-bar {
+        display: none; 
+    }
+
+    .m1-tip {
+        display: none;
+    }
+}
