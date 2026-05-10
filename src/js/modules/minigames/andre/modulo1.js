@@ -1,9 +1,3 @@
-// Missão 1 — Amazônia. Implementação a cargo de André.
-// Contrato e exemplos: src/js/modules/minigames/README.md
-// Sprites disponíveis em: public/assets/generated/cutouts/
-
-
-
 import {
     CanvasMinigame,
     PersistenceStore,
@@ -63,11 +57,11 @@ const TRASH_DEFS = [
 
     // ── Metal / Vidro ───────────────────────────────────────────────────
     {
-        id: 'glass-bottle', src: 'waste-plastic-pet.png',   // fallback emoji 🍾
-        label: 'Garrafa de Vidro', correctBin: 'metal',   emoji: '🍾',
+        id: 'glass-bottle', src: 'waste-glass-jar.png',   // fallback emoji 🍾
+        label: 'Garrafa de Vidro', correctBin: 'glass',   emoji: '🍾',
     },
     {
-        id: 'aluminum-can', src: 'waste-microplastic.png',  // fallback emoji 🥫
+        id: 'aluminum-can', src: 'waste-metal-can.png',  // fallback emoji 🥫
         label: 'Lata de Alumínio', correctBin: 'metal',   emoji: '🥫',
     },
     {
@@ -81,8 +75,20 @@ const TRASH_DEFS = [
         label: 'Rede de Pesca',   correctBin: 'trash',   emoji: '🪝',
     },
     {
-        id: 'food-waste',   src: 'waste-cardboard.png',     // fallback emoji 🍌
-        label: 'Resíduo Orgânico', correctBin: 'trash',   emoji: '🍌',
+        id: 'fishing-net',  src: 'waste-sponge.png',
+        label: 'Esponja',         correctBin: 'trash',   emoji: '🧽',
+    },
+    {
+        id: 'food-waste',   src: 'waste-banana-peel.png',     // fallback emoji 🍌
+        label: 'Resíduo Orgânico', correctBin: 'organic',   emoji: '🍌',
+    },
+    {
+        id: 'food-waste',   src: 'waste-apple-peel.png',     // fallback emoji 🍌
+        label: 'Resíduo Orgânico', correctBin: 'organic',   emoji: '🍎',
+    },
+    {
+        id: 'food-waste',   src: 'waste-eggshell.png',     // fallback emoji 🍌
+        label: 'Resíduo Orgânico', correctBin: 'organic',   emoji: '🥚',
     },
 ];
 
@@ -94,7 +100,9 @@ const BIN_DEFS = [
     { id: 'paper',   src: 'bin-paper.png',   label: 'Papel',       emoji: '📰', color: '#1565c0', hoverColor: '#42a5f5' },
     { id: 'plastic', src: 'bin-plastic.png', label: 'Plástico',    emoji: '♻️', color: '#c62828', hoverColor: '#ef9a9a' },
     { id: 'metal',   src: 'bin-metal.png',   label: 'Metal/Vidro', emoji: '🔩', color: '#424242', hoverColor: '#90a4ae' },
-    { id: 'trash',   src: 'bin-trash.png',   label: 'Lixo Geral',  emoji: '🗑️', color: '#263238', hoverColor: '#78909c' },
+    { id: 'glass',   src: 'bin-glass.png',   label: 'Vidro',       emoji: '🍷', color: '#4dad65', hoverColor: '#78909c' },
+    { id: 'trash',   src: 'bin-trash.png',   label: 'Lixo Geral',  emoji: '🗑️', color: '#191c1d', hoverColor: '#78909c' },
+    { id: 'organic', src: 'bin-organic.png', label: 'Orgânico',    emoji: '🍒', color: '#ad6200', hoverColor: '#78909c' },
 ];
 
 /* ── Missões ─────────────────────────────────────────────────────────── */
@@ -191,19 +199,22 @@ export class Modulo1 extends CanvasMinigame {
      * @returns {Array<{def:Object, x:number, y:number, w:number, h:number}>}
      */
     _getBinPositions() {
-        const W  = this.canvas.width;
-        const H  = this.canvas.height;
-        const BW = Math.round(W * 0.11);     // um pouco menor que 3-bin para caber 4
-        const BH = Math.round(BW * 1.30);
+        const W    = this.canvas.width;
+        const H    = this.canvas.height;
+        const n    = BIN_DEFS.length;                  // funciona para 4, 5, 6...
+        const BW   = Math.round(W / (n + 1) * 0.72);  // largura proporcional
+        const BH   = Math.round(BW * 1.30);
         const topY = Math.round(H * 0.06);
+        const step = W / (n + 1);                       // espaçamento uniforme
+
         return BIN_DEFS.map((def, i) => ({
             def,
-            x:  Math.round(W * (0.12 + i * 0.25)),
+            x:  Math.round(step * (i + 1)),
             y:  topY,
             w:  BW,
             h:  BH,
         }));
-    }
+}
 
     /** Posição do item flutuando no rio (centro-inferior). */
     _getItemSpawnPos() {
@@ -574,8 +585,8 @@ export class Modulo1 extends CanvasMinigame {
             ctx.shadowBlur   = 0;
             ctx.globalAlpha  = hovered ? 1 : 0.78;
             ctx.fillStyle    = hovered ? '#ffffff' : '#b3d8f5';
-            ctx.font         = `bold ${Math.round(this.canvas.width * 0.019)}px sans-serif`;
-            ctx.textAlign    = 'center'; ctx.textBaseline = 'top';
+            const labelSize = Math.max(8, Math.round(this.canvas.width / BIN_DEFS.length * 0.12));
+            ctx.font = `bold ${labelSize}px sans-serif`;            ctx.textAlign    = 'center'; ctx.textBaseline = 'top';
             ctx.fillText(b.def.label, 0, b.h / 2 + 3);
             ctx.restore();
         }

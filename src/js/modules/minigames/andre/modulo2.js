@@ -46,47 +46,46 @@ const WAVE_DEFS = [
    ─────────────────────────────────────────────────────────────────────── */
 /** @type {Array<{id:string, src:string, label:string, correctBin:string, emoji:string, toxicAlert:string}>} */
 const EWASTE_DEFS = [
-    // ── Metal/Eletrônico ────────────────────────────────────────────────
+    // ── Eletrônico ────────────────────────────────────────────────
     {
         id: 'smartphone', src: 'waste-smartphone.png',
-        label: 'Smartphone',       correctBin: 'metal',
+        label: 'Smartphone',       correctBin: 'eletronic',
         emoji: '📱',
         toxicAlert: '⚠️ Contém ouro, cobre e cobalto — muito valiosos para reciclar!',
     },
     {
         id: 'circuit-board', src: 'waste-circuit-board.png',
-        label: 'Placa de Circuito', correctBin: 'metal',
+        label: 'Placa de Circuito', correctBin: 'eletronic',
         emoji: '🔌',
         toxicAlert: '☣️ Queimar libera mercúrio e chumbo — risco de saúde pública!',
     },
     {
         id: 'laptop', src: 'waste-circuit-board.png',   // fallback — emoji 💻
-        label: 'Notebook',          correctBin: 'metal',
+        label: 'Notebook',          correctBin: 'eletronic',
         emoji: '💻',
         toxicAlert: '♻️ Notebooks contêm alumínio, cobre e terras-raras recicláveis.',
     },
     {
         id: 'monitor', src: 'waste-circuit-board.png',  // fallback — emoji 🖥️
-        label: 'Monitor',           correctBin: 'metal',
+        label: 'Monitor',           correctBin: 'eletronic',
         emoji: '🖥️',
         toxicAlert: '🔵 Telas antigas contêm chumbo — jamais quebre ou incinere!',
     },
     {
         id: 'headphones', src: 'waste-circuit-board.png', // fallback — emoji 🎧
-        label: 'Fone de Ouvido',    correctBin: 'metal',
+        label: 'Fone de Ouvido',    correctBin: 'eletronic',
         emoji: '🎧',
         toxicAlert: '🔩 Metais raros nos ímãs — reciclagem recupera neodímio.',
     },
-    // ── Plástico ────────────────────────────────────────────────────────
     {
         id: 'charger', src: 'waste-plastic-pet.png',    // fallback — emoji ⚡
-        label: 'Carregador/Cabo',   correctBin: 'plastic',
+        label: 'Carregador/Cabo',   correctBin: 'eletronic',
         emoji: '⚡',
         toxicAlert: '♻️ Carcaça plástica → separar do fio metálico antes de reciclar.',
     },
     {
         id: 'keyboard', src: 'waste-plastic-pet.png',   // fallback — emoji ⌨️
-        label: 'Teclado',           correctBin: 'plastic',
+        label: 'Teclado',           correctBin: 'eletronic',
         emoji: '⌨️',
         toxicAlert: '🛍️ Plástico ABS do teclado é reciclável — não jogue no lixo!',
     },
@@ -97,14 +96,33 @@ const EWASTE_DEFS = [
         emoji: '🔋',
         toxicAlert: '🔴 Cádmio e lítio contaminam o solo por séculos — descarte especial!',
     },
+    {
+        id: 'pesticide', src: 'waste-pesticide-bottle.png',
+        label: 'Pesticida',           correctBin: 'trash',
+        emoji: '🧪',
+        toxicAlert: '🔴 Pesticidas contaminam o solo e a água — descarte especial!',
+    },
+    // ── Metal ────────────────────────────────────────────────
+    {
+        id: 'can', src: 'waste-metal-can.png',
+        label: 'Lata de Metal',           correctBin: 'metal',
+        emoji: '🥫',
+        toxicAlert: '♻️ Latas de metal são altamente recicláveis — descarte na lixeira certa!',
+    },
+    {
+        id: 'nail', src: 'waste-nail.png',
+        label: 'Prego',           correctBin: 'metal',
+        emoji: '🔩',
+        toxicAlert: '♻️ Pregos são feitos de aço — altamente recicláveis!',
+    },
 ];
 
 /* ── 3 Lixeiras ─────────────────────────────────────────────────────── */
 /** @type {Array<{id:string, src:string, label:string, emoji:string, color:string, hoverColor:string}>} */
 const BIN_DEFS = [
-    { id: 'metal',   src: 'bin-metal.png',   label: 'Metal/Eletrônico',  emoji: '🔩', color: '#37474f', hoverColor: '#78909c' },
-    { id: 'plastic', src: 'bin-plastic.png', label: 'Plástico',           emoji: '♻️', color: '#b71c1c', hoverColor: '#ef5350' },
-    { id: 'trash',   src: 'bin-trash.png',   label: 'Resíduo Perigoso',   emoji: '☣️', color: '#4a1a6e', hoverColor: '#9c27b0' },
+    { id: 'metal',   src: 'bin-metal.png',   label: 'Metal',  emoji: '🔩', color: '#37474f', hoverColor: '#78909c' },
+    { id: 'eletronic',   src: 'bin-trash.png',   label: 'Resíduo Eletrônico',   emoji: '🪫', color: '#1a6e36', hoverColor: '#8abd9b' },
+    { id: 'trash',   src: 'bin-trash.png',   label: 'Resíduo Perigoso',   emoji: '☣️', color: '#ffa622', hoverColor: '#ecc07e' },
 ];
 
 /* ── Fatos educativos (exibidos entre ondas) ──────────────────────────── */
