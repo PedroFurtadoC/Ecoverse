@@ -121,8 +121,8 @@ const EWASTE_DEFS = [
 /** @type {Array<{id:string, src:string, label:string, emoji:string, color:string, hoverColor:string}>} */
 const BIN_DEFS = [
     { id: 'metal',   src: 'bin-metal.png',   label: 'Metal',  emoji: '🔩', color: '#37474f', hoverColor: '#78909c' },
-    { id: 'eletronic',   src: 'bin-trash.png',   label: 'Resíduo Eletrônico',   emoji: '🪫', color: '#1a6e36', hoverColor: '#8abd9b' },
-    { id: 'trash',   src: 'bin-trash.png',   label: 'Resíduo Perigoso',   emoji: '☣️', color: '#ffa622', hoverColor: '#ecc07e' },
+    { id: 'eletronic',   src: 'bin-eletronic.png',   label: 'Resíduo Eletrônico',   emoji: '🪫', color: '#1a6e36', hoverColor: '#8abd9b' },
+    { id: 'trash',   src: 'bin-danger.png',   label: 'Resíduo Perigoso',   emoji: '☣️', color: '#ffa622', hoverColor: '#ecc07e' },
 ];
 
 /* ── Fatos educativos (exibidos entre ondas) ──────────────────────────── */
@@ -942,7 +942,7 @@ export class Modulo2 extends CanvasMinigame {
                 { html: `<div style="color:#c0e8c0;font-size:0.88rem;">Triados corretamente: <strong style="color:#ffd600">${accuracy}% (${sorted}/${this.totalItems})</strong></div>` },
                 { html: success
                     ? `<div style="color:#7df0c8;font-size:0.82rem;">🌿 Boa triagem evita mercúrio e chumbo no Congo!</div>`
-                    : `<div style="color:#ff9080;font-size:0.82rem;">☣️ 62 mi t de e-waste geradas em 2023 (GEM 2024).</div>` },
+                    : `<div style="color:#ff9080;font-size:0.82rem;">☣️ 62 milhões de toneladas de e-waste geradas em 2023 (GEM 2024).</div>` },
             ],
             badges: [
                 GameOverlay.recordBadge(isNewRecord && this.score.score > 0),
