@@ -54,37 +54,25 @@ const EWASTE_DEFS = [
         toxicAlert: '⚠️ Contém ouro, cobre e cobalto — muito valiosos para reciclar!',
     },
     {
-        id: 'circuit-board', src: 'waste-circuit-board.png',
-        label: 'Placa de Circuito', correctBin: 'eletronic',
-        emoji: '🔌',
-        toxicAlert: '☣️ Queimar libera mercúrio e chumbo — risco de saúde pública!',
-    },
-    {
-        id: 'laptop', src: 'waste-circuit-board.png',   // fallback — emoji 💻
-        label: 'Notebook',          correctBin: 'eletronic',
-        emoji: '💻',
-        toxicAlert: '♻️ Notebooks contêm alumínio, cobre e terras-raras recicláveis.',
-    },
-    {
-        id: 'monitor', src: 'waste-circuit-board.png',  // fallback — emoji 🖥️
+        id: 'monitor', src: 'waste-tv.png',  // fallback — emoji 🖥️
         label: 'Monitor',           correctBin: 'eletronic',
         emoji: '🖥️',
         toxicAlert: '🔵 Telas antigas contêm chumbo — jamais quebre ou incinere!',
     },
     {
-        id: 'headphones', src: 'waste-circuit-board.png', // fallback — emoji 🎧
+        id: 'headphones', src: 'waste-headphones.png', // fallback — emoji 🎧
         label: 'Fone de Ouvido',    correctBin: 'eletronic',
         emoji: '🎧',
         toxicAlert: '🔩 Metais raros nos ímãs — reciclagem recupera neodímio.',
     },
     {
-        id: 'charger', src: 'waste-plastic-pet.png',    // fallback — emoji ⚡
+        id: 'charger', src: 'waste-charger.png',    // fallback — emoji ⚡
         label: 'Carregador/Cabo',   correctBin: 'eletronic',
         emoji: '⚡',
         toxicAlert: '♻️ Carcaça plástica → separar do fio metálico antes de reciclar.',
     },
     {
-        id: 'keyboard', src: 'waste-plastic-pet.png',   // fallback — emoji ⌨️
+        id: 'keyboard', src: 'waste-keyboard.png',   // fallback — emoji ⌨️
         label: 'Teclado',           correctBin: 'eletronic',
         emoji: '⌨️',
         toxicAlert: '🛍️ Plástico ABS do teclado é reciclável — não jogue no lixo!',
@@ -121,8 +109,8 @@ const EWASTE_DEFS = [
 /** @type {Array<{id:string, src:string, label:string, emoji:string, color:string, hoverColor:string}>} */
 const BIN_DEFS = [
     { id: 'metal',   src: 'bin-metal.png',   label: 'Metal',  emoji: '🔩', color: '#37474f', hoverColor: '#78909c' },
-    { id: 'eletronic',   src: 'bin-eletronic.png',   label: 'Resíduo Eletrônico',   emoji: '🪫', color: '#1a6e36', hoverColor: '#8abd9b' },
-    { id: 'trash',   src: 'bin-danger.png',   label: 'Resíduo Perigoso',   emoji: '☣️', color: '#ffa622', hoverColor: '#ecc07e' },
+    { id: 'eletronic',   src: 'bin-trash.png',   label: 'Resíduo Eletrônico',   emoji: '🪫', color: '#1a6e36', hoverColor: '#8abd9b' },
+    { id: 'trash',   src: 'bin-hazard.png',   label: 'Resíduo Perigoso',   emoji: '☣️', color: '#ffa622', hoverColor: '#ecc07e' },
 ];
 
 /* ── Fatos educativos (exibidos entre ondas) ──────────────────────────── */

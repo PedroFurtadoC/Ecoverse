@@ -41,7 +41,7 @@ const TRASH_DEFS = [
         label: 'Sacola Plástica', correctBin: 'plastic', emoji: '🛍️',
     },
     {
-        id: 'styrofoam',    src: 'waste-microplastic.png',  // reusa sprite
+        id: 'styrofoam',    src: 'waste-styrofoam.png',  // reusa sprite
         label: 'Isopor',          correctBin: 'plastic', emoji: '🥤',
     },
 
@@ -65,7 +65,7 @@ const TRASH_DEFS = [
         label: 'Lata de Alumínio', correctBin: 'metal',   emoji: '🥫',
     },
     {
-        id: 'oil-can',      src: 'waste-microplastic.png',  // fallback emoji 🛢️
+        id: 'oil-can',      src: 'waste-oil-can.png',  // fallback emoji 🛢️
         label: 'Lata de Óleo',     correctBin: 'metal',   emoji: '🛢️',
     },
 
@@ -83,11 +83,11 @@ const TRASH_DEFS = [
         label: 'Resíduo Orgânico', correctBin: 'organic',   emoji: '🍌',
     },
     {
-        id: 'food-waste',   src: 'waste-apple-peel.png',     // fallback emoji 🍌
+        id: 'food-waste',   src: 'waste-apple-peel.png',     
         label: 'Resíduo Orgânico', correctBin: 'organic',   emoji: '🍎',
     },
     {
-        id: 'food-waste',   src: 'waste-eggshell.png',     // fallback emoji 🍌
+        id: 'food-waste',   src: 'waste-eggshell.png',     
         label: 'Resíduo Orgânico', correctBin: 'organic',   emoji: '🥚',
     },
 ];
