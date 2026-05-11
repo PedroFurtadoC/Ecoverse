@@ -27,69 +27,111 @@ const TOTAL_SECONDS = 60;
    ─────────────────────────────────────────────────────────────────────── */
 /** @type {Array<{id:string, src:string, label:string, correctBin:string, emoji:string}>} */
 const TRASH_DEFS = [
-    // ── Plástico ────────────────────────────────────────────────────────
-    {
-        id: 'plastic-pet',  src: 'waste-plastic-pet.png',
-        label: 'Garrafa PET',     correctBin: 'plastic', emoji: '🍶',
-    },
-    {
-        id: 'microplastic', src: 'waste-microplastic.png',
-        label: 'Microplástico',   correctBin: 'plastic', emoji: '🔵',
-    },
-    {
-        id: 'plastic-bag',  src: 'waste-plastic-pet.png',   // reusa sprite
-        label: 'Sacola Plástica', correctBin: 'plastic', emoji: '🛍️',
-    },
-    {
-        id: 'styrofoam',    src: 'waste-styrofoam.png',  // reusa sprite
-        label: 'Isopor',          correctBin: 'plastic', emoji: '🥤',
-    },
+  // ── Plástico ────────────────────────────────────────────────────────
+  {
+    id: "plastic-pet",
+    src: "waste-plastic-pet.png",
+    label: "Garrafa PET",
+    correctBin: "plastic",
+    emoji: "🍶",
+  },
+  {
+    id: "microplastic",
+    src: "waste-microplastic.png",
+    label: "Microplástico",
+    correctBin: "plastic",
+    emoji: "🔵",
+  },
+  {
+    id: "plastic-bag",
+    src: "waste-plastic-bag.png",
+    label: "Sacola Plástica",
+    correctBin: "plastic",
+    emoji: "🛍️",
+  },
+  {
+    id: "styrofoam",
+    src: "waste-styrofoam.png",
+    label: "Isopor",
+    correctBin: "plastic",
+    emoji: "🥤",
+  },
 
-    // ── Papel / Papelão ─────────────────────────────────────────────────
-    {
-        id: 'newspaper',    src: 'waste-paper-newspaper.png',
-        label: 'Jornal',          correctBin: 'paper',   emoji: '📰',
-    },
-    {
-        id: 'cardboard',    src: 'waste-cardboard.png',
-        label: 'Papelão',         correctBin: 'paper',   emoji: '📦',
-    },
+  // ── Papel / Papelão ─────────────────────────────────────────────────
+  {
+    id: "newspaper",
+    src: "waste-paper-newspaper.png",
+    label: "Jornal",
+    correctBin: "paper",
+    emoji: "📰",
+  },
+  {
+    id: "cardboard",
+    src: "waste-cardboard.png",
+    label: "Papelão",
+    correctBin: "paper",
+    emoji: "📦",
+  },
 
-    // ── Metal / Vidro ───────────────────────────────────────────────────
-    {
-        id: 'glass-bottle', src: 'waste-glass-jar.png',   // fallback emoji 🍾
-        label: 'Garrafa de Vidro', correctBin: 'glass',   emoji: '🍾',
-    },
-    {
-        id: 'aluminum-can', src: 'waste-metal-can.png',  // fallback emoji 🥫
-        label: 'Lata de Alumínio', correctBin: 'metal',   emoji: '🥫',
-    },
-    {
-        id: 'oil-can',      src: 'waste-oil-can.png',  // fallback emoji 🛢️
-        label: 'Lata de Óleo',     correctBin: 'metal',   emoji: '🛢️',
-    },
+  // ── Metal / Vidro ───────────────────────────────────────────────────
+  {
+    id: "glass-bottle",
+    src: "waste-glass-jar.png",
+    label: "Garrafa de Vidro",
+    correctBin: "glass",
+    emoji: "🍾",
+  },
+  {
+    id: "aluminum-can",
+    src: "waste-metal-can.png",
+    label: "Lata de Alumínio",
+    correctBin: "metal",
+    emoji: "🥫",
+  },
+  {
+    id: "oil-can",
+    src: "waste-oil-can.png",
+    label: "Lata de Óleo",
+    correctBin: "metal",
+    emoji: "🛢️",
+  },
 
-    // ── Lixo Geral / Rejeito ───────────────────────────────────────────
-    {
-        id: 'fishing-net',  src: 'waste-fishing-net.png',
-        label: 'Rede de Pesca',   correctBin: 'trash',   emoji: '🪝',
-    },
-    {
-        id: 'fishing-net',  src: 'waste-sponge.png',
-        label: 'Esponja',         correctBin: 'trash',   emoji: '🧽',
-    },
-    {
-        id: 'food-waste',   src: 'waste-banana-peel.png',     // fallback emoji 🍌
-        label: 'Resíduo Orgânico', correctBin: 'organic',   emoji: '🍌',
-    },
-    {
-        id: 'food-waste',   src: 'waste-apple-peel.png',     
-        label: 'Resíduo Orgânico', correctBin: 'organic',   emoji: '🍎',
-    },
-    {
-        id: 'food-waste',   src: 'waste-eggshell.png',     
-        label: 'Resíduo Orgânico', correctBin: 'organic',   emoji: '🥚',
-    },
+  // ── Lixo Geral / Rejeito ───────────────────────────────────────────
+  {
+    id: "fishing-net",
+    src: "waste-fishing-net.png",
+    label: "Rede de Pesca",
+    correctBin: "trash",
+    emoji: "🪝",
+  },
+  {
+    id: "sponge",
+    src: "waste-sponge.png",
+    label: "Esponja",
+    correctBin: "trash",
+    emoji: "🧽",
+  },
+  {
+    id: "banana-peel",
+    src: "waste-banana-peel.png",
+    label: "Casca de Banana",
+    correctBin: "organic",
+    emoji: "🍌",
+  },
+  {
+    id: "apple-core",
+    src: "waste-apple-core.png",
+    label: "Caroço de Maçã",
+    correctBin: "organic",
+    emoji: "🍎",
+  },
+  {
+    id: "eggshell",
+    src: "waste-eggshell.png",
+    label: "Casca de Ovo",
+    correctBin: "organic",
+    emoji: "🥚",
+  },
 ];
 
 /* ── 4 Lixeiras ─────────────────────────────────────────────────────────
@@ -99,7 +141,7 @@ const TRASH_DEFS = [
 const BIN_DEFS = [
     { id: 'paper',   src: 'bin-paper.png',   label: 'Papel',       emoji: '📰', color: '#1565c0', hoverColor: '#42a5f5' },
     { id: 'plastic', src: 'bin-plastic.png', label: 'Plástico',    emoji: '♻️', color: '#c62828', hoverColor: '#ef9a9a' },
-    { id: 'metal',   src: 'bin-metal.png',   label: 'Metal/Vidro', emoji: '🔩', color: '#424242', hoverColor: '#90a4ae' },
+    { id: 'metal',   src: 'bin-metal.png',   label: 'Metal',       emoji: '🔩', color: '#424242', hoverColor: '#90a4ae' },
     { id: 'glass',   src: 'bin-glass.png',   label: 'Vidro',       emoji: '🍷', color: '#4dad65', hoverColor: '#78909c' },
     { id: 'trash',   src: 'bin-trash.png',   label: 'Lixo Geral',  emoji: '🗑️', color: '#191c1d', hoverColor: '#78909c' },
     { id: 'organic', src: 'bin-organic.png', label: 'Orgânico',    emoji: '🍒', color: '#ad6200', hoverColor: '#78909c' },
