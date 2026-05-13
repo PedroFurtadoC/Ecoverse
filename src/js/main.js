@@ -1,5 +1,5 @@
 import '../css/main.css';
-import { MISSIONS, TIPS, ASSET_LIST, POMODORO_CONFIG } from './config/data.js';
+import { MISSIONS, TIPS, ASSET_LIST, POMODORO_CONFIG, TEAM } from './config/data.js';
 import { state, saveState, loadState } from './store/state.js';
 import { on, EVENTS } from './store/events.js';
 import { Pomodoro } from './modules/pomodoro.js';
@@ -9,10 +9,12 @@ import { AchievementSystem } from './modules/achievements.js';
 import * as Auth from './services/auth.js';
 import * as Sync from './services/sync.js';
 
-// Modo de teste — `?dev=free` na URL libera energia infinita pra revisar o jogo.
+// Modo de teste — `?dev=free` na URL destrava tudo pra revisar o jogo:
+// todas as missões liberadas, sem custo de energia, sem persistir progresso
+// (nenhuma jogada credita conquistas ou marca missão como concluída).
 // Ex.: http://localhost:3000/?dev=free
 const DEV_FREE = new URLSearchParams(location.search).has('dev');
-if (DEV_FREE) console.info('[ecoverse] modo dev: energia liberada');
+if (DEV_FREE) console.info('[ecoverse] modo dev: tudo liberado, progresso não é salvo');
 
 // Refs do DOM
 const $ = (sel) => document.querySelector(sel);
@@ -187,8 +189,42 @@ $$('[data-menu-action]').forEach((btn) => {
     const action = btn.dataset.menuAction;
     closeModal('modal-menu');
     if (action === 'donate') setTimeout(() => openModal('modal-donate'), 220);
+    if (action === 'about')  setTimeout(() => { renderTeam(); openModal('modal-about'); }, 220);
   });
 });
+
+// Preenche o grid de devs do modal "Sobre". A primeira card é destacada
+// como lead pra dar protagonismo a quem liderou tecnicamente o projeto.
+// Links (github/linkedin/portfolio) só aparecem se preenchidos em data.js.
+function renderTeam() {
+  const grid = $('#about-team-grid');
+  if (!grid) return;
+  const safe = (s) => String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const ICON = {
+    github: '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.05c-3.2.7-3.87-1.37-3.87-1.37-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.74-1.55-2.56-.29-5.25-1.28-5.25-5.71 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.78 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.44-2.7 5.41-5.27 5.7.41.35.78 1.05.78 2.11v3.13c0 .31.21.67.79.55C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>',
+    linkedin: '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .78 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>',
+    portfolio: '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 0a14.5 14.5 0 0 1 0 20m0-20a14.5 14.5 0 0 0 0 20M2 12h20"/></svg>'
+  };
+
+  const linkBtn = (kind, url, label) => url
+    ? `<a class="team-card__link" href="${safe(url)}" target="_blank" rel="noopener" aria-label="${label}">${ICON[kind]}</a>`
+    : '';
+
+  grid.innerHTML = TEAM.map((m, i) => `
+    <article class="team-card${i === 0 ? ' team-card--lead' : ''}">
+      <img class="team-card__avatar" src="${safe(m.photo)}" alt="Foto de ${safe(m.name)}" loading="lazy" />
+      <div class="team-card__info">
+        <h4 class="team-card__name">${safe(m.name)}</h4>
+        <p class="team-card__role">${safe(m.role)}</p>
+        <div class="team-card__links">
+          ${linkBtn('github', m.github, `GitHub de ${safe(m.name)}`)}
+          ${linkBtn('linkedin', m.linkedin, `LinkedIn de ${safe(m.name)}`)}
+          ${linkBtn('portfolio', m.portfolio, `Portfólio de ${safe(m.name)}`)}
+        </div>
+      </div>
+    </article>
+  `).join('');
+}
 const btnQuiz = $('#btn-quiz-ods');
 if (btnQuiz) btnQuiz.addEventListener('click', () => {
   QuizODS.open();
@@ -197,6 +233,7 @@ if (btnQuiz) btnQuiz.addEventListener('click', () => {
 // Estado de cada nó da trilha (bloqueado, disponível, completo)
 function getNodeState(mission) {
   if (state.completed.includes(mission.id)) return 'complete';
+  if (DEV_FREE) return 'available';
   if (mission.prereqId === null || state.completed.includes(mission.prereqId)) return 'available';
   return 'locked';
 }
@@ -388,14 +425,15 @@ function plantTree(nearLat, nearLng, count) {
 function openMissionCard(mission) {
   state.currentMission = mission;
   const isReplay = state.completed.includes(mission.id);
+  // Em dev, qualquer jogada é "treino": não cobra energia nem credita progresso.
+  const isPractice = isReplay || DEV_FREE;
 
   missionTitle.textContent = mission.title;
   missionDesc.textContent = mission.desc;
   if (missionLocation) missionLocation.textContent = `📍 ${mission.location}`;
 
-  // Missão já vencida: rejogar não custa energia nem dá recompensa de novo.
-  if (isReplay) {
-    missionCost.textContent = 'Grátis (já completada)';
+  if (isPractice) {
+    missionCost.textContent = DEV_FREE && !isReplay ? 'Grátis (modo dev)' : 'Grátis (já completada)';
     missionReward.textContent = 'Sem nova recompensa';
     missionImpact.textContent = 'Modo treino';
   } else {
@@ -414,11 +452,11 @@ function openMissionCard(mission) {
     missionGame.style.display = '';
   }
 
-  const podeIniciar = isReplay || DEV_FREE || state.energy >= mission.costEnergy;
+  const podeIniciar = isPractice || state.energy >= mission.costEnergy;
   btnStartMission.disabled = !podeIniciar;
   btnStartMission.textContent = isReplay
     ? 'Jogar novamente'
-    : (podeIniciar ? 'Iniciar Missão' : 'Energia insuficiente');
+    : (DEV_FREE ? 'Testar missão' : (podeIniciar ? 'Iniciar Missão' : 'Energia insuficiente'));
   openModal('modal-mission');
 }
 
@@ -428,7 +466,8 @@ if (btnStartMission) {
     if (!state.currentMission) return;
     const m = state.currentMission;
     const isReplay = state.completed.includes(m.id);
-    const willCharge = !isReplay && !DEV_FREE;
+    const isPractice = isReplay || DEV_FREE;
+    const willCharge = !isPractice;
 
     if (willCharge && state.energy < m.costEnergy) {
       showToast('Energia insuficiente! Use o Pomodoro.', 'info');
@@ -440,12 +479,13 @@ if (btnStartMission) {
 
     if (m.minigame) {
       MiniGames.open(m.minigame, (success, perfect) => {
-        if (isReplay) {
-          // Replay: sem débito, sem recompensa, sem nova árvore.
+        if (isPractice) {
+          // Treino (replay ou dev mode): nenhum efeito no save, só feedback.
           if (success) {
-            showToast(perfect
-              ? 'Mandou bem! Pontuação máxima de novo.'
-              : 'Missão revisitada. Boa prática!', 'success');
+            const msg = DEV_FREE && !isReplay
+              ? 'Teste concluído. Nada foi salvo.'
+              : (perfect ? 'Mandou bem! Pontuação máxima de novo.' : 'Missão revisitada. Boa prática!');
+            showToast(msg, 'success');
           }
           return;
         }
@@ -457,7 +497,7 @@ if (btnStartMission) {
           showToast('Missão falhou. Energia devolvida. Tente novamente!', 'info');
         }
       });
-    } else {
+    } else if (!isPractice) {
       completeMission(m, false);
     }
   });

@@ -1,259 +1,576 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
 
     <title>Ecoverse — combate aos resíduos pelo mundo</title>
-    <meta name="description"
-        content="Plataforma educacional gamificada da UNAERP: viaje por 8 biomas reais, enfrente problemas de resíduos com minigames e ganhe energia com Pomodoro." />
+    <meta
+      name="description"
+      content="Plataforma educacional gamificada da UNAERP: viaje por 8 biomas reais, enfrente problemas de resíduos com minigames e ganhe energia com Pomodoro."
+    />
     <meta name="theme-color" content="#0B2E1A" />
     <meta name="color-scheme" content="dark" />
 
     <!-- Open Graph para compartilhamento -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Ecoverse — combate aos resíduos pelo mundo" />
-    <meta property="og:description" content="Aprenda sobre resíduos jogando. Projeto acadêmico UNAERP." />
+    <meta
+      property="og:title"
+      content="Ecoverse — combate aos resíduos pelo mundo"
+    />
+    <meta
+      property="og:description"
+      content="Aprenda sobre resíduos jogando. Projeto acadêmico UNAERP."
+    />
     <meta property="og:locale" content="pt_BR" />
 
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- CSS crítico inline: posiciona splash e game-container ANTES do CSS principal
          carregar. visibility:hidden no #game-container exclui ele do layout calc enquanto
          o splash carrega, evitando shifts internos serem contabilizados no CLS. -->
     <style>
-        html, body { background: #0B2E1A; margin: 0; height: 100%; overflow: hidden;
-                     font-family: 'Outfit', system-ui, -apple-system, sans-serif; color: #E8F5E9; }
-        .skip-link { position: absolute; top: -100%; left: 0; }
-        #loading-screen { position: fixed; inset: 0; z-index: 9999; background: #0B2E1A; }
-        #game-container { position: fixed; inset: 0; opacity: 0; visibility: hidden; }
-        #game-container.visible { opacity: 1; visibility: visible; }
+      html,
+      body {
+        background: #0b2e1a;
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        font-family:
+          "Outfit",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        color: #e8f5e9;
+      }
+      .skip-link {
+        position: absolute;
+        top: -100%;
+        left: 0;
+      }
+      #loading-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #0b2e1a;
+      }
+      #game-container {
+        position: fixed;
+        inset: 0;
+        opacity: 0;
+        visibility: hidden;
+      }
+      #game-container.visible {
+        opacity: 1;
+        visibility: visible;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <a class="skip-link" href="#game-container">Pular para o conteúdo</a>
 
     <div id="loading-screen" role="status" aria-label="Carregando o jogo">
-        <div class="aurora" aria-hidden="true">
-            <span class="aurora-blob aurora-blob-1"></span>
-            <span class="aurora-blob aurora-blob-2"></span>
-            <span class="aurora-blob aurora-blob-3"></span>
+      <div class="aurora" aria-hidden="true">
+        <span class="aurora-blob aurora-blob-1"></span>
+        <span class="aurora-blob aurora-blob-2"></span>
+        <span class="aurora-blob aurora-blob-3"></span>
+      </div>
+      <div class="fireflies" aria-hidden="true">
+        <span></span><span></span><span></span><span></span> <span></span
+        ><span></span><span></span><span></span> <span></span><span></span
+        ><span></span><span></span>
+      </div>
+      <div class="loading-content">
+        <img class="loading-logo" src="assets/logo.svg" alt="Ecoverse" />
+        <div class="progress-ring-wrap">
+          <svg class="progress-ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="progress-ring-track" cx="60" cy="60" r="52" />
+            <circle
+              class="progress-ring-fill"
+              id="progress-ring-fill"
+              cx="60"
+              cy="60"
+              r="52"
+            />
+          </svg>
+          <span class="progress-text" id="progress-text" aria-live="polite"
+            >0%</span
+          >
         </div>
-        <div class="fireflies" aria-hidden="true">
-            <span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span>
-        </div>
-        <div class="loading-content">
-            <img class="loading-logo" src="assets/logo.svg" alt="Ecoverse" />
-            <div class="progress-ring-wrap">
-                <svg class="progress-ring" viewBox="0 0 120 120" aria-hidden="true">
-                    <circle class="progress-ring-track" cx="60" cy="60" r="52" />
-                    <circle class="progress-ring-fill" id="progress-ring-fill" cx="60" cy="60" r="52" />
-                </svg>
-                <span class="progress-text" id="progress-text" aria-live="polite">0%</span>
-            </div>
-            <p class="loading-tip" id="loading-tip" aria-live="polite"></p>
-        </div>
+        <p class="loading-tip" id="loading-tip" aria-live="polite"></p>
+      </div>
     </div>
 
     <main id="game-container">
+      <div
+        class="globe-wrapper"
+        id="globe-wrapper"
+        aria-label="Globo terrestre interativo com missões"
+      ></div>
 
-        <div class="globe-wrapper" id="globe-wrapper" aria-label="Globo terrestre interativo com missões"></div>
+      <div class="globe-tooltip" id="globe-tooltip" style="display: none">
+        <div class="gt-status" id="gt-status"></div>
+        <h3 class="gt-title" id="gt-title"></h3>
+        <p class="gt-location" id="gt-location"></p>
+        <p class="gt-desc" id="gt-desc"></p>
+      </div>
 
-        <div class="globe-tooltip" id="globe-tooltip" style="display:none">
-            <div class="gt-status" id="gt-status"></div>
-            <h3 class="gt-title" id="gt-title"></h3>
-            <p class="gt-location" id="gt-location"></p>
-            <p class="gt-desc" id="gt-desc"></p>
+      <canvas id="particle-canvas" aria-hidden="true"></canvas>
+      <div
+        class="celebration-overlay"
+        id="celebration-overlay"
+        aria-hidden="true"
+      ></div>
+
+      <header class="hud" role="banner">
+        <div class="hud-stats">
+          <div class="hud-stat energy" aria-label="Energia">
+            <img src="assets/icon-seed.svg" alt="" aria-hidden="true" /><span
+              id="hud-energy"
+              >3</span
+            >
+          </div>
+          <div class="hud-stat coins" aria-label="Moedas">
+            <img src="assets/icon-coin.svg" alt="" aria-hidden="true" /><span
+              id="hud-coins"
+              >0</span
+            >
+          </div>
+          <div class="hud-stat impact" aria-label="Impacto CO2">
+            <img src="assets/icon-impact.svg" alt="" aria-hidden="true" /><span
+              id="hud-impact"
+              >0</span
+            >
+          </div>
+          <div class="hud-progress" aria-label="Progresso das missões">
+            <div class="hud-progress-track">
+              <div class="hud-progress-fill" id="hud-progress-fill"></div>
+            </div>
+            <span class="hud-progress-text" id="hud-progress-text">0/8</span>
+          </div>
         </div>
+        <div class="hud-right">
+          <button
+            class="hud-btn hud-btn--pomo"
+            id="btn-pomodoro"
+            aria-label="Estudar — Pomodoro pra ganhar energia"
+          >
+            <img src="assets/icon-timer.svg" alt="" aria-hidden="true" />
+            <span class="hud-btn-emoji" aria-hidden="true">🍅</span>
+            <span class="hud-btn-label">Estudar</span>
+            <span class="hud-btn-sub" aria-hidden="true">+Energia</span>
+          </button>
+          <button
+            class="hud-btn hud-btn--quiz"
+            id="btn-quiz-ods"
+            aria-label="Quizzes ODS"
+          >
+            <span class="hud-btn-emoji" aria-hidden="true">📚</span>
+            <span class="hud-btn-label">Quizzes</span>
+          </button>
+          <button class="hud-btn" id="btn-achievements" aria-label="Conquistas">
+            <img src="assets/icon-trophy.svg" alt="" aria-hidden="true" />
+          </button>
+          <button class="hud-btn" id="btn-menu" aria-label="Menu">
+            <img src="assets/icon-menu.svg" alt="" aria-hidden="true" />
+          </button>
+        </div>
+      </header>
 
-        <canvas id="particle-canvas" aria-hidden="true"></canvas>
-        <div class="celebration-overlay" id="celebration-overlay" aria-hidden="true"></div>
-
-        <header class="hud" role="banner">
-            <div class="hud-stats">
-                <div class="hud-stat energy" aria-label="Energia"><img src="assets/icon-seed.svg" alt="" aria-hidden="true" /><span id="hud-energy">3</span></div>
-                <div class="hud-stat coins" aria-label="Moedas"><img src="assets/icon-coin.svg" alt="" aria-hidden="true" /><span id="hud-coins">0</span></div>
-                <div class="hud-stat impact" aria-label="Impacto CO2"><img src="assets/icon-impact.svg" alt="" aria-hidden="true" /><span id="hud-impact">0</span></div>
-                <div class="hud-progress" aria-label="Progresso das missões">
-                    <div class="hud-progress-track">
-                        <div class="hud-progress-fill" id="hud-progress-fill"></div>
-                    </div>
-                    <span class="hud-progress-text" id="hud-progress-text">0/8</span>
-                </div>
-            </div>
-            <div class="hud-right">
-                <button class="hud-btn hud-btn--pomo" id="btn-pomodoro" aria-label="Estudar — Pomodoro pra ganhar energia">
-                    <img src="assets/icon-timer.svg" alt="" aria-hidden="true" />
-                    <span class="hud-btn-emoji" aria-hidden="true">🍅</span>
-                    <span class="hud-btn-label">Estudar</span>
-                    <span class="hud-btn-sub" aria-hidden="true">+Energia</span>
-                </button>
-                <button class="hud-btn hud-btn--quiz" id="btn-quiz-ods" aria-label="Quizzes ODS">
-                    <span class="hud-btn-emoji" aria-hidden="true">📚</span>
-                    <span class="hud-btn-label">Quizzes</span>
-                </button>
-                <button class="hud-btn" id="btn-achievements" aria-label="Conquistas"><img src="assets/icon-trophy.svg" alt="" aria-hidden="true" /></button>
-                <button class="hud-btn" id="btn-menu" aria-label="Menu"><img src="assets/icon-menu.svg" alt="" aria-hidden="true" /></button>
-            </div>
-        </header>
-
-        <button class="donate-btn" id="btn-donate" aria-label="Doar para ONGs ambientais"><img src="assets/icon-donate.svg" alt="" aria-hidden="true" /></button>
+      <button
+        class="donate-btn"
+        id="btn-donate"
+        aria-label="Doar para ONGs ambientais"
+      >
+        <img src="assets/icon-donate.svg" alt="" aria-hidden="true" />
+      </button>
     </main>
 
-    <div class="minigame-container" id="minigame-container" role="dialog" aria-modal="true" aria-label="Minigame em andamento">
-        <button type="button" class="mg-exit" id="mg-exit-btn" aria-label="Voltar ao globo (sai do minigame)">
-            <span class="mg-exit__icon" aria-hidden="true">←</span>
-            <span class="mg-exit__label">Voltar</span>
-        </button>
-        <header class="mg-header">
-            <h2 class="mg-title" id="mg-title"></h2>
-            <p class="mg-desc" id="mg-desc"></p>
-            <div class="mg-stats">
-                <span class="mg-timer" id="mg-timer">30s</span>
-                <span class="mg-score-display">⭐ <span id="mg-score">0</span></span>
-                <span class="mg-target" id="mg-target"></span>
-            </div>
-        </header>
-        <canvas class="mg-canvas" id="minigame-canvas"></canvas>
-        <div class="mg-grid" id="mg-grid"></div>
-        <div class="mg-result" id="mg-result" style="display:none">
-            <h3 class="mg-result-title" id="mg-result-title"></h3>
-            <p class="mg-result-score" id="mg-result-score"></p>
-            <button class="btn-primary mg-result-btn" id="mg-result-btn">Continuar</button>
+    <div
+      class="minigame-container"
+      id="minigame-container"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Minigame em andamento"
+    >
+      <button
+        type="button"
+        class="mg-exit"
+        id="mg-exit-btn"
+        aria-label="Voltar ao globo (sai do minigame)"
+      >
+        <span class="mg-exit__icon" aria-hidden="true">←</span>
+        <span class="mg-exit__label">Voltar</span>
+      </button>
+      <header class="mg-header">
+        <h2 class="mg-title" id="mg-title"></h2>
+        <p class="mg-desc" id="mg-desc"></p>
+        <div class="mg-stats">
+          <span class="mg-timer" id="mg-timer">30s</span>
+          <span class="mg-score-display">⭐ <span id="mg-score">0</span></span>
+          <span class="mg-target" id="mg-target"></span>
         </div>
+      </header>
+      <canvas class="mg-canvas" id="minigame-canvas"></canvas>
+      <div class="mg-grid" id="mg-grid"></div>
+      <div class="mg-result" id="mg-result" style="display: none">
+        <h3 class="mg-result-title" id="mg-result-title"></h3>
+        <p class="mg-result-score" id="mg-result-score"></p>
+        <button class="btn-primary mg-result-btn" id="mg-result-btn">
+          Continuar
+        </button>
+      </div>
     </div>
 
-    <section class="quiz-ods-container" id="quiz-ods-container" aria-label="Quizzes ODS">
-        <header class="quiz-ods-header">
-            <button class="quiz-ods-close" id="quiz-ods-close" aria-label="Fechar">✕</button>
-            <div class="quiz-ods-header-info">
-                <h2 class="quiz-ods-title">📚 Quizzes ODS</h2>
-                <p class="quiz-ods-subtitle">Teste seus conhecimentos sobre os Objetivos de Desenvolvimento Sustentável</p>
-            </div>
-            <div class="quiz-ods-header-stats">
-                <span class="quiz-ods-count" id="quiz-ods-count">0/17</span>
-                <span class="quiz-ods-phase" id="quiz-ods-phase"></span>
-            </div>
-        </header>
-        <div class="quiz-ods-gallery" id="quiz-ods-gallery"></div>
-        <div class="quiz-ods-player" id="quiz-ods-player"></div>
+    <section
+      class="quiz-ods-container"
+      id="quiz-ods-container"
+      aria-label="Quizzes ODS"
+    >
+      <header class="quiz-ods-header">
+        <button class="quiz-ods-close" id="quiz-ods-close" aria-label="Fechar">
+          ✕
+        </button>
+        <div class="quiz-ods-header-info">
+          <h2 class="quiz-ods-title">📚 Quizzes ODS</h2>
+          <p class="quiz-ods-subtitle">
+            Teste seus conhecimentos sobre os Objetivos de Desenvolvimento
+            Sustentável
+          </p>
+        </div>
+        <div class="quiz-ods-header-stats">
+          <span class="quiz-ods-count" id="quiz-ods-count">0/17</span>
+          <span class="quiz-ods-phase" id="quiz-ods-phase"></span>
+        </div>
+      </header>
+      <div class="quiz-ods-gallery" id="quiz-ods-gallery"></div>
+      <div class="quiz-ods-player" id="quiz-ods-player"></div>
     </section>
 
-    <div class="modal-overlay" id="modal-pomodoro" role="dialog" aria-modal="true" aria-labelledby="pomo-modal-title">
-        <div class="modal pomo-modal">
-            <div class="modal-header">
-                <h2 class="modal-title" id="pomo-modal-title">🍅 Pomodoro</h2>
-                <button class="modal-close" data-close="modal-pomodoro" aria-label="Fechar">✕</button>
-            </div>
-            <div class="modal-body pomo-body">
-                <div class="pomo-ring-container">
-                    <svg class="pomo-svg" viewBox="0 0 120 120" aria-hidden="true">
-                        <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6" />
-                        <circle id="pomo-ring" cx="60" cy="60" r="54" fill="none" stroke="#FF7043" stroke-width="6" stroke-linecap="round" transform="rotate(-90 60 60)" />
-                    </svg>
-                    <div class="pomo-time-display">
-                        <span class="pomo-time" id="pomo-time">25:00</span>
-                        <span class="pomo-phase work" id="pomo-phase">🍅 Foco</span>
-                    </div>
-                </div>
-                <input class="pomo-task-input" id="pomo-task-input" type="text" placeholder="No que você vai focar?" maxlength="60" autocomplete="off" />
-                <div class="pomo-controls">
-                    <button class="pomo-btn start" id="pomo-btn-start">▶ Iniciar</button>
-                    <button class="pomo-btn pause" id="pomo-btn-pause" style="display:none">⏸ Pausar</button>
-                    <button class="pomo-btn reset" id="pomo-btn-reset">↺ Resetar</button>
-                    <button class="pomo-btn skip" id="pomo-btn-skip" style="display:none">⏭ Pular pausa</button>
-                </div>
-                <div class="pomo-footer">
-                    <span class="pomo-sessions" id="pomo-sessions">Sessão 1</span>
-                    <span class="pomo-streak" id="pomo-streak">🔥 Sequência: 0</span>
-                </div>
-                <div class="pomo-reward-info">
-                    <span>Cada Pomodoro = <strong>+2 energia</strong> + <strong>+5 moedas</strong></span>
-                </div>
-            </div>
+    <div
+      class="modal-overlay"
+      id="modal-pomodoro"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pomo-modal-title"
+    >
+      <div class="modal pomo-modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="pomo-modal-title">🍅 Pomodoro</h2>
+          <button
+            class="modal-close"
+            data-close="modal-pomodoro"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
         </div>
+        <div class="modal-body pomo-body">
+          <div class="pomo-ring-container">
+            <svg class="pomo-svg" viewBox="0 0 120 120" aria-hidden="true">
+              <circle
+                cx="60"
+                cy="60"
+                r="54"
+                fill="none"
+                stroke="rgba(255,255,255,0.08)"
+                stroke-width="6"
+              />
+              <circle
+                id="pomo-ring"
+                cx="60"
+                cy="60"
+                r="54"
+                fill="none"
+                stroke="#FF7043"
+                stroke-width="6"
+                stroke-linecap="round"
+                transform="rotate(-90 60 60)"
+              />
+            </svg>
+            <div class="pomo-time-display">
+              <span class="pomo-time" id="pomo-time">25:00</span>
+              <span class="pomo-phase work" id="pomo-phase">🍅 Foco</span>
+            </div>
+          </div>
+          <input
+            class="pomo-task-input"
+            id="pomo-task-input"
+            type="text"
+            placeholder="No que você vai focar?"
+            maxlength="60"
+            autocomplete="off"
+          />
+          <div class="pomo-controls">
+            <button class="pomo-btn start" id="pomo-btn-start">
+              ▶ Iniciar
+            </button>
+            <button
+              class="pomo-btn pause"
+              id="pomo-btn-pause"
+              style="display: none"
+            >
+              ⏸ Pausar
+            </button>
+            <button class="pomo-btn reset" id="pomo-btn-reset">
+              ↺ Resetar
+            </button>
+            <button
+              class="pomo-btn skip"
+              id="pomo-btn-skip"
+              style="display: none"
+            >
+              ⏭ Pular pausa
+            </button>
+          </div>
+          <div class="pomo-footer">
+            <span class="pomo-sessions" id="pomo-sessions">Sessão 1</span>
+            <span class="pomo-streak" id="pomo-streak">🔥 Sequência: 0</span>
+          </div>
+          <div class="pomo-reward-info">
+            <span
+              >Cada Pomodoro = <strong>+2 energia</strong> +
+              <strong>+5 moedas</strong></span
+            >
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="modal-overlay" id="modal-achievements" role="dialog" aria-modal="true" aria-labelledby="ach-modal-title">
-        <div class="modal achievements-modal">
-            <div class="modal-header">
-                <h2 class="modal-title" id="ach-modal-title">🏆 Conquistas <span class="achievements-counter" id="achievements-counter"></span></h2>
-                <button class="modal-close" data-close="modal-achievements" aria-label="Fechar">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="achievements-list" id="achievements-list"></div>
-            </div>
+    <div
+      class="modal-overlay"
+      id="modal-achievements"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ach-modal-title"
+    >
+      <div class="modal achievements-modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="ach-modal-title">
+            🏆 Conquistas
+            <span class="achievements-counter" id="achievements-counter"></span>
+          </h2>
+          <button
+            class="modal-close"
+            data-close="modal-achievements"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
         </div>
+        <div class="modal-body">
+          <div class="achievements-list" id="achievements-list"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="modal-overlay" id="modal-mission" role="dialog" aria-modal="true" aria-labelledby="mission-title">
-        <div class="modal mission-modal">
-            <div class="modal-header">
-                <h2 class="modal-title" id="mission-title">Missão</h2>
-                <button class="modal-close" data-close="modal-mission" aria-label="Fechar">✕</button>
-            </div>
-            <div class="modal-body">
-                <img class="mission-photo" id="mission-photo" src="" alt="" style="display:none" />
-                <p class="mission-location" id="mission-location"></p>
-                <p class="mission-desc" id="mission-desc"></p>
-                <div class="mission-stats">
-                    <div class="mission-stat cost"><img src="assets/icon-seed.svg" alt="" aria-hidden="true" /><span id="mission-cost"></span></div>
-                    <div class="mission-stat reward"><img src="assets/icon-coin.svg" alt="" aria-hidden="true" /><span id="mission-reward"></span></div>
-                    <div class="mission-stat impact-stat"><img src="assets/icon-impact.svg" alt="" aria-hidden="true" /><span id="mission-impact"></span></div>
-                </div>
-                <p class="mission-game-label" id="mission-game" style="display:none"></p>
-                <button class="btn-primary" id="btn-start-mission">Iniciar Missão</button>
-            </div>
+    <div
+      class="modal-overlay"
+      id="modal-mission"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="mission-title"
+    >
+      <div class="modal mission-modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="mission-title">Missão</h2>
+          <button
+            class="modal-close"
+            data-close="modal-mission"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
         </div>
+        <div class="modal-body">
+          <img
+            class="mission-photo"
+            id="mission-photo"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <p class="mission-location" id="mission-location"></p>
+          <p class="mission-desc" id="mission-desc"></p>
+          <div class="mission-stats">
+            <div class="mission-stat cost">
+              <img src="assets/icon-seed.svg" alt="" aria-hidden="true" /><span
+                id="mission-cost"
+              ></span>
+            </div>
+            <div class="mission-stat reward">
+              <img src="assets/icon-coin.svg" alt="" aria-hidden="true" /><span
+                id="mission-reward"
+              ></span>
+            </div>
+            <div class="mission-stat impact-stat">
+              <img
+                src="assets/icon-impact.svg"
+                alt=""
+                aria-hidden="true"
+              /><span id="mission-impact"></span>
+            </div>
+          </div>
+          <p
+            class="mission-game-label"
+            id="mission-game"
+            style="display: none"
+          ></p>
+          <button class="btn-primary" id="btn-start-mission">
+            Iniciar Missão
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="modal-overlay" id="modal-donate" role="dialog" aria-modal="true" aria-labelledby="donate-modal-title">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title" id="donate-modal-title">Faça uma doação</h2>
-                <button class="modal-close" data-close="modal-donate" aria-label="Fechar">✕</button>
-            </div>
-            <div class="modal-body">
-                <p>Ajude organizações que combatem resíduos e protegem ecossistemas reais.</p>
-                <div class="donate-options">
-                    <button class="donate-option">R$5</button>
-                    <button class="donate-option">R$10</button>
-                    <button class="donate-option">R$25</button>
-                </div>
-                <p class="donate-note">Por enquanto é uma demonstração — a doação real está em conversa com a UNAERP.</p>
-                <button class="btn-secondary" data-close="modal-donate">Entendi</button>
-            </div>
+    <div
+      class="modal-overlay"
+      id="modal-donate"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="donate-modal-title"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="donate-modal-title">Faça uma doação</h2>
+          <button
+            class="modal-close"
+            data-close="modal-donate"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
         </div>
+        <div class="modal-body">
+          <p>
+            Ajude organizações que combatem resíduos e protegem ecossistemas
+            reais.
+          </p>
+          <div class="donate-options">
+            <button class="donate-option">R$5</button>
+            <button class="donate-option">R$10</button>
+            <button class="donate-option">R$25</button>
+          </div>
+          <p class="donate-note">
+            Por enquanto é uma demonstração — a doação real está em conversa com
+            a UNAERP.
+          </p>
+          <button class="btn-secondary" data-close="modal-donate">
+            Entendi
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="modal-overlay" id="modal-menu" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title" id="menu-modal-title">Menu</h2>
-                <button class="modal-close" data-close="modal-menu" aria-label="Fechar">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="menu-list">
-                    <button class="menu-item" data-menu-action="donate">💝 Doar para ONGs <span class="menu-badge">Disponível</span></button>
-                    <button class="menu-item">Leaderboard da turma <span class="menu-badge">Após login</span></button>
-                    <button class="menu-item">Configurações <span class="menu-badge">Em breve</span></button>
-                </div>
-            </div>
+    <div
+      class="modal-overlay"
+      id="modal-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="menu-modal-title"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="menu-modal-title">Menu</h2>
+          <button
+            class="modal-close"
+            data-close="modal-menu"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
         </div>
+        <div class="modal-body">
+          <div class="menu-list">
+            <button class="menu-item" data-menu-action="about">
+              ℹ️ Sobre o Ecoverse <span class="menu-badge">Equipe</span>
+            </button>
+            <button class="menu-item" data-menu-action="donate">
+              💝 Doar para ONGs <span class="menu-badge">Disponível</span>
+            </button>
+            <button class="menu-item">
+              Leaderboard da turma <span class="menu-badge">Após login</span>
+            </button>
+            <button class="menu-item">
+              Configurações <span class="menu-badge">Em breve</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="false"></div>
+    <div
+      class="modal-overlay"
+      id="modal-about"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="about-modal-title"
+    >
+      <div class="modal modal--about">
+        <div class="modal-header">
+          <h2 class="modal-title" id="about-modal-title">Sobre o Ecoverse</h2>
+          <button
+            class="modal-close"
+            data-close="modal-about"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="about-pitch">
+            <p>
+              Trabalho final de Sustentabilidade Ambiental na UNAERP. A ideia
+              foi virar a chave do "jogo educativo" tradicional: aqui você
+              <strong>estuda, age e descobre</strong>, tudo no mesmo lugar.
+            </p>
+            <p>
+              O tema central é o combate aos resíduos. Sessões de Pomodoro geram
+              energia, essa energia abre missões em
+              <strong>oito biomas reais</strong> com problemas concretos de
+              lixo, quizzes dos <strong>17 ODS</strong> reforçam o conteúdo e
+              conquistas marcam quem persiste. Ainda tem algumas surpresas
+              escondidas, pra quem gosta de procurar.
+            </p>
+          </div>
+
+          <section class="about-team" aria-labelledby="about-team-title">
+            <h3 class="about-team__title" id="about-team-title">Quem fez</h3>
+            <div class="about-team__grid" id="about-team-grid"></div>
+          </section>
+
+          <p class="about-footer">
+            UNAERP · Sustentabilidade Ambiental · 2026
+            <span class="about-footer__sep" aria-hidden="true">·</span>
+            <a
+              class="about-footer__repo"
+              href="https://github.com/PedroFurtadoC/Ecoverse"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Código aberto no GitHub</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="toast-container"
+      id="toast-container"
+      aria-live="polite"
+      aria-atomic="false"
+    ></div>
 
     <script type="module" src="/src/js/main.js"></script>
-</body>
-
+  </body>
 </html>

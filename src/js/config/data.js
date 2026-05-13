@@ -373,4 +373,50 @@ const ASSET_LIST = [
   'assets/earth-texture.jpg'
 ];
 
-export { GAME_CONFIG, POMODORO_CONFIG, MISSIONS, ACHIEVEMENTS, QUIZ_ODS_DATA, TIPS, ASSET_LIST };
+// Equipe que fez o projeto. As fotos vivem em `public/assets/team/`.
+// `github`, `linkedin` e `portfolio` são opcionais — campos `null` simplesmente
+// não renderizam o link na card.
+const TEAM = [
+  {
+    name: 'Pedro Furtado Cunha',
+    role: 'Arquitetura, integração e UX',
+    photo: 'assets/team/pedro.jpg',
+    github: 'https://github.com/PedroFurtadoC',
+    linkedin: null,
+    portfolio: null
+  },
+  {
+    name: 'André Fernando Machado',
+    role: 'Missões 1 e 2: Amazônia e Congo',
+    photo: 'assets/team/andre.jpg',
+    github: 'https://github.com/AndreFernandoM',
+    linkedin: null,
+    portfolio: null
+  },
+  {
+    name: 'Felipe Pegoraro',
+    role: 'Missões 3 e 4: Mata Atlântica e Bornéu',
+    photo: 'assets/team/felipe.jpg',
+    github: 'https://github.com/felipepegoraro',
+    linkedin: null,
+    portfolio: null
+  },
+  {
+    name: 'Pedro Casaroti',
+    role: 'Missões 5 e 6: Madagascar e Pantanal',
+    photo: 'assets/team/pedro_borges.jpg',
+    github: 'https://github.com/pbcz1k4',
+    linkedin: null,
+    portfolio: null
+  },
+  {
+    name: 'Thiago Siena',
+    role: 'Missões 7 e 8: Grande Barreira e Andes',
+    photo: 'assets/team/thiago.jpg',
+    github: 'https://github.com/thiagosiena',
+    linkedin: null,
+    portfolio: null
+  }
+];
+
+export { GAME_CONFIG, POMODORO_CONFIG, MISSIONS, ACHIEVEMENTS, QUIZ_ODS_DATA, TIPS, ASSET_LIST, TEAM };

@@ -1,0 +1,183 @@
+/* Modal "Sobre o Ecoverse" — proposta do projeto + equipe. */
+
+.modal-overlay#modal-about .modal--about {
+  max-width: 560px;
+}
+
+.about-pitch {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.about-pitch p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--c-text);
+}
+
+.about-pitch strong {
+  color: var(--c-green);
+  font-weight: 800;
+}
+
+.about-team {
+  margin-top: 18px;
+}
+
+.about-team__title {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+
+.about-team__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.team-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 10px 16px;
+  background: linear-gradient(180deg, rgba(46, 204, 113, 0.08), rgba(46, 204, 113, 0.02));
+  border: 1px solid rgba(168, 213, 186, 0.18);
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(46, 204, 113, 0.45);
+  background: linear-gradient(180deg, rgba(46, 204, 113, 0.14), rgba(46, 204, 113, 0.04));
+}
+
+.team-card__avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--c-green-dark);
+  border: 2px solid rgba(168, 213, 186, 0.3);
+  flex-shrink: 0;
+}
+
+.team-card__name {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--c-text);
+  line-height: 1.25;
+}
+
+.team-card__role {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--c-text-dim);
+}
+
+.team-card__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.team-card__links {
+  display: inline-flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.team-card__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(168, 213, 186, 0.1);
+  border: 1px solid rgba(168, 213, 186, 0.18);
+  color: var(--c-text-dim);
+  text-decoration: none;
+  transition: color 0.18s ease, background 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+
+.team-card__link:hover,
+.team-card__link:focus-visible {
+  color: var(--c-green);
+  background: rgba(46, 204, 113, 0.16);
+  border-color: rgba(46, 204, 113, 0.45);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* Lead (primeira card) ocupa as duas colunas no mobile, mas mantém o mesmo
+   layout em coluna dos demais para que avatar, nome e links fiquem centrados. */
+.team-card--lead {
+  grid-column: 1 / -1;
+}
+
+.about-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin: 22px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid rgba(168, 213, 186, 0.12);
+  text-align: center;
+  font-size: 11.5px;
+  letter-spacing: 0.4px;
+  color: var(--c-text-dim);
+}
+
+.about-footer__sep {
+  opacity: 0.5;
+}
+
+.about-footer__repo {
+  color: var(--c-green);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.about-footer__repo:hover,
+.about-footer__repo:focus-visible {
+  border-bottom-color: currentColor;
+  outline: none;
+}
+
+/* A partir de 600px: grid de 3 colunas e lead deixa de spanar a linha inteira */
+@media (min-width: 600px) {
+  .about-team__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .team-card--lead {
+    grid-column: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-card {
+    transition: none;
+  }
+  .team-card:hover {
+    transform: none;
+  }
+}
