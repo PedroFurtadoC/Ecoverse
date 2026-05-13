@@ -13,7 +13,7 @@ import * as Sync from './services/sync.js';
 // todas as missões liberadas, sem custo de energia, sem persistir progresso
 // (nenhuma jogada credita conquistas ou marca missão como concluída).
 // Ex.: http://localhost:3000/?dev=free
-const DEV_FREE = new URLSearchParams(location.search).has('dev');
+const DEV_FREE = new URLSearchParams(location.search).get('dev') === 'free';
 if (DEV_FREE) console.info('[ecoverse] modo dev: tudo liberado, progresso não é salvo');
 
 // Refs do DOM
@@ -159,6 +159,11 @@ function openEasterEgg() {
   showToast('🥚 Easter egg encontrado! Triagem relâmpago.', 'success');
   MiniGames.open('egg_triagem', (success) => {
     if (success && !state.eggCompleted) {
+      // Em dev mode, o easter egg roda só como teste — não credita conquista.
+      if (DEV_FREE) {
+        showToast('Easter egg testado em dev. Nada foi salvo.', 'success');
+        return;
+      }
       state.eggCompleted = true;
       saveState();
       checkAchievements();
