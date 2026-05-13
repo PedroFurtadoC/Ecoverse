@@ -14,7 +14,7 @@ import * as Sync from './services/sync.js';
 const DEV_FREE = new URLSearchParams(location.search).has('dev');
 if (DEV_FREE) console.info('[ecoverse] modo dev: energia liberada');
 
-/* ---------- DOM refs ---------- */
+// Refs do DOM
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
@@ -53,7 +53,7 @@ const toastContainer = $('#toast-container');
 
 let globe = null; // Globe.GL instance
 
-/* ---------- Animated HUD ---------- */
+// HUD animado (energia, moedas, impacto)
 let displayEnergy = 0, displayCoins = 0, displayImpact = 0;
 let hudAnimFrame = null;
 
@@ -97,7 +97,7 @@ function showToast(msg, type = 'info') {
   setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 450); }, 3200);
 }
 
-/* ---------- Modals ---------- */
+// Modais
 function openModal(id) { const el = document.getElementById(id); if (el) el.classList.add('active'); }
 function closeModal(id) { const el = document.getElementById(id); if (el) el.classList.remove('active'); }
 
@@ -118,7 +118,10 @@ if ($('#btn-achievements')) $('#btn-achievements').addEventListener('click', () 
   openModal('modal-achievements');
 });
 $$('.donate-option').forEach((btn) => {
-  btn.addEventListener('click', () => { showToast('Obrigado pelo interesse! Em breve.', 'info'); closeModal('modal-donate'); });
+  btn.addEventListener('click', () => {
+    showToast('Obrigado pelo gesto! Esta versão é demonstrativa.', 'info');
+    closeModal('modal-donate');
+  });
 });
 
 // Atalho do Menu: itens com data-menu-action abrem outros modais.
@@ -134,14 +137,14 @@ if (btnQuiz) btnQuiz.addEventListener('click', () => {
   QuizODS.open();
 });
 
-/* ---------- Node state ---------- */
+// Estado de cada nó da trilha (bloqueado, disponível, completo)
 function getNodeState(mission) {
   if (state.completed.includes(mission.id)) return 'complete';
   if (mission.prereqId === null || state.completed.includes(mission.prereqId)) return 'available';
   return 'locked';
 }
 
-/* ---------- Globe.GL Setup ---------- */
+// Setup do globo (Globe.GL + Three.js)
 // Pré-carrega o módulo Globe.GL em paralelo com a tela de carregamento.
 const globePromise = import('globe.gl');
 
@@ -247,10 +250,9 @@ async function initGlobe() {
     .arcDashGap('dashGap')
     .arcDashAnimateTime(prefersReducedMotion ? 0 : 3000);
 
-  // Planted trees as points on globe
+  // Plota as árvores já plantadas como pontos no globo
   renderPlantedTreesOnGlobe();
 
-  // Handle resize
   window.addEventListener('resize', () => {
     globe.width(window.innerWidth).height(window.innerHeight);
     if (particleCanvas && ctx) resizeCanvas();
@@ -268,7 +270,7 @@ function getMissionMarkers() {
 function refreshGlobeMarkers() {
   if (!globe) return;
   globe.htmlElementsData(getMissionMarkers());
-  // Refresh arcs
+  // Reconstrói os arcos entre missões adjacentes
   const arcData = [];
   for (let i = 1; i < MISSIONS.length; i++) {
     const from = MISSIONS[i - 1];
@@ -295,7 +297,7 @@ function flyToMission(mission) {
   setTimeout(() => { globe.controls().autoRotate = true; globe.controls().autoRotateSpeed = 0.15; }, 5000);
 }
 
-/* ---------- Planted trees on globe ---------- */
+// Árvores plantadas no globo (pontos verdes acumulados a cada missão)
 function renderPlantedTreesOnGlobe() {
   if (!globe) return;
   const treePoints = state.plantedTrees.map(t => ({
@@ -325,17 +327,26 @@ function plantTree(nearLat, nearLng, count) {
   renderPlantedTreesOnGlobe();
 }
 
-/* ---------- Mission Card ---------- */
+// Card da missão (modal que abre ao clicar num marcador)
 function openMissionCard(mission) {
   state.currentMission = mission;
+  const isReplay = state.completed.includes(mission.id);
+
   missionTitle.textContent = mission.title;
   missionDesc.textContent = mission.desc;
   if (missionLocation) missionLocation.textContent = `📍 ${mission.location}`;
-  missionCost.textContent = `-${mission.costEnergy} energia`;
-  missionReward.textContent = `+${mission.rewardCoins} moedas`;
-  missionImpact.textContent = `−${mission.impactCO2} kg CO₂`;
 
-  // Show mission photo
+  // Missão já vencida: rejogar não custa energia nem dá recompensa de novo.
+  if (isReplay) {
+    missionCost.textContent = 'Grátis (já completada)';
+    missionReward.textContent = 'Sem nova recompensa';
+    missionImpact.textContent = 'Modo treino';
+  } else {
+    missionCost.textContent = `-${mission.costEnergy} energia`;
+    missionReward.textContent = `+${mission.rewardCoins} moedas`;
+    missionImpact.textContent = `−${mission.impactCO2} kg CO₂`;
+  }
+
   if (missionPhoto && mission.photo) {
     missionPhoto.src = mission.photo;
     missionPhoto.style.display = '';
@@ -346,30 +357,45 @@ function openMissionCard(mission) {
     missionGame.style.display = '';
   }
 
-  const podeIniciar = DEV_FREE || state.energy >= mission.costEnergy;
+  const podeIniciar = isReplay || DEV_FREE || state.energy >= mission.costEnergy;
   btnStartMission.disabled = !podeIniciar;
-  btnStartMission.textContent = podeIniciar ? 'Iniciar Missão' : 'Energia insuficiente';
+  btnStartMission.textContent = isReplay
+    ? 'Jogar novamente'
+    : (podeIniciar ? 'Iniciar Missão' : 'Energia insuficiente');
   openModal('modal-mission');
 }
 
-/* ---------- Start Mission ---------- */
+// Botão "Iniciar missão" / "Jogar novamente"
 if (btnStartMission) {
   btnStartMission.addEventListener('click', () => {
     if (!state.currentMission) return;
     const m = state.currentMission;
-    if (!DEV_FREE && state.energy < m.costEnergy) {
+    const isReplay = state.completed.includes(m.id);
+    const willCharge = !isReplay && !DEV_FREE;
+
+    if (willCharge && state.energy < m.costEnergy) {
       showToast('Energia insuficiente! Use o Pomodoro.', 'info');
       return;
     }
-    if (!DEV_FREE) state.energy -= m.costEnergy;
+    if (willCharge) state.energy -= m.costEnergy;
     updateHUD();
     closeModal('modal-mission');
+
     if (m.minigame) {
       MiniGames.open(m.minigame, (success, perfect) => {
+        if (isReplay) {
+          // Replay: sem débito, sem recompensa, sem nova árvore.
+          if (success) {
+            showToast(perfect
+              ? 'Mandou bem! Pontuação máxima de novo.'
+              : 'Missão revisitada. Boa prática!', 'success');
+          }
+          return;
+        }
         if (success) {
           completeMission(m, perfect);
         } else {
-          if (!DEV_FREE) state.energy += m.costEnergy;
+          if (willCharge) state.energy += m.costEnergy;
           updateHUD(); saveState();
           showToast('Missão falhou. Energia devolvida. Tente novamente!', 'info');
         }
@@ -410,7 +436,7 @@ function completeMission(mission, perfect) {
   checkAchievements();
 }
 
-/* ---------- Completion Photo Modal ---------- */
+// Overlay com a foto do bioma após missão completa
 function showCompletionPhoto(mission) {
   if (!mission.photo) return;
   const overlay = document.createElement('div');
@@ -473,7 +499,7 @@ on(EVENTS.POMODORO_COMPLETE, ({ streak, taskName }) => {
 });
 on(EVENTS.ACHIEVEMENT_CHECK, () => checkAchievements());
 
-/* ---------- Celebration ---------- */
+// Animação de confete ao completar missão
 const celebParticles = [];
 function celebrate() {
   if (!celebOverlay) return;
@@ -492,7 +518,7 @@ function celebrate() {
   }
 }
 
-/* ---------- Particles ---------- */
+// Sistema de partículas (fundo decorativo do globo)
 function resizeCanvas() {
   if (!particleCanvas || !ctx) return;
   particleCanvas.width = window.innerWidth;
@@ -519,7 +545,7 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-/* ---------- Loading ---------- */
+// Tela de loading (anel SVG + tip educativa)
 let tipInterval = null, tipIndex = 0;
 function showTip() {
   if (!tipEl) return;

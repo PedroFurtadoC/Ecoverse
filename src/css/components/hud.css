@@ -194,9 +194,8 @@
   border-radius: 12px;
 }
 
-/* ---------- Mobile bottom navigation (≤768px) ----------
-   Padrão de apps modernos: stats no topo compacto,
-   ações principais em barra fixa no rodapé pra alcance do polegar. */
+/* Navegação inferior em mobile (≤768px):
+   stats compactas no topo, ações na barra fixa de baixo (alcance do polegar). */
 @media (max-width: 768px) {
 
   /* Removendo backdrop-filter em mobile pra não criar um containing block

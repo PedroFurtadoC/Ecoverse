@@ -736,44 +736,6 @@
   box-shadow: 0 8px 24px color-mix(in srgb, var(--ods-color, #4CAF50) 30%, transparent);
 }
 
-/* Stub provisório dos minigames em desenvolvimento */
-
-.minigame-stub {
-  text-align: center;
-  padding: clamp(1.5rem, 6vw, 3rem) 1.25rem;
-  max-width: 32rem;
-  margin: 0 auto;
-}
-
-.minigame-stub h3 {
-  font-size: clamp(1.05rem, 4vw, 1.4rem);
-  font-weight: 900;
-  margin-bottom: 0.5rem;
-}
-
-.minigame-stub p {
-  color: var(--c-text-dim);
-  font-size: 0.95rem;
-  margin-bottom: 1.5rem;
-}
-
-.minigame-stub__finish {
-  padding: 0.75rem 1.5rem;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--c-green), var(--c-green-dark));
-  color: #fff;
-  font-weight: 800;
-  font-size: 0.9rem;
-  cursor: pointer;
-  min-height: 44px;
-  transition: transform var(--transition);
-}
-
-.minigame-stub__finish:hover,
-.minigame-stub__finish:focus-visible {
-  transform: scale(1.04);
-}
-
 /* Breakpoints específicos do Quiz ODS */
 @media (max-width: 600px) {
   .quiz-ods-header {

@@ -33,7 +33,7 @@ export class Modulo8 {
           <div class="thiago-8-overlay" style="display: flex;">
             <h2>Andes: Escalada Limpa</h2>
             <p>O turismo de altitude está poluindo a Cordilheira!</p>
-            <p style="font-size: 0.9em; margin: 10px 0;"><strong>AGUENTE O MÁXIMO DE TEMPO</strong> classificando o lixo nas lixeiras corretas.</p>
+            <p style="font-size: 0.9em; margin: 10px 0;"><strong>Resista o máximo de tempo</strong> classificando o lixo nas lixeiras corretas.</p>
             <div style="display: flex; gap: 15px; justify-content: center; margin: 15px 0;">
                <span style="color: #ef4444; font-weight: bold;">🔴 Plástico</span>
                <span style="color: #f59e0b; font-weight: bold;">🟡 Metal/Vidro</span>

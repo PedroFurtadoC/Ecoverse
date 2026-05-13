@@ -334,6 +334,63 @@
   display: flex;
 }
 
+/* Botão "Voltar" universal — aparece em todos os minigames, fixo no canto. */
+.mg-exit {
+  position: absolute;
+  top: max(env(safe-area-inset-top, 0px), 12px);
+  left: max(env(safe-area-inset-left, 0px), 12px);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 14px 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--c-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+
+.mg-exit:hover,
+.mg-exit:focus-visible {
+  background: rgba(0, 0, 0, 0.78);
+  border-color: var(--c-green);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.mg-exit:active {
+  transform: translateY(0);
+}
+
+.mg-exit__icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+@media (max-width: 480px) {
+  .mg-exit {
+    padding: 8px 12px;
+  }
+  .mg-exit__label {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mg-exit {
+    transition: none;
+  }
+}
+
 .mg-header {
   padding: 16px 20px;
   text-align: center;

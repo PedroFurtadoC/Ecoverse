@@ -110,6 +110,10 @@
     </main>
 
     <div class="minigame-container" id="minigame-container" role="dialog" aria-modal="true" aria-label="Minigame em andamento">
+        <button type="button" class="mg-exit" id="mg-exit-btn" aria-label="Voltar ao globo (sai do minigame)">
+            <span class="mg-exit__icon" aria-hidden="true">←</span>
+            <span class="mg-exit__label">Voltar</span>
+        </button>
         <header class="mg-header">
             <h2 class="mg-title" id="mg-title"></h2>
             <p class="mg-desc" id="mg-desc"></p>
@@ -225,7 +229,7 @@
                     <button class="donate-option">R$10</button>
                     <button class="donate-option">R$25</button>
                 </div>
-                <p class="donate-note">Em breve: integração direta com ONGs parceiras.</p>
+                <p class="donate-note">Por enquanto é uma demonstração — a doação real está em conversa com a UNAERP.</p>
                 <button class="btn-secondary" data-close="modal-donate">Entendi</button>
             </div>
         </div>
@@ -240,8 +244,7 @@
             <div class="modal-body">
                 <div class="menu-list">
                     <button class="menu-item" data-menu-action="donate">💝 Doar para ONGs <span class="menu-badge">Disponível</span></button>
-                    <button class="menu-item">Minigames <span class="menu-badge">Em desenvolvimento</span></button>
-                    <button class="menu-item">Leaderboard <span class="menu-badge">Em breve</span></button>
+                    <button class="menu-item">Leaderboard da turma <span class="menu-badge">Após login</span></button>
                     <button class="menu-item">Configurações <span class="menu-badge">Em breve</span></button>
                 </div>
             </div>

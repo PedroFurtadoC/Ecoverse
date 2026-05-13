@@ -22,6 +22,7 @@ const ROUTES = {
 
 let callback = null;
 let dom = null;
+let bound = false;
 
 function getDom() {
   if (dom) return dom;
@@ -34,9 +35,29 @@ function getDom() {
     target:    document.getElementById('mg-target'),
     grid:      document.getElementById('mg-grid'),
     canvas:    document.getElementById('minigame-canvas'),
-    result:    document.getElementById('mg-result')
+    result:    document.getElementById('mg-result'),
+    exit:      document.getElementById('mg-exit-btn')
   };
   return dom;
+}
+
+// Saída universal do shell: clique no botão "Voltar" ou tecla Esc.
+// Fechar com success=false faz o fluxo de missão devolver a energia gasta.
+function quit() {
+  if (!callback) return;
+  close({ success: false, perfect: false });
+}
+
+function bindShellControls() {
+  if (bound) return;
+  const d = getDom();
+  if (d.exit) d.exit.addEventListener('click', quit);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && d.container.classList.contains('active')) {
+      quit();
+    }
+  });
+  bound = true;
 }
 
 // Reseta o shell genérico do container do minigame antes de instanciar o jogo:
@@ -72,6 +93,7 @@ export function open(gameType, cb) {
     return;
   }
 
+  bindShellControls();
   setupShell(route);
 
   const d = getDom();

@@ -67,18 +67,15 @@ this.container.innerHTML = `
       </div>
     `;
     
-    // Ação cirúrgica: Mata o loop e força a saída imediata
     this.container.querySelector('#t7-exit-btn').onclick = () => {
       this.gameActive = false;
       this.onGameEnd({ success: false, finalScore: this.score, quit: true });
     };
-    // ATENÇÃO: Adicione esta linha logo abaixo para o botão funcionar!
-    
-    
+
     this.gameArea = this.container.querySelector('#t7-game-area');
-    
-    // CORREÇÃO 1: Isolamento restrito de layout para impedir reflow global
-    this.gameArea.style.contain = 'strict'; 
+    // Isola o layout da área de jogo pra os items (peixes/plásticos) não
+    // dispararem reflow no shell inteiro a cada frame.
+    this.gameArea.style.contain = 'strict';
 
     this.scoreEl = this.container.querySelector('#t7-score');
     this.comboEl = this.container.querySelector('#t7-combo');
@@ -150,8 +147,9 @@ this.container.innerHTML = `
 
     const areaH = this.gameArea.clientHeight || 500;
     el.style.top = (Math.random() * (areaH - 180) + 120) + 'px';
-    
-    // CORREÇÃO 2: Reforça o position e manda pra GPU antes de nascer na tela
+
+    // Posiciona fora da tela e promove pra GPU antes do primeiro frame
+    // pra evitar flicker quando o item entra.
     el.style.position = 'absolute';
     el.style.willChange = 'transform';
     el.style.transform = 'translateX(-100px)';
@@ -182,17 +180,17 @@ this.container.innerHTML = `
         item.el.style.transform = `translate3d(${item.x}px, 0px, 0px) rotate(${item.rotation}deg)`;
       }
 
-      // Passou do limite da tela
+      // Item saiu da tela: peixe perdido (vida) ou plástico que escapou.
       if (item.x > areaW - 110) {
         if (item.type !== 'fish') { this.takeDamage(12); this.resetCombo(); }
-        
-        // CORREÇÃO 3: Remoção assíncrona blindada contra Layout Thrashing
+
+        // Esconde já e remove no próximo tick pra não recalcular layout dentro do loop.
         const elToRemove = item.el;
-        elToRemove.style.display = 'none'; // Some da tela instantaneamente sem recalcular layout
+        elToRemove.style.display = 'none';
         setTimeout(() => {
           if (elToRemove.parentNode) elToRemove.remove();
-        }, 0); // O .remove() só acontece quando o navegador terminar de pintar este frame
-        
+        }, 0);
+
         this.items.splice(i, 1);
       }
     }

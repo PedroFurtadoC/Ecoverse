@@ -362,7 +362,7 @@ export class Modulo6 extends CanvasMinigame {
         const W  = this.canvas.width;
         const H  = this.canvas.height;
 
-        // --- Input ---
+        // Input (teclado ou toques)
         const goLeft  = this._input.left  || this._touchBtns.left;
         const goRight = this._input.right || this._touchBtns.right;
         const doJump  = this._input.consumeJump() || this._consumeTouchJump();
@@ -376,13 +376,13 @@ export class Modulo6 extends CanvasMinigame {
         if (p.vx >  0.1) this._facing =  1;
         if (p.vx < -0.1) this._facing = -1;
 
-        // --- Jump ---
+        // Pulo
         if (doJump && p.onGround) {
             p.vy = JUMP_VY;
             p.onGround = false;
         }
 
-        // --- Physics ---
+        // Física: gravidade e velocidade
         p.applyGravity();
         const prevBottom = p._prevY + p.h;
         p.onGround = false;
@@ -391,7 +391,7 @@ export class Modulo6 extends CanvasMinigame {
         // Clamp horizontal
         p.x = Math.max(0, Math.min(W - p.w, p.x));
 
-        // --- Platform collision ---
+        // Colisão com plataformas
         for (const plat of this._platforms) {
             if (!p.intersects(plat)) continue;
             const overlapTop    = (p.y + p.h) - plat.y;
@@ -403,13 +403,13 @@ export class Modulo6 extends CanvasMinigame {
             }
         }
 
-        // --- Fall into water ---
+        // Caiu na água: falha
         if (p.y > H + 40) {
             this._onFall();
             return;
         }
 
-        // --- Item / hazard collision ---
+        // Colisão com itens e fogo
         if (this._invincible > 0) {
             this._invincible--;
         } else {

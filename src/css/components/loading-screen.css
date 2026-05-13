@@ -19,7 +19,7 @@
   pointer-events: none;
 }
 
-/* ---------- Aurora: fundo orgânico que respira ---------- */
+/* Aurora: fundo orgânico que respira atrás do conteúdo */
 
 .aurora {
   position: absolute;
@@ -81,7 +81,7 @@
   100% { transform: translate(-5vw, 6vh) scale(1.1); }
 }
 
-/* ---------- Vagalumes: pontos de luz flutuando ---------- */
+/* Vagalumes: pontos de luz flutuando lentamente */
 
 .fireflies {
   position: absolute;
@@ -134,7 +134,7 @@
   }
 }
 
-/* ---------- Conteúdo central ---------- */
+/* Conteúdo central (logo + anel) */
 
 .loading-content {
   position: relative;
@@ -166,7 +166,7 @@
   }
 }
 
-/* ---------- Anel de progresso SVG ---------- */
+/* Anel de progresso SVG */
 
 .progress-ring-wrap {
   position: relative;
@@ -212,7 +212,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Tip educacional ---------- */
+/* Tip educacional rotativa */
 
 .loading-tip {
   font-size: var(--text-sm);
@@ -244,7 +244,7 @@
   100% { opacity: 0; transform: translateY(-4px); }
 }
 
-/* ---------- Acessibilidade: motion reduction ---------- */
+/* Acessibilidade: prefers-reduced-motion */
 
 @media (prefers-reduced-motion: reduce) {
   .aurora-blob,
