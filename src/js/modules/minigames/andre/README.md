@@ -1,4 +1,4 @@
-# Minigames do André — missões 1 e 2
+# Missões 1 e 2 — Amazônia e Bacia do Congo
 
 > Setup, contrato técnico, padrão visual e boas práticas: [`../README.md`](../README.md).
 

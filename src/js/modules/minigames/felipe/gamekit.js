@@ -1,5 +1,5 @@
 /**
- * gamekit.js — Infraestrutura compartilhada para os minigames Felipe
+ * gamekit.js — Infraestrutura compartilhada pelos minigames do Ecoverse.
  *
  * Hierarquia de classes:
  *   EventEmitter

@@ -1,4 +1,4 @@
-// Missão 2 — Bacia do Congo. Implementação a cargo de André.
+// Missão 2 — Lixo eletrônico na Bacia do Congo.
 // Contrato e exemplos: src/js/modules/minigames/README.md
 
 

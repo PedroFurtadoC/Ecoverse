@@ -1,4 +1,4 @@
-# Minigames do Thiago — missões 7 e 8
+# Missões 7 e 8 — Grande Barreira de Coral e Cordilheira dos Andes
 
 > Setup, contrato técnico, padrão visual e boas práticas: [`../README.md`](../README.md).
 

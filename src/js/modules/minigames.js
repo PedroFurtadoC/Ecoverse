@@ -7,15 +7,17 @@ import { Modulo6 } from './minigames/pedro_borges/modulo6.js';
 import { Modulo7 } from './minigames/thiago/modulo7.js';
 import { Modulo8 } from './minigames/thiago/modulo8.js';
 
+// Mapa de cada minigame: liga a string `mission.minigame` (em data.js) à classe
+// que implementa o jogo e ao rótulo que aparece como título quando o jogo abre.
 const ROUTES = {
-  andre_1:    { Cls: Modulo1, owner: 'André',         label: 'Amazônia' },
-  andre_2:    { Cls: Modulo2, owner: 'André',         label: 'Bacia do Congo' },
-  felipe_1:   { Cls: Modulo3, owner: 'Felipe',        label: 'Mata Atlântica' },
-  felipe_2:   { Cls: Modulo4, owner: 'Felipe',        label: 'Bornéu' },
-  pedro_b_1:  { Cls: Modulo5, owner: 'Pedro Borges',  label: 'Madagascar' },
-  pedro_b_2:  { Cls: Modulo6, owner: 'Pedro Borges',  label: 'Pantanal' },
-  thiago_1:   { Cls: Modulo7, owner: 'Thiago',        label: 'Grande Barreira de Coral' },
-  thiago_2:   { Cls: Modulo8, owner: 'Thiago',        label: 'Cordilheira dos Andes' }
+  andre_1:   { Cls: Modulo1, label: 'Amazônia' },
+  andre_2:   { Cls: Modulo2, label: 'Bacia do Congo' },
+  felipe_1:  { Cls: Modulo3, label: 'Mata Atlântica' },
+  felipe_2:  { Cls: Modulo4, label: 'Bornéu' },
+  pedro_b_1: { Cls: Modulo5, label: 'Madagascar' },
+  pedro_b_2: { Cls: Modulo6, label: 'Pantanal' },
+  thiago_1:  { Cls: Modulo7, label: 'Grande Barreira de Coral' },
+  thiago_2:  { Cls: Modulo8, label: 'Cordilheira dos Andes' }
 };
 
 let callback = null;
@@ -37,9 +39,11 @@ function getDom() {
   return dom;
 }
 
+// Reseta o shell genérico do container do minigame antes de instanciar o jogo:
+// limpa título, score, descrição e o grid, e marca o container como ativo.
 function setupShell(route) {
   const d = getDom();
-  d.title.textContent = `${route.label} — minigame de ${route.owner}`;
+  d.title.textContent = route.label;
   d.desc.textContent = '';
   d.score.textContent = '0';
   d.result.style.display = 'none';

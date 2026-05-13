@@ -1,4 +1,4 @@
-# Minigames do Felipe — missões 3 e 4
+# Missões 3 e 4 — Mata Atlântica e Bornéu
 
 > Setup, contrato técnico, padrão visual e boas práticas: [`../README.md`](../README.md).
 

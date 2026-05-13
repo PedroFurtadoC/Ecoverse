@@ -1,4 +1,4 @@
-// Missão 7 — Grande Barreira de Coral. Implementação a cargo de Thiago.
+// Missão 7 — Microplástico na Grande Barreira de Coral.
 // Contrato e exemplos: src/js/modules/minigames/README.md
 
 export class Modulo7 {

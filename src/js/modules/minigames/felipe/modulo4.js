@@ -1,4 +1,4 @@
-// Felipe - Módulo 4 (Florestas de Bornéu)
+// Missão 4 — Manguezais de Bornéu sufocados.
 import {
     GridCanvasGame,
     PersistenceStore,

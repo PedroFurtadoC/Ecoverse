@@ -2,8 +2,11 @@
 // Toda alteração de conteúdo factual precisa de fonte oficial citada
 // em comentário inline (ONU, IBGE, MMA, IPCC, OMS, FAO, MapBiomas).
 
+// Estado inicial do jogador. A energia começa pequena de propósito: o jogador
+// ganha mais energia completando sessões de Pomodoro, o que conecta a mecânica
+// de foco real à progressão das missões.
 const GAME_CONFIG = {
-  initialEnergy: 99,
+  initialEnergy: 3,
   initialCoins: 0,
   initialImpact: 0,
   version: '6.0',
@@ -45,7 +48,7 @@ const MISSIONS = [
     photo: 'assets/photo-congo.jpg',
     costEnergy: 2, rewardCoins: 15, impactCO2: 0.8,
     lat: -0.7893, lng: 23.6566,
-    prereqId: null, minigame: 'andre_2'
+    prereqId: 1, minigame: 'andre_2'
   },
   {
     id: 3, title: 'Encostas e nascentes da Mata Atlântica',
@@ -57,7 +60,7 @@ const MISSIONS = [
     photo: 'assets/photo-atlantic.jpg',
     costEnergy: 2, rewardCoins: 25, impactCO2: 1.2,
     lat: -22.9519, lng: -43.2106,
-    prereqId: null, minigame: 'felipe_1'
+    prereqId: 2, minigame: 'felipe_1'
   },
   {
     id: 4, title: 'Manguezais de Bornéu sufocados',
@@ -69,7 +72,7 @@ const MISSIONS = [
     photo: 'assets/photo-borneo.jpg',
     costEnergy: 3, rewardCoins: 28, impactCO2: 1.5,
     lat: 1.8166, lng: 109.9767,
-    prereqId: null, minigame: 'felipe_2'
+    prereqId: 3, minigame: 'felipe_2'
   },
   {
     id: 5, title: 'Pesca-fantasma em Madagascar',
@@ -81,7 +84,7 @@ const MISSIONS = [
     photo: 'assets/photo-madagascar.jpg',
     costEnergy: 3, rewardCoins: 35, impactCO2: 2.0,
     lat: -18.7669, lng: 46.8691,
-    prereqId: null, minigame: 'pedro_b_1'
+    prereqId: 4, minigame: 'pedro_b_1'
   },
   {
     id: 6, title: 'Resíduos e fogo no Pantanal',
@@ -93,7 +96,7 @@ const MISSIONS = [
     photo: 'assets/photo-pantanal.jpg',
     costEnergy: 4, rewardCoins: 40, impactCO2: 2.4,
     lat: -19.0907, lng: -57.6534,
-    prereqId: null, minigame: 'pedro_b_2'
+    prereqId: 5, minigame: 'pedro_b_2'
   },
   {
     id: 7, title: 'Microplástico na Grande Barreira',
@@ -105,7 +108,7 @@ const MISSIONS = [
     photo: 'assets/photo-coral.jpg',
     costEnergy: 5, rewardCoins: 60, impactCO2: 3.0,
     lat: -18.2871, lng: 147.6992,
-    prereqId: null, minigame: 'thiago_1'
+    prereqId: 6, minigame: 'thiago_1'
   },
   {
     id: 8, title: 'Trilhas e mineração nos Andes',
@@ -117,7 +120,7 @@ const MISSIONS = [
     photo: null,
     costEnergy: 5, rewardCoins: 75, impactCO2: 3.5,
     lat: -13.1631, lng: -72.5450,
-    prereqId: null, minigame: 'thiago_2'
+    prereqId: 7, minigame: 'thiago_2'
   }
 ];
 

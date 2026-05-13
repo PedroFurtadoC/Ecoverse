@@ -1,4 +1,4 @@
-// Felipe - Módulo 3 (Mata Atlântica)
+// Missão 3 — Encostas e nascentes da Mata Atlântica.
 import {
     CanvasMinigame,
     PersistenceStore,

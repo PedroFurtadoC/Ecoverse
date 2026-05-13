@@ -1,4 +1,4 @@
-# Minigames do Pedro Borges — missões 5 e 6
+# Missões 5 e 6 — Madagascar e Pantanal
 
 > Setup, contrato técnico, padrão visual e boas práticas: [`../README.md`](../README.md).
 
