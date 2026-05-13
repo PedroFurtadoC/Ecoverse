@@ -2,6 +2,9 @@ import { POMODORO_CONFIG } from '../config/data.js';
 import { emit, EVENTS } from '../store/events.js';
 
 let timer = null;
+// Atraso de 1.5s entre fim de uma fase e início automático da próxima.
+// Guardamos a referência pra cancelar se o usuário resetar no meio.
+let phaseTransitionTimer = null;
 let remaining = POMODORO_CONFIG.workDuration;
 let total = POMODORO_CONFIG.workDuration;
 let isRunning = false;
@@ -88,6 +91,7 @@ export function pause() {
   if (!isRunning) return;
   clearInterval(timer);
   timer = null;
+  if (phaseTransitionTimer) { clearTimeout(phaseTransitionTimer); phaseTransitionTimer = null; }
   isRunning = false;
   updateDisplay();
 }
@@ -95,6 +99,7 @@ export function pause() {
 export function reset() {
   clearInterval(timer);
   timer = null;
+  if (phaseTransitionTimer) { clearTimeout(phaseTransitionTimer); phaseTransitionTimer = null; }
   isRunning = false;
   isBreak = false;
   remaining = POMODORO_CONFIG.workDuration;
@@ -107,6 +112,7 @@ export function skip() {
   if (!isBreak) return;
   clearInterval(timer);
   timer = null;
+  if (phaseTransitionTimer) { clearTimeout(phaseTransitionTimer); phaseTransitionTimer = null; }
   isRunning = false;
   startWorkPhase();
 }
@@ -134,7 +140,10 @@ function onPhaseComplete() {
     total = remaining;
     updateDisplay();
 
-    setTimeout(start, 1500);
+    phaseTransitionTimer = setTimeout(() => {
+      phaseTransitionTimer = null;
+      start();
+    }, 1500);
   } else {
     startWorkPhase();
     emit(EVENTS.TOAST, { message: '☕ Pausa encerrada! Hora de focar.', type: 'info' });
