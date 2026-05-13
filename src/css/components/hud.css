@@ -39,8 +39,10 @@
   transition: transform var(--transition);
 }
 
-.hud-stat:hover {
-  transform: scale(1.06);
+@media (hover: hover) {
+  .hud-stat:hover {
+    transform: scale(1.06);
+  }
 }
 
 .hud-stat img {

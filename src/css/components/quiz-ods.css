@@ -194,24 +194,32 @@
   animation: odsCardPulse 2.5s ease-in-out infinite;
 }
 
-.quiz-ods-card.available:hover {
-  transform: translateY(-6px) scale(1.03);
-  border-color: var(--ods-color);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 30px color-mix(in srgb, var(--ods-color) 25%, transparent);
+@media (prefers-reduced-motion: reduce) {
+  .quiz-ods-card.available {
+    animation: none;
+  }
 }
 
-.quiz-ods-card.available:hover .qoc-glow {
-  opacity: 0.12;
+@media (hover: hover) {
+  .quiz-ods-card.available:hover {
+    transform: translateY(-6px) scale(1.03);
+    border-color: var(--ods-color);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 30px color-mix(in srgb, var(--ods-color) 25%, transparent);
+  }
+
+  .quiz-ods-card.available:hover .qoc-glow {
+    opacity: 0.12;
+  }
+
+  .quiz-ods-card.completed:hover {
+    transform: translateY(-4px);
+    border-color: rgba(241, 196, 15, 0.4);
+  }
 }
 
 .quiz-ods-card.completed {
   border-color: rgba(241, 196, 15, 0.25);
   background: rgba(241, 196, 15, 0.03);
-}
-
-.quiz-ods-card.completed:hover {
-  transform: translateY(-4px);
-  border-color: rgba(241, 196, 15, 0.4);
 }
 
 .quiz-ods-card.perfect {
@@ -514,10 +522,12 @@
   text-align: left;
 }
 
-.qop-option:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateX(4px);
+@media (hover: hover) {
+  .qop-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(4px);
+  }
 }
 
 .qop-opt-letter {

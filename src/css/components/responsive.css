@@ -238,9 +238,11 @@
   background: rgba(241, 196, 15, 0.04);
 }
 
-.achievement-card.unlocked:hover {
-  transform: scale(1.04);
-  border-color: rgba(241, 196, 15, 0.35);
+@media (hover: hover) {
+  .achievement-card.unlocked:hover {
+    transform: scale(1.04);
+    border-color: rgba(241, 196, 15, 0.35);
+  }
 }
 
 .achievement-card.locked {

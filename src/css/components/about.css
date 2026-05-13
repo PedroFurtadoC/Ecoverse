@@ -55,10 +55,12 @@
   transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
 
-.team-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(46, 204, 113, 0.45);
-  background: linear-gradient(180deg, rgba(46, 204, 113, 0.14), rgba(46, 204, 113, 0.04));
+@media (hover: hover) {
+  .team-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(46, 204, 113, 0.45);
+    background: linear-gradient(180deg, rgba(46, 204, 113, 0.14), rgba(46, 204, 113, 0.04));
+  }
 }
 
 .team-card__avatar {
@@ -101,11 +103,12 @@
 }
 
 .team-card__link {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: rgba(168, 213, 186, 0.1);
   border: 1px solid rgba(168, 213, 186, 0.18);
@@ -114,13 +117,27 @@
   transition: color 0.18s ease, background 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
 }
 
-.team-card__link:hover,
+/* Expande a hit-area pra 44×44 sem mudar o visual. */
+.team-card__link::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+
 .team-card__link:focus-visible {
   color: var(--c-green);
   background: rgba(46, 204, 113, 0.16);
   border-color: rgba(46, 204, 113, 0.45);
-  transform: translateY(-1px);
   outline: none;
+}
+
+@media (hover: hover) {
+  .team-card__link:hover {
+    color: var(--c-green);
+    background: rgba(46, 204, 113, 0.16);
+    border-color: rgba(46, 204, 113, 0.45);
+    transform: translateY(-1px);
+  }
 }
 
 /* Lead (primeira card) ocupa as duas colunas no mobile, mas mantém o mesmo
