@@ -11,6 +11,7 @@ export const state = {
   perfectMinigames: 0,
   achievements: [],
   plantedTrees: [],
+  eggCompleted: false,
   lastSavedAt: null
 };
 
@@ -25,6 +26,7 @@ export function saveState() {
       perfectMinigames: state.perfectMinigames,
       achievements: state.achievements,
       plantedTrees: state.plantedTrees,
+      eggCompleted: state.eggCompleted,
       lastSavedAt: state.lastSavedAt
     }));
   } catch (e) { /* silent */ }
@@ -44,6 +46,7 @@ export function loadState() {
       state.perfectMinigames    = s.perfectMinigames ?? 0;
       state.achievements        = s.achievements ?? [];
       state.plantedTrees        = s.plantedTrees ?? [];
+      state.eggCompleted        = s.eggCompleted === true;
       state.lastSavedAt         = s.lastSavedAt ?? null;
     }
   } catch (e) { /* start fresh */ }

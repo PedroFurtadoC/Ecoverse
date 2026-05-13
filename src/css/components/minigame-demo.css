@@ -1,0 +1,201 @@
+/* Easter egg da triagem — UI isolada, prefixo `demo-tri__`. */
+
+.demo-tri {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  color: var(--c-text);
+}
+
+.demo-tri__tag {
+  align-self: center;
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 215, 0, 0.14);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  color: #ffd95a;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.demo-tri__header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+}
+
+.demo-tri__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.demo-tri__stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+
+.demo-tri__timer,
+.demo-tri__score {
+  font-size: 22px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-tri__timer { color: var(--c-orange); }
+.demo-tri__score { color: var(--c-green); }
+
+.demo-tri__stage {
+  min-height: 240px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.demo-tri__item-wrap {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.demo-tri__item {
+  width: clamp(140px, 28vw, 180px);
+  height: clamp(140px, 28vw, 180px);
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5));
+}
+
+.demo-tri__item--enter {
+  animation: demoTriItemIn 0.4s var(--ease-spring);
+}
+
+@keyframes demoTriItemIn {
+  0%   { transform: scale(0.6) rotate(-8deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.demo-tri__item-name {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  margin: 0;
+}
+
+.demo-tri__hint {
+  font-size: 13px;
+  color: var(--c-text-dim);
+  margin: 0;
+}
+
+.demo-tri__bins {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-2);
+}
+
+.demo-tri__bin {
+  --demo-bin-color: var(--c-green);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-3) var(--space-2);
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+  min-height: var(--touch-target);
+}
+
+.demo-tri__bin:hover,
+.demo-tri__bin:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--demo-bin-color);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.demo-tri__bin img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.demo-tri__bin span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-text);
+  letter-spacing: 0.3px;
+}
+
+.demo-tri__feedback {
+  text-align: center;
+  font-size: var(--text-base);
+  font-weight: 800;
+  min-height: 24px;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.demo-tri__feedback--sucesso { color: var(--c-green); }
+.demo-tri__feedback--erro    { color: var(--c-danger); }
+
+.demo-tri__result {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.demo-tri__result h3 {
+  font-size: var(--text-2xl);
+  font-weight: 900;
+  color: var(--c-green);
+  margin: 0;
+}
+
+.demo-tri__result p {
+  font-size: var(--text-base);
+  color: var(--c-text-dim);
+  margin: 0;
+}
+
+/* Mobile compact */
+@media (max-width: 600px) {
+  .demo-tri {
+    padding: var(--space-3) var(--space-2);
+    gap: var(--space-3);
+  }
+
+  .demo-tri__bins {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .demo-tri__stage {
+    min-height: 200px;
+    padding: var(--space-3);
+  }
+
+  .demo-tri__bin img {
+    width: 40px;
+    height: 40px;
+  }
+}

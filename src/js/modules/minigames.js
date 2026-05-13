@@ -6,18 +6,20 @@ import { Modulo5 } from './minigames/pedro_borges/modulo5.js';
 import { Modulo6 } from './minigames/pedro_borges/modulo6.js';
 import { Modulo7 } from './minigames/thiago/modulo7.js';
 import { Modulo8 } from './minigames/thiago/modulo8.js';
+import { TriagemEasterEgg } from './minigames/_demo/triagem-demo.js';
 
 // Mapa de cada minigame: liga a string `mission.minigame` (em data.js) à classe
 // que implementa o jogo e ao rótulo que aparece como título quando o jogo abre.
 const ROUTES = {
-  andre_1:   { Cls: Modulo1, label: 'Amazônia' },
-  andre_2:   { Cls: Modulo2, label: 'Bacia do Congo' },
-  felipe_1:  { Cls: Modulo3, label: 'Mata Atlântica' },
-  felipe_2:  { Cls: Modulo4, label: 'Bornéu' },
-  pedro_b_1: { Cls: Modulo5, label: 'Madagascar' },
-  pedro_b_2: { Cls: Modulo6, label: 'Pantanal' },
-  thiago_1:  { Cls: Modulo7, label: 'Grande Barreira de Coral' },
-  thiago_2:  { Cls: Modulo8, label: 'Cordilheira dos Andes' }
+  andre_1:    { Cls: Modulo1, label: 'Amazônia' },
+  andre_2:    { Cls: Modulo2, label: 'Bacia do Congo' },
+  felipe_1:   { Cls: Modulo3, label: 'Mata Atlântica' },
+  felipe_2:   { Cls: Modulo4, label: 'Bornéu' },
+  pedro_b_1:  { Cls: Modulo5, label: 'Madagascar' },
+  pedro_b_2:  { Cls: Modulo6, label: 'Pantanal' },
+  thiago_1:   { Cls: Modulo7, label: 'Grande Barreira de Coral' },
+  thiago_2:   { Cls: Modulo8, label: 'Cordilheira dos Andes' },
+  egg_triagem: { Cls: TriagemEasterEgg, label: 'Triagem relâmpago' }
 };
 
 let callback = null;

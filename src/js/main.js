@@ -110,6 +110,63 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') $$('.modal-overlay.active').forEach((m) => m.classList.remove('active'));
 });
 
+// Easter egg: digitar "ECO" fora de um input abre um minigame escondido.
+// Está disponível desde o primeiro boot — sem pré-requisito. O timer entre
+// teclas é generoso pra cobrir digitação tranquila.
+let eggSeq = '';
+let eggResetTimer = null;
+document.addEventListener('keydown', (e) => {
+  const tag = (e.target?.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || e.target?.isContentEditable) return;
+  if (e.ctrlKey || e.altKey || e.metaKey) return;
+  if (document.getElementById('minigame-container')?.classList.contains('active')) return;
+  if (!/^[a-z]$/i.test(e.key)) return;
+
+  eggSeq = (eggSeq + e.key.toLowerCase()).slice(-3);
+  clearTimeout(eggResetTimer);
+  eggResetTimer = setTimeout(() => { eggSeq = ''; }, 2000);
+
+  if (eggSeq === 'eco') {
+    eggSeq = '';
+    openEasterEgg();
+  }
+});
+
+// Trigger touch do easter egg: 3 cliques/toques rápidos no contador de missões.
+// Cobre celular e tablet onde não há teclado físico.
+let eggTapCount = 0;
+let eggTapTimer = null;
+const hudProgressEl = $('.hud-progress');
+if (hudProgressEl) {
+  hudProgressEl.style.cursor = 'pointer';
+  hudProgressEl.addEventListener('click', () => {
+    if (document.getElementById('minigame-container')?.classList.contains('active')) return;
+    eggTapCount++;
+    clearTimeout(eggTapTimer);
+    eggTapTimer = setTimeout(() => { eggTapCount = 0; }, 800);
+    if (eggTapCount >= 3) {
+      eggTapCount = 0;
+      openEasterEgg();
+    }
+  });
+}
+
+function openEasterEgg() {
+  // Fecha qualquer modal aberto pra não ficar empilhado por cima.
+  $$('.modal-overlay.active').forEach((m) => m.classList.remove('active'));
+  showToast('🥚 Easter egg encontrado! Triagem relâmpago.', 'success');
+  MiniGames.open('egg_triagem', (success) => {
+    if (success && !state.eggCompleted) {
+      state.eggCompleted = true;
+      saveState();
+      checkAchievements();
+      showToast('Conquista desbloqueada: Caçador de Easter Egg', 'reward');
+    } else if (!success) {
+      showToast('Quase! Tente "ECO" de novo pra repetir.', 'info');
+    }
+  });
+}
+
 if ($('#btn-menu')) $('#btn-menu').addEventListener('click', () => openModal('modal-menu'));
 if ($('#btn-donate')) $('#btn-donate').addEventListener('click', () => openModal('modal-donate'));
 if ($('#btn-pomodoro')) $('#btn-pomodoro').addEventListener('click', () => openModal('modal-pomodoro'));
@@ -484,7 +541,7 @@ function onPomodoroComplete(streak) {
 function checkAchievements() {
   const newUnlocks = AchievementSystem.check(state);
   newUnlocks.forEach((a) => {
-    state.achievements.push(a.id);
+    if (!state.achievements.includes(a.id)) state.achievements.push(a.id);
     AchievementSystem.showUnlockNotification(a);
   });
   if (newUnlocks.length > 0) saveState();

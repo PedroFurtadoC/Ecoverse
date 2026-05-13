@@ -29,14 +29,21 @@ export function renderGallery() {
 
   ACHIEVEMENTS.forEach((a) => {
     const isUnlocked = unlocked.includes(a.id);
+    const isSecret = a.secret === true && !isUnlocked;
     const card = document.createElement('div');
-    card.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+    card.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}${isSecret ? ' secret' : ''}`;
+
+    const icon = isUnlocked ? a.icon : (isSecret ? '👀' : '🔒');
+    const title = isUnlocked ? a.title : (isSecret ? 'Algo escondido…' : '???');
+    const desc = isUnlocked
+      ? a.desc
+      : (isSecret ? (a.hint || 'Há um detalhe esperando ser descoberto por aqui.') : 'Continue jogando para descobrir!');
 
     card.innerHTML = `
-      <span class="ach-icon">${isUnlocked ? a.icon : '🔒'}</span>
+      <span class="ach-icon">${icon}</span>
       <div class="ach-info">
-        <span class="ach-title">${isUnlocked ? a.title : '???'}</span>
-        <span class="ach-desc">${isUnlocked ? a.desc : 'Continue jogando para descobrir!'}</span>
+        <span class="ach-title">${title}</span>
+        <span class="ach-desc">${desc}</span>
       </div>
     `;
     container.appendChild(card);

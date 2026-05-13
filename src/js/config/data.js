@@ -140,7 +140,8 @@ const ACHIEVEMENTS = [
   { id: 'coins_50',         icon: '💰', title: 'Cofre Verde',         desc: 'Acumule 50 moedas.',                                           condition: (s) => s.coins >= 50 },
   { id: 'coins_200',        icon: '🏦', title: 'Banco Ecológico',     desc: 'Acumule 200 moedas.',                                          condition: (s) => s.coins >= 200 },
   { id: 'impact_5',         icon: '🌬️', title: 'Ar Mais Puro',        desc: 'Evite 5 kg de CO₂ pelas suas missões.',                       condition: (s) => s.impact >= 5 },
-  { id: 'impact_10',        icon: '🏔️', title: 'Impacto Real',        desc: 'Evite 10 kg de CO₂ pelas suas missões.',                      condition: (s) => s.impact >= 10 }
+  { id: 'impact_10',        icon: '🏔️', title: 'Impacto Real',        desc: 'Evite 10 kg de CO₂ pelas suas missões.',                      condition: (s) => s.impact >= 10 },
+  { id: 'egg_triagem',      icon: '🥚', title: 'Caçador de Easter Egg', desc: 'Você achou o minigame escondido — triagem relâmpago em 60 segundos. Bem-vindo ao clube.', hint: 'Três letras escondidas no nome do jogo (digite no teclado), ou três toques rápidos no contador de missões.', condition: (s) => s.eggCompleted === true, secret: true }
 ];
 
 // Quizzes ODS — 17 Objetivos de Desenvolvimento Sustentável (ONU, Agenda 2030).
