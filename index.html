@@ -135,25 +135,41 @@
 
       <header class="hud" role="banner">
         <div class="hud-stats">
-          <div class="hud-stat energy" aria-label="Energia">
+          <div
+            class="hud-stat energy"
+            aria-label="Energia: gerada por sessões de Pomodoro, gasta para iniciar missões"
+            title="Energia — sessões de Pomodoro recompensam com energia, que custa pra iniciar cada missão"
+          >
             <img src="assets/icon-seed.svg" alt="" aria-hidden="true" /><span
               id="hud-energy"
               >3</span
             >
           </div>
-          <div class="hud-stat coins" aria-label="Moedas">
+          <div
+            class="hud-stat coins"
+            aria-label="Moedas: ganhas em missões e quizzes ODS"
+            title="Moedas — concluir missões e acertar pelo menos 3 perguntas de um quiz ODS rendem moedas"
+          >
             <img src="assets/icon-coin.svg" alt="" aria-hidden="true" /><span
               id="hud-coins"
               >0</span
             >
           </div>
-          <div class="hud-stat impact" aria-label="Impacto CO2">
+          <div
+            class="hud-stat impact"
+            aria-label="Impacto: quilos de CO2 evitados pelas missões concluídas"
+            title="Impacto — quilos de CO₂ evitados pelas missões que você já concluiu"
+          >
             <img src="assets/icon-impact.svg" alt="" aria-hidden="true" /><span
               id="hud-impact"
               >0</span
             >
           </div>
-          <div class="hud-progress" aria-label="Progresso das missões">
+          <div
+            class="hud-progress"
+            aria-label="Missões concluídas no total de oito"
+            title="Missões concluídas / total — 8 biomas reais, do Pantanal aos Andes"
+          >
             <div class="hud-progress-track">
               <div class="hud-progress-fill" id="hud-progress-fill"></div>
             </div>
