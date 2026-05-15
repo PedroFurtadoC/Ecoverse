@@ -205,9 +205,10 @@ $$('[data-menu-action]').forEach((btn) => {
     if (action === 'leaderboard') setTimeout(() => AuthUI.openLeaderboard(), 220);
     if (action === 'privacy')     open('modal-privacy');
     if (action === 'terms')       open('modal-terms');
-    if (action === 'signout')     AuthUI.signOut();
-    if (action === 'export')      AuthUI.exportData();
-    if (action === 'delete')      AuthUI.deleteAccount();
+    if (action === 'signout')      AuthUI.signOut();
+    if (action === 'export')       AuthUI.exportData();
+    if (action === 'delete')       AuthUI.deleteAccount();
+    if (action === 'edit-nickname') AuthUI.editNickname();
   });
 });
 

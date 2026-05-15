@@ -111,6 +111,30 @@ export async function signOut() {
   deps.showToast('Você saiu. Seu progresso continua salvo neste dispositivo.', 'info');
 }
 
+export async function editNickname() {
+  const user = Auth.getUser();
+  if (!user) return;
+  const current = Auth.getProfile()?.display_name ?? '';
+  const next = window.prompt(
+    'Como você prefere aparecer no ranking?\n\nMáximo 60 caracteres. Em branco, mantém o atual.',
+    current
+  );
+  if (next === null) return; // cancelou
+  const cleaned = next.trim().slice(0, 60);
+  if (!cleaned || cleaned === current) return;
+
+  try {
+    await Auth.updateDisplayName(cleaned);
+    deps.showToast('Apelido atualizado!', 'reward');
+    // Atualiza o nome no card do menu sem esperar o próximo render.
+    const nameEl = document.getElementById('menu-user-name');
+    if (nameEl) nameEl.textContent = cleaned;
+  } catch (err) {
+    deps.showToast('Não consegui salvar agora. Tente daqui a pouco.', 'info');
+    console.warn('[auth-ui] update display name falhou:', err);
+  }
+}
+
 export async function exportData() {
   const user = Auth.getUser();
   if (!user) return;
