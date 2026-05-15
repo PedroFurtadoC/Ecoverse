@@ -1,17 +1,25 @@
 <!--
-  Template do email de Magic Link do Ecoverse.
+  Template de email do Ecoverse — serve pros 2 fluxos de entrada:
 
-  Como aplicar:
-  1. Supabase Dashboard → Authentication → Email Templates → Magic Link
-  2. Cole tudo daqui no campo "Message body".
-  3. Em "Subject heading" coloque: Seu acesso ao Ecoverse
-  4. Save.
+  1. Authentication → Email Templates → **Confirm signup**
+     Subject heading: Seu acesso ao Ecoverse
+     Message body: cole todo o HTML abaixo.
+     (Este template e disparado no PRIMEIRO acesso de um email.)
 
-  Variáveis do Supabase usadas: {{ .ConfirmationURL }} e {{ .Email }}.
-  Não mexer nelas — são substituídas em runtime.
+  2. Authentication → Email Templates → **Magic Link**
+     Subject heading: Seu acesso ao Ecoverse
+     Message body: cole todo o HTML abaixo (mesmo conteudo).
+     (Este template e disparado nos acessos seguintes do mesmo email.)
+
+  Sem aplicar nos DOIS, o primeiro signup vai com o template padrao
+  do Supabase em ingles ("Confirm Your Signup"), o que destoa do
+  resto da identidade visual.
+
+  Variaveis do Supabase usadas: {{ .ConfirmationURL }} e {{ .Email }}.
+  Nao mexer nelas — sao substituidas em runtime.
 
   HTML pensado pra ler bem em Gmail, Outlook web, Apple Mail e mobile.
-  Usa estilo inline porque vários clientes ignoram <style> no head.
+  Usa estilo inline porque varios clientes ignoram <style> no head.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">

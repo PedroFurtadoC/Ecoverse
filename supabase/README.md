@@ -41,21 +41,23 @@ Os dois são idempotentes — rodar de novo não quebra nada.
 
 ## 5. Trigger de novo usuário + hardening
 
-Toda nova conta precisa de uma linha em `profiles` e `progress`. Cole no **SQL Editor**:
+Toda nova conta precisa de uma linha em `profiles` e `progress`. O `display_name` vem do metadata do signup (campo opcional no modal de login) e, se vazio, cai num default neutro tipo `Eco-explorador-A4F8` — não derivado do email, preservando a privacidade do titular.
+
+Cole no **SQL Editor**:
 
 ```sql
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public
 as $$
+declare
+  meta_name text;
+  fallback_name text;
 begin
+  meta_name := nullif(trim(new.raw_user_meta_data->>'display_name'), '');
+  fallback_name := 'Eco-explorador-' || upper(substring(replace(new.id::text, '-', ''), 1, 4));
+
   insert into public.profiles (id, display_name)
-  values (
-    new.id,
-    coalesce(
-      nullif(trim(new.raw_user_meta_data->>'display_name'), ''),
-      split_part(new.email, '@', 1)
-    )
-  );
+  values (new.id, coalesce(meta_name, fallback_name));
 
   insert into public.progress (user_id) values (new.id);
 
@@ -100,16 +102,18 @@ Em **Advisors → Security** o resultado esperado é:
 - Zero erros nas nossas tabelas e funções.
 - Podem aparecer avisos sobre `public.rls_auto_enable()` (função do próprio setup do Supabase, não é nossa) e sobre `public.get_leaderboard()` ser SECURITY DEFINER — esse último é **intencional**: a função expõe só colunas seguras do ranking público, sem acesso direto à tabela `progress`.
 
-## 8. Template do email de magic link
+## 8. Templates de email branded
 
-Substitua o template padrão pelo da marca Ecoverse:
+O Supabase tem templates separados pro **primeiro acesso de um email** (`Confirm signup`) e pros **acessos seguintes** (`Magic Link`). Os dois precisam ser personalizados — senão o primeiro email chega genérico em inglês.
 
-1. **Authentication → Email Templates → Magic Link**.
+Para os dois, faça o mesmo passo:
+
+1. **Authentication → Email Templates → Confirm signup** (e depois **Magic Link**).
 2. **Subject heading**: `Seu acesso ao Ecoverse`.
 3. **Message body**: cole o conteúdo de [`email-magic-link.html`](./email-magic-link.html).
 4. Salve.
 
-O template usa as variáveis `{{ .ConfirmationURL }}` e `{{ .Email }}` do próprio Supabase — não precisa mexer nelas.
+O HTML é o mesmo para os dois templates — o conteúdo do email não muda, só o gatilho. As variáveis `{{ .ConfirmationURL }}` e `{{ .Email }}` são substituídas em runtime pelo Supabase.
 
 ## 9. SMTP custom (opcional, depois do domínio próprio)
 

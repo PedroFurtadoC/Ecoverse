@@ -61,12 +61,20 @@ export function onAuthChange(handler) {
   return () => listeners.delete(handler);
 }
 
-export async function signInWithMagicLink(email) {
+export async function signInWithMagicLink(email, displayName) {
   const supa = await getSupabase();
   if (!supa) throw new Error('Supabase não configurado');
+
+  // displayName vai pro auth.users.raw_user_meta_data, que o trigger
+  // handle_new_user lê. Se vier vazio, o trigger gera "Eco-explorador-XXXX".
+  const cleaned = String(displayName ?? '').trim().slice(0, 60);
+
   const { error } = await supa.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: window.location.origin }
+    options: {
+      emailRedirectTo: window.location.origin,
+      data: cleaned ? { display_name: cleaned } : undefined
+    }
   });
   if (error) throw error;
 }

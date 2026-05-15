@@ -119,6 +119,18 @@ body.auth-disabled .menu-divider {
   color: var(--c-text-muted);
 }
 
+.auth-label__hint {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+.auth-fineprint--inline {
+  margin: -6px 0 2px;
+}
+
 .auth-input {
   width: 100%;
   padding: 12px 14px;

@@ -66,6 +66,7 @@ function bindAuthForm() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = form.elements.email.value.trim();
+    const displayName = form.elements.displayName?.value?.trim() ?? '';
     const consent = form.elements.consent.checked;
     if (!consent) {
       deps.showToast('Aceite os termos pra continuar.', 'info');
@@ -77,7 +78,7 @@ function bindAuthForm() {
     button.textContent = 'Enviando…';
 
     try {
-      await Auth.signInWithMagicLink(email);
+      await Auth.signInWithMagicLink(email, displayName);
       $('#auth-form-wrap').hidden = true;
       $('#auth-sent').hidden = false;
       $('#auth-sent-email').textContent = email;

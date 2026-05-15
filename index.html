@@ -584,6 +584,21 @@
                 required
                 maxlength="120"
               />
+              <label class="auth-label" for="auth-display-name">
+                Como aparece no ranking <span class="auth-label__hint">(opcional)</span>
+              </label>
+              <input
+                class="auth-input"
+                type="text"
+                id="auth-display-name"
+                name="displayName"
+                placeholder="Ex: Eco-explorador, ou um apelido"
+                autocomplete="off"
+                maxlength="60"
+              />
+              <p class="auth-fineprint auth-fineprint--inline">
+                Não é seu nome real — é o nome que vai aparecer pros colegas no ranking. Em branco, geramos um neutro pra você.
+              </p>
               <div class="auth-check">
                 <input type="checkbox" id="auth-consent" name="consent" required />
                 <label for="auth-consent">
