@@ -69,9 +69,9 @@ create policy pomos_insert_own
   with check ((select auth.uid()) = user_id);
 
 -- =============================================================
--- Leaderboard: view derivada de progress + profiles.
--- Acesso controlado pelo grant abaixo. A view em si usa
--- security_invoker = true (definido no schema), então respeita
--- a RLS do usuário consultante.
+-- Leaderboard: o acesso é feito via function get_leaderboard()
+-- definida no schema.sql. A function é SECURITY DEFINER e tem
+-- grant explícito pra anon + authenticated, então o ranking
+-- aparece pra qualquer visitante sem precisar abrir a tabela
+-- progress.
 -- =============================================================
-grant select on public.leaderboard to anon, authenticated;
