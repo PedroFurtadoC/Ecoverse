@@ -1,0 +1,48 @@
+# Mantém o projeto Supabase free ativo.
+#
+# O plano gratuito pausa projetos depois de 7 dias sem requisição.
+# Esse workflow dispara um SELECT trivial 1x por semana e mantém o
+# banco acordado sem custo nenhum. Também roda sob demanda pelo
+# painel do GitHub (botão "Run workflow").
+#
+# Para a UNAERP usar:
+# 1. Settings → Secrets and variables → Actions
+# 2. Cadastrar:
+#    - SUPABASE_URL          (a URL do projeto, ex.: https://xxx.supabase.co)
+#    - SUPABASE_ANON_KEY     (a publishable key, pública por design)
+
+name: keep-supabase-warm
+
+on:
+  schedule:
+    # Toda segunda-feira às 09:00 UTC (06:00 horário de Brasília).
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ping leve no Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::SUPABASE_URL ou SUPABASE_ANON_KEY não configurados em Secrets."
+            exit 1
+          fi
+
+          status=$(curl -sS -o /tmp/resp.json -w "%{http_code}" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1")
+
+          if [ "$status" -ge 200 ] && [ "$status" -lt 300 ]; then
+            echo "Supabase respondeu OK (HTTP $status). Projeto continua ativo."
+          else
+            echo "::error::Supabase respondeu com HTTP $status"
+            cat /tmp/resp.json
+            exit 1
+          fi
