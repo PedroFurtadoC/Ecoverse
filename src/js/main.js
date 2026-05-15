@@ -8,6 +8,7 @@ import { QuizODS } from './modules/quizzes.js';
 import { AchievementSystem } from './modules/achievements.js';
 import * as Auth from './services/auth.js';
 import * as Sync from './services/sync.js';
+import * as AuthUI from './modules/auth-ui.js';
 
 // Modo de teste — `?dev=free` na URL destrava tudo pra revisar o jogo:
 // todas as missões liberadas, sem custo de energia, sem persistir progresso
@@ -188,14 +189,45 @@ $$('.donate-option').forEach((btn) => {
   });
 });
 
-// Atalho do Menu: itens com data-menu-action abrem outros modais.
+// Atalho do Menu: itens com data-menu-action abrem outros modais ou
+// disparam ações de conta. O timeout de 220ms acompanha a animação
+// de fechamento do menu pra não cortar o frame.
 $$('[data-menu-action]').forEach((btn) => {
   btn.addEventListener('click', () => {
     const action = btn.dataset.menuAction;
+    // Privacy/terms podem ser abertos de dentro do próprio modal-auth
+    // (links na checkbox de consentimento) — nesses casos não há menu aberto.
     closeModal('modal-menu');
-    if (action === 'donate') setTimeout(() => openModal('modal-donate'), 220);
-    if (action === 'about')  setTimeout(() => { renderTeam(); openModal('modal-about'); }, 220);
+    const open = (id) => setTimeout(() => openModal(id), 220);
+    if (action === 'donate')      open('modal-donate');
+    if (action === 'about')       setTimeout(() => { renderTeam(); openModal('modal-about'); }, 220);
+    if (action === 'auth')        open('modal-auth');
+    if (action === 'leaderboard') setTimeout(() => AuthUI.openLeaderboard(), 220);
+    if (action === 'privacy')     open('modal-privacy');
+    if (action === 'terms')       open('modal-terms');
+    if (action === 'signout')     AuthUI.signOut();
+    if (action === 'export')      AuthUI.exportData();
+    if (action === 'delete')      AuthUI.deleteAccount();
   });
+});
+
+// Inicializa a UI de auth depois que os listeners do menu já estão registrados.
+AuthUI.init({
+  showToast,
+  openModal,
+  closeModal,
+  buildExportPayload: () => ({
+    energy: state.energy,
+    coins: state.coins,
+    impact: state.impact,
+    completed: state.completed,
+    achievements: state.achievements,
+    planted_trees: state.plantedTrees,
+    pomodoros_completed: state.pomodorosCompleted,
+    best_streak: state.bestStreak,
+    perfect_minigames: state.perfectMinigames,
+    last_saved_at: state.lastSavedAt ?? null
+  })
 });
 
 // Preenche o grid de devs do modal "Sobre". A primeira card é destacada

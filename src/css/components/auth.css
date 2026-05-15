@@ -1,0 +1,436 @@
+/* UI de auth, leaderboard e páginas legais.
+   Reaproveita .modal-overlay/.modal/.modal-header do components/modals.css. */
+
+/* =============================================================
+   Bloco do usuário logado, no topo do menu hambúrguer
+   ============================================================= */
+.menu-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, rgba(46, 204, 113, 0.12), rgba(46, 204, 113, 0.04));
+  border: 1px solid rgba(46, 204, 113, 0.25);
+  border-radius: var(--radius-md);
+}
+
+.menu-user[hidden] { display: none; }
+
+.menu-user__avatar {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(46, 204, 113, 0.2);
+  border-radius: 50%;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.menu-user__lines {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.menu-user__name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-user__email {
+  font-size: 11px;
+  color: var(--c-text-muted);
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Linha separadora dentro do menu */
+.menu-divider {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin: 10px 0;
+}
+
+.menu-divider[hidden] { display: none; }
+
+/* Variantes do menu-item */
+.menu-item[hidden] { display: none; }
+
+.menu-item--soft {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--c-text-muted);
+  opacity: 0.85;
+}
+
+.menu-item--danger {
+  color: #ff8a8a;
+}
+
+.menu-item--danger:hover,
+.menu-item--danger:focus-visible {
+  background: rgba(255, 90, 90, 0.1);
+}
+
+/* Estado global pra esconder coisas quando Supabase não está plugado */
+body.auth-disabled [data-menu-action="auth"],
+body.auth-disabled [data-menu-action="export"],
+body.auth-disabled [data-menu-action="delete"],
+body.auth-disabled [data-menu-action="signout"],
+body.auth-disabled .menu-user,
+body.auth-disabled .menu-divider {
+  display: none !important;
+}
+
+/* =============================================================
+   Modal de login (magic link)
+   ============================================================= */
+.modal--auth {
+  max-width: 460px;
+}
+
+.auth-intro {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-text-muted);
+  margin: 0 0 18px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--c-text-muted);
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  color: var(--c-text);
+  font-size: 15px;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--c-green);
+  background: rgba(46, 204, 113, 0.08);
+}
+
+/* Grid garante alinhamento previsível mesmo quando o texto quebra
+   em várias linhas. O checkbox vira a primeira coluna com largura
+   fixa, e o label preenche o resto. align-items: baseline encaixa
+   o topo do checkbox com a primeira linha do texto. */
+.auth-check {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  column-gap: 12px;
+  align-items: baseline;
+  padding: 4px 0;
+}
+
+.auth-check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--c-green);
+  cursor: pointer;
+  /* Pequeno offset pra centralizar visualmente com a baseline da
+     primeira linha (font 13px / line-height 1.5 = ~19.5px). */
+  transform: translateY(3px);
+}
+
+.auth-check label {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+  cursor: pointer;
+}
+
+/* Links inline (privacidade/termos) renderizados como <button> pra
+   evitar navegação. Reset agressivo pra não herdar min-height de
+   regras globais de touch-target — assim o texto flui naturalmente
+   e quebra de linha não introduz gap visual. */
+.auth-link {
+  display: inline;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  height: auto;
+  font: inherit;
+  color: var(--c-green);
+  text-decoration: underline;
+  cursor: pointer;
+  vertical-align: baseline;
+  line-height: inherit;
+}
+
+.auth-link:hover { opacity: 0.85; }
+
+.auth-link--block {
+  display: block;
+  margin: 14px auto 0;
+  text-align: center;
+}
+
+.auth-submit {
+  min-height: var(--touch-target);
+  margin-top: 6px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  border: 0;
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform var(--transition), filter var(--transition);
+}
+
+.auth-submit:hover { filter: brightness(1.08); }
+.auth-submit:active { transform: translateY(1px); }
+.auth-submit:disabled {
+  filter: grayscale(0.4) brightness(0.85);
+  cursor: not-allowed;
+}
+
+.auth-fineprint {
+  margin: 0;
+  font-size: 11px;
+  color: var(--c-text-muted);
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+/* Tela "link enviado" */
+#auth-sent {
+  text-align: center;
+  padding: 16px 6px;
+}
+
+.auth-sent__icon {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.auth-sent__title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c-green);
+}
+
+.auth-sent__msg {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-text);
+}
+
+.auth-sent__msg strong { color: var(--c-green); }
+
+.auth-sent__hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-text-muted);
+  opacity: 0.75;
+  line-height: 1.5;
+}
+
+/* =============================================================
+   Modal do leaderboard
+   ============================================================= */
+.modal--leaderboard {
+  max-width: 540px;
+}
+
+.lb-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  margin-bottom: 14px;
+}
+
+.lb-tab {
+  flex: 1;
+  padding: 9px 12px;
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--radius-md) - 4px);
+  color: var(--c-text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.lb-tab.active {
+  background: rgba(46, 204, 113, 0.2);
+  color: #fff;
+}
+
+.lb-body {
+  min-height: 120px;
+}
+
+.lb-msg {
+  text-align: center;
+  padding: 28px 12px;
+  color: var(--c-text-muted);
+  font-size: 14px;
+}
+
+.lb-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.lb-row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.lb-row--me {
+  background: rgba(46, 204, 113, 0.12);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.lb-rank {
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-align: center;
+}
+
+.lb-row:nth-child(1) .lb-rank { color: #ffd166; }
+.lb-row:nth-child(2) .lb-rank { color: #c0c0c0; }
+.lb-row:nth-child(3) .lb-rank { color: #cd7f32; }
+
+.lb-name {
+  font-weight: 700;
+  color: var(--c-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lb-stat {
+  font-size: 12px;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+}
+
+.lb-footnote {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--c-text-muted);
+  text-align: center;
+}
+
+.lb-footnote[hidden] { display: none; }
+
+/* =============================================================
+   Modais legais (privacidade e termos)
+   ============================================================= */
+.modal--legal {
+  max-width: 640px;
+}
+
+.legal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.legal-body h3 {
+  margin: 22px 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-green);
+}
+
+.legal-body p,
+.legal-body li {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--c-text);
+}
+
+.legal-body p { margin: 0 0 10px; }
+.legal-body ul { padding-left: 22px; margin: 0 0 12px; }
+.legal-body li { margin-bottom: 4px; }
+
+.legal-meta {
+  font-size: 11px !important;
+  color: var(--c-text-muted) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px !important;
+}
+
+.legal-foot {
+  margin-top: 24px !important;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px !important;
+  color: var(--c-text-muted) !important;
+}
+
+.legal-body a {
+  color: var(--c-green);
+  text-decoration: underline;
+}
+
+.legal-body a:hover { opacity: 0.85; }
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .lb-row {
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+  .lb-row .lb-stat:nth-of-type(2),
+  .lb-row .lb-stat:nth-of-type(3) {
+    display: none;
+  }
+  .modal--legal {
+    max-width: 100%;
+  }
+}

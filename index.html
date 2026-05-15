@@ -492,20 +492,281 @@
           </button>
         </div>
         <div class="modal-body">
+          <div class="menu-user" data-auth-state="signed-in" hidden>
+            <span class="menu-user__avatar" aria-hidden="true">🌱</span>
+            <div class="menu-user__lines">
+              <strong class="menu-user__name" id="menu-user-name"></strong>
+              <span class="menu-user__email" id="menu-user-email"></span>
+            </div>
+          </div>
+
           <div class="menu-list">
+            <button class="menu-item" data-menu-action="auth" data-auth-state="signed-out" hidden>
+              🌱 Entrar ou criar conta
+              <span class="menu-badge">Salva online</span>
+            </button>
+
+            <button class="menu-item" data-menu-action="leaderboard">
+              🏆 Ranking da turma
+            </button>
+
             <button class="menu-item" data-menu-action="about">
-              ℹ️ Sobre o Ecoverse <span class="menu-badge">Equipe</span>
+              ℹ️ Sobre o Ecoverse
+              <span class="menu-badge">Equipe</span>
             </button>
+
             <button class="menu-item" data-menu-action="donate">
-              💝 Doar para ONGs <span class="menu-badge">Disponível</span>
+              💝 Doar para ONGs
             </button>
-            <button class="menu-item">
-              Leaderboard da turma <span class="menu-badge">Após login</span>
+
+            <hr class="menu-divider" data-auth-state="signed-in" hidden />
+
+            <button class="menu-item" data-menu-action="export" data-auth-state="signed-in" hidden>
+              📥 Baixar meus dados (JSON)
             </button>
-            <button class="menu-item">
-              Configurações <span class="menu-badge">Em breve</span>
+
+            <button class="menu-item menu-item--danger" data-menu-action="delete" data-auth-state="signed-in" hidden>
+              🗑️ Excluir minha conta
+            </button>
+
+            <button class="menu-item" data-menu-action="signout" data-auth-state="signed-in" hidden>
+              👋 Sair
+            </button>
+
+            <hr class="menu-divider" />
+
+            <button class="menu-item menu-item--soft" data-menu-action="privacy">
+              Política de privacidade
+            </button>
+
+            <button class="menu-item menu-item--soft" data-menu-action="terms">
+              Termos de uso
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal-overlay"
+      id="modal-auth"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="auth-modal-title"
+    >
+      <div class="modal modal--auth">
+        <div class="modal-header">
+          <h2 class="modal-title" id="auth-modal-title">Entrar no Ecoverse</h2>
+          <button
+            class="modal-close"
+            data-close="modal-auth"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="auth-form-wrap">
+            <p class="auth-intro">
+              Sem senha. Você digita o email, recebe um link, clica, e o Ecoverse
+              te reconhece. Seu progresso passa a ficar salvo na nuvem, dá pra
+              continuar de qualquer dispositivo.
+            </p>
+            <form class="auth-form" id="auth-form" autocomplete="on">
+              <label class="auth-label" for="auth-email">Email</label>
+              <input
+                class="auth-input"
+                type="email"
+                id="auth-email"
+                name="email"
+                placeholder="voce@exemplo.com"
+                autocomplete="email"
+                required
+                maxlength="120"
+              />
+              <div class="auth-check">
+                <input type="checkbox" id="auth-consent" name="consent" required />
+                <label for="auth-consent">
+                  Concordo com a
+                  <button type="button" class="auth-link" data-menu-action="privacy">política de privacidade</button>
+                  e os
+                  <button type="button" class="auth-link" data-menu-action="terms">termos de uso</button>.
+                </label>
+              </div>
+              <button type="submit" class="auth-submit">
+                Receber link no email
+              </button>
+              <p class="auth-fineprint">
+                O link vale 1 hora e funciona uma vez. Não pedimos CPF nem
+                telefone — só email e (opcional) nome de exibição pro ranking.
+              </p>
+            </form>
+          </div>
+
+          <div id="auth-sent" hidden>
+            <div class="auth-sent__icon" aria-hidden="true">📬</div>
+            <h3 class="auth-sent__title">Link enviado</h3>
+            <p class="auth-sent__msg">
+              Cheque <strong id="auth-sent-email"></strong>. Quando clicar no botão
+              do email, você volta pra cá já conectado.
+            </p>
+            <p class="auth-sent__hint">
+              Pode demorar até um minuto. Se não achar, olha em spam ou promoções.
+            </p>
+            <button type="button" class="auth-link auth-link--block" id="auth-sent-back">
+              Digitei o email errado, voltar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal-overlay"
+      id="modal-leaderboard"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="lb-modal-title"
+    >
+      <div class="modal modal--leaderboard">
+        <div class="modal-header">
+          <h2 class="modal-title" id="lb-modal-title">🏆 Ranking da turma</h2>
+          <button
+            class="modal-close"
+            data-close="modal-leaderboard"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="lb-tabs" role="tablist">
+            <button class="lb-tab active" data-lb-tab="total" role="tab" aria-selected="true">
+              Geral
+            </button>
+            <button class="lb-tab" data-lb-tab="month" role="tab" aria-selected="false">
+              Este mês
+            </button>
+          </div>
+          <div class="lb-body" id="lb-body">
+            <p class="lb-msg">Carregando ranking…</p>
+          </div>
+          <p class="lb-footnote" data-auth-state="signed-out" hidden>
+            Crie sua conta pra aparecer no ranking e disputar com a turma.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal-overlay"
+      id="modal-privacy"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="privacy-modal-title"
+    >
+      <div class="modal modal--legal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="privacy-modal-title">Política de privacidade</h2>
+          <button
+            class="modal-close"
+            data-close="modal-privacy"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body legal-body">
+          <p class="legal-meta">Última atualização: maio de 2026.</p>
+
+          <h3>O que coletamos</h3>
+          <ul>
+            <li><strong>Email</strong>, fornecido por você no cadastro — usado pra autenticar via magic link.</li>
+            <li><strong>Nome de exibição</strong>, opcional, usado no ranking (default vira a parte do email antes do @).</li>
+            <li><strong>Progresso de jogo</strong>: missões concluídas, conquistas, energia, moedas, impacto.</li>
+            <li><strong>Sessões de Pomodoro</strong>: data de início, duração, tarefa anotada (opcional).</li>
+            <li><strong>IP e navegador</strong>, automaticamente, pra segurança da sessão.</li>
+          </ul>
+          <p>Não pedimos CPF, telefone, endereço, dados financeiros ou qualquer informação sensível.</p>
+
+          <h3>Por que coletamos</h3>
+          <p>Pra autenticar você, salvar seu progresso e mostrar o ranking de turma. Não usamos seus dados pra publicidade nem repassamos a terceiros.</p>
+
+          <h3>Onde os dados ficam</h3>
+          <p>Em servidores Supabase, hospedados pela AWS em us-east-1 (EUA). Essa transferência internacional é autorizada por consentimento explícito no cadastro e por cláusulas contratuais padrão.</p>
+
+          <h3>Seus direitos (Art. 18 da LGPD)</h3>
+          <ul>
+            <li>Ver seus dados — tudo aparece no menu de perfil quando você está logado.</li>
+            <li>Editar — nome de exibição é editável a qualquer momento.</li>
+            <li>Baixar tudo em JSON — botão "Baixar meus dados" no menu.</li>
+            <li>Excluir a conta — botão "Excluir minha conta" remove todos os dados pessoais imediatamente.</li>
+            <li>Esclarecimentos — escreva para a equipe via GitHub do projeto.</li>
+          </ul>
+
+          <h3>Tempo de retenção</h3>
+          <p>Enquanto sua conta estiver ativa. Se você excluir, removemos no mesmo instante. Estatísticas agregadas anônimas podem ser preservadas.</p>
+
+          <h3>Menores de idade</h3>
+          <p>Ao usar o Ecoverse, você declara ter ao menos 18 anos ou autorização dos responsáveis. Não coletamos conscientemente dados de menores de 13 anos.</p>
+
+          <h3>Mudanças nesta política</h3>
+          <p>Quando algo relevante mudar, atualizamos esta página e avisamos por email com 30 dias de antecedência. O histórico fica público no repositório do projeto.</p>
+
+          <p class="legal-foot">
+            Encarregado pelo Tratamento de Dados (DPO): Pedro Furtado Cunha — contato via
+            <a href="https://github.com/PedroFurtadoC/Ecoverse" target="_blank" rel="noopener noreferrer">repositório</a>.
+            Quando o projeto for transferido para a UNAERP, o contato passa a ser institucional.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal-overlay"
+      id="modal-terms"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="terms-modal-title"
+    >
+      <div class="modal modal--legal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="terms-modal-title">Termos de uso</h2>
+          <button
+            class="modal-close"
+            data-close="modal-terms"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body legal-body">
+          <p class="legal-meta">Última atualização: maio de 2026.</p>
+
+          <h3>O que é</h3>
+          <p>O Ecoverse é uma plataforma educacional gratuita sobre sustentabilidade e gestão de resíduos, desenvolvida por estudantes da UNAERP como trabalho acadêmico.</p>
+
+          <h3>Como funciona</h3>
+          <p>Você pode jogar sem cadastro (progresso fica salvo só neste navegador) ou criar conta com magic link (progresso vai pra nuvem e aparece no ranking de turma). É opcional — escolha sua.</p>
+
+          <h3>Conduta</h3>
+          <ul>
+            <li>Use a plataforma pra estudar, jogar e aprender. Nada de fim ilegal.</li>
+            <li>Não tente acessar dados de outros usuários nem manipular o ranking com contas falsas.</li>
+            <li>Escolha um nome de exibição respeitoso. Reservamos o direito de remover nomes inadequados.</li>
+          </ul>
+
+          <h3>Propriedade intelectual</h3>
+          <p>O código-fonte é distribuído sob licença MIT no <a href="https://github.com/PedroFurtadoC/Ecoverse" target="_blank" rel="noopener noreferrer">repositório público</a>. Textos, ilustrações e identidade visual são de autoria dos colaboradores. Reutilização pessoal e educacional é livre. Uso comercial requer aviso prévio.</p>
+
+          <h3>Disponibilidade</h3>
+          <p>Plataforma fornecida "como está". É um projeto acadêmico — pode ser pausado, alterado ou descontinuado. Avisaremos quando possível.</p>
+
+          <h3>Conta</h3>
+          <p>Você exclui a sua quando quiser pelo menu. A equipe pode suspender contas que violem estes termos, com aviso quando possível.</p>
+
+          <h3>Foro</h3>
+          <p>Comarca de Ribeirão Preto/SP.</p>
         </div>
       </div>
     </div>
