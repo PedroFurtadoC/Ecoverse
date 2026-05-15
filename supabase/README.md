@@ -93,10 +93,24 @@ Produção — no painel Vercel do projeto, **Settings → Environment Variables
 No SQL Editor:
 
 ```sql
-select * from public.leaderboard;
+select * from public.get_leaderboard('total', 50);
 ```
 
-Deve retornar zero linhas sem erro de permissão. Se der erro, alguma policy não foi aplicada.
+Deve retornar zero linhas sem erro. Se der "permission denied for table", o grant da função pras roles anon/authenticated não foi aplicado — rode `policies.sql` de novo.
+
+Pra conferir que as tabelas têm os GRANTs corretos (anon lê profiles pro ranking, authenticated faz CRUD nas próprias linhas):
+
+```sql
+select grantee, table_name, privilege_type
+from information_schema.table_privileges
+where table_schema = 'public'
+  and table_name in ('profiles','progress','pomodoro_sessions')
+  and grantee in ('anon','authenticated')
+  and privilege_type in ('SELECT','INSERT','UPDATE','DELETE')
+order by table_name, grantee, privilege_type;
+```
+
+Esperado: 12 linhas (4 SELECT/INSERT/UPDATE/DELETE em progress, 5 em profiles, 3 em pomodoro_sessions).
 
 Em **Advisors → Security** o resultado esperado é:
 - Zero erros nas nossas tabelas e funções.

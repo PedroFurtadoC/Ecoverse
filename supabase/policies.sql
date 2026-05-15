@@ -6,6 +6,21 @@
 -- especialmente em queries que tocam várias linhas como o leaderboard.
 
 -- =============================================================
+-- GRANTs basicos pras roles do Supabase. Sem isso, o Postgres
+-- bloqueia qualquer SELECT/INSERT/UPDATE/DELETE com "permission
+-- denied for table" antes mesmo de avaliar a RLS — porque tabelas
+-- criadas via SQL direto so recebem privilegios secundarios pra
+-- anon/authenticated. As policies abaixo continuam sendo o que
+-- de fato restringe os dados; estes grants so abrem a porta.
+-- =============================================================
+grant select on public.profiles to anon, authenticated;
+grant insert, update, delete on public.profiles to authenticated;
+
+grant select, insert, update, delete on public.progress to authenticated;
+
+grant select, insert, delete on public.pomodoro_sessions to authenticated;
+
+-- =============================================================
 -- profiles: legível por qualquer um (alimenta o leaderboard),
 -- gravável só pelo dono.
 -- =============================================================
