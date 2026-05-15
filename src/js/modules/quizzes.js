@@ -1,8 +1,14 @@
 import { QUIZ_ODS_DATA } from '../config/data.js';
-import { state } from '../store/state.js';
+import { state, saveState } from '../store/state.js';
 import { emit, EVENTS } from '../store/events.js';
 
 let container, gallery, headerCount, headerPhase, closeBtn, playerEl;
+
+// Callback opcional injetado pelo main.js: quando o usuario conclui um quiz
+// e mexemos em state.quizzes, queremos disparar tambem o sync na nuvem.
+// O main.js passa a sua funcao persist() aqui no init pra evitar dependencia
+// circular entre quizzes.js e services/sync.js.
+let onChange = () => {};
 
 function initDOM() {
   if (container) return;
@@ -14,30 +20,6 @@ function initDOM() {
   playerEl    = document.getElementById('quiz-ods-player');
 
   if (closeBtn) closeBtn.addEventListener('click', closeQuizGallery);
-}
-
-let quizState = {
-  completed: {},
-  totalStars: 0
-};
-
-const STORAGE_KEY = 'ecoverse_quiz_ods_v1';
-
-function saveQuizState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(quizState));
-  } catch (e) { /* silent */ }
-}
-
-function loadQuizState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const s = JSON.parse(raw);
-      quizState.completed = s.completed || {};
-      quizState.totalStars = s.totalStars || 0;
-    }
-  } catch (e) { }
 }
 
 function getCompletedMissions() {
@@ -55,15 +37,19 @@ function getCurrentPhase() {
 function getOdsState(ods) {
   const phase = getCurrentPhase();
   if (phase < ods.unlockPhase) return 'locked';
-  if (quizState.completed[ods.id]) {
-    return quizState.completed[ods.id].perfect ? 'perfect' : 'completed';
-  }
+  const done = state.quizzes?.[ods.id];
+  if (done) return done.perfect ? 'perfect' : 'completed';
   return 'available';
+}
+
+// Inicialização do módulo. main.js passa a callback de persistência (saveState
+// local + scheduleSync na nuvem) pra ser chamada sempre que state.quizzes muda.
+export function init({ onChange: handler } = {}) {
+  if (typeof handler === 'function') onChange = handler;
 }
 
 export function openQuizGallery() {
   initDOM();
-  loadQuizState();
   renderGallery();
   if (container) {
     container.classList.add('active');
@@ -83,7 +69,7 @@ export function renderGallery() {
   playerEl.classList.remove('active');
 
   const phase = getCurrentPhase();
-  const completedCount = Object.keys(quizState.completed).length;
+  const completedCount = Object.keys(state.quizzes || {}).length;
 
   if (headerCount) headerCount.textContent = `${completedCount}/17`;
   if (headerPhase) {
@@ -129,32 +115,35 @@ export function renderGallery() {
   });
 }
 
-function createOdsCard(ods, state) {
+// Recebe o estado visual do card como `cardState` pra evitar sombrear o
+// `state` importado da store — antes esse shadow fazia state.quizzes virar
+// undefined dentro desta função e o score não renderizava.
+function createOdsCard(ods, cardState) {
   const card = document.createElement('div');
-  card.className = `quiz-ods-card ${state}`;
+  card.className = `quiz-ods-card ${cardState}`;
   card.style.setProperty('--ods-color', ods.color);
 
   const starsHtml = getStarsHtml(ods);
-  const completionData = quizState.completed[ods.id];
+  const completionData = state.quizzes?.[ods.id];
   const scoreText = completionData ? `${completionData.score}/5` : '';
 
   card.innerHTML = `
     <div class="qoc-glow"></div>
     <div class="qoc-number">ODS ${ods.id}</div>
-    <div class="qoc-icon">${state === 'locked' ? '🔒' : ods.icon}</div>
+    <div class="qoc-icon">${cardState === 'locked' ? '🔒' : ods.icon}</div>
     <div class="qoc-title">${ods.title}</div>
-    <div class="qoc-desc">${state === 'locked' ? 'Bloqueado' : ods.desc}</div>
+    <div class="qoc-desc">${cardState === 'locked' ? 'Bloqueado' : ods.desc}</div>
     <div class="qoc-stars">${starsHtml}</div>
     <div class="qoc-score">${scoreText}</div>
-    ${state === 'completed' || state === 'perfect' ? '<div class="qoc-badge">' + (state === 'perfect' ? '⭐' : '✅') + '</div>' : ''}
-    ${state === 'available' ? '<div class="qoc-play">▶ Jogar</div>' : ''}
-    ${state === 'completed' ? '<div class="qoc-play qoc-replay">↻ Jogar novamente</div>' : ''}
+    ${cardState === 'completed' || cardState === 'perfect' ? '<div class="qoc-badge">' + (cardState === 'perfect' ? '⭐' : '✅') + '</div>' : ''}
+    ${cardState === 'available' ? '<div class="qoc-play">▶ Jogar</div>' : ''}
+    ${cardState === 'completed' ? '<div class="qoc-play qoc-replay">↻ Jogar novamente</div>' : ''}
   `;
 
-  if (state === 'available' || state === 'completed') {
+  if (cardState === 'available' || cardState === 'completed') {
     card.addEventListener('click', () => startQuiz(ods));
     card.style.cursor = 'pointer';
-  } else if (state === 'locked') {
+  } else if (cardState === 'locked') {
     card.addEventListener('click', () => {
       card.classList.add('shake');
       setTimeout(() => card.classList.remove('shake'), 600);
@@ -165,7 +154,7 @@ function createOdsCard(ods, state) {
 }
 
 function getStarsHtml(ods) {
-  const data = quizState.completed[ods.id];
+  const data = state.quizzes?.[ods.id];
   if (!data) return '<span class="qoc-star empty">☆</span><span class="qoc-star empty">☆</span><span class="qoc-star empty">☆</span>';
   const stars = data.perfect ? 3 : data.score >= 3 ? 2 : 1;
   let html = '';
@@ -323,7 +312,17 @@ function startQuiz(ods) {
     const perfect = score === 5;
     const passed = score >= 3;
     const stars = perfect ? 3 : score >= 3 ? 2 : score >= 1 ? 1 : 0;
-    const reward = passed ? (perfect ? ods.reward * 2 : ods.reward) : 0;
+
+    // Anti-farming: só credita moedas quando o quiz é uma novidade ou um
+    // upgrade real. Refazer um quiz com a mesma ou pior pontuação não dá
+    // recompensa de novo — evita inflar o ranking da turma artificialmente.
+    if (!state.quizzes) state.quizzes = {};
+    const prev = state.quizzes[ods.id];
+    const isFirstWin = passed && !prev;
+    const isUpgrade  = passed && prev && score > prev.score;
+    const reward = (isFirstWin || isUpgrade)
+      ? (perfect ? ods.reward * 2 : ods.reward)
+      : 0;
 
     resultEl.style.display = '';
     resultIcon.textContent = perfect ? '🏆' : passed ? '✅' : '❌';
@@ -339,18 +338,20 @@ function startQuiz(ods) {
     if (reward > 0) {
       resultReward.innerHTML = `<span class="qop-reward-coins">🪙 +${reward} moedas</span>`;
       emit(EVENTS.REWARD, { energy: 0, coins: reward });
+    } else if (passed) {
+      resultReward.innerHTML = '<span class="qop-reward-none">Você já tinha completado este quiz. Treino vale, mas não rende moedas de novo.</span>';
     } else {
       resultReward.innerHTML = '<span class="qop-reward-none">Acerte pelo menos 3 para ganhar recompensa!</span>';
     }
 
     if (passed) {
-      const prev = quizState.completed[ods.id];
+      const attempts = (prev?.attempts || 0) + 1;
       if (!prev || score > prev.score) {
-        quizState.completed[ods.id] = { score, perfect, attempts: (prev?.attempts || 0) + 1 };
+        state.quizzes[ods.id] = { score, perfect, attempts };
       } else {
-        quizState.completed[ods.id].attempts = (prev?.attempts || 0) + 1;
+        state.quizzes[ods.id] = { ...prev, attempts };
       }
-      saveQuizState();
+      onChange();
     }
 
     resultBtn.onclick = () => {
@@ -371,4 +372,4 @@ function shuffle(arr) {
   return arr;
 }
 
-export const QuizODS = { open: openQuizGallery, close: closeQuizGallery, renderGallery };
+export const QuizODS = { init, open: openQuizGallery, close: closeQuizGallery, renderGallery };

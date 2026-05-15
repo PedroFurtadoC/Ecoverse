@@ -11,6 +11,9 @@ export const state = {
   perfectMinigames: 0,
   achievements: [],
   plantedTrees: [],
+  // Progresso dos quizzes ODS por id: { "1": { score, perfect, attempts }, ... }
+  // Vive aqui no estado principal pra ir junto com o save e o sync na nuvem.
+  quizzes: {},
   eggCompleted: false,
   lastSavedAt: null
 };
@@ -26,6 +29,7 @@ export function saveState() {
       perfectMinigames: state.perfectMinigames,
       achievements: state.achievements,
       plantedTrees: state.plantedTrees,
+      quizzes: state.quizzes,
       eggCompleted: state.eggCompleted,
       lastSavedAt: state.lastSavedAt
     }));
@@ -46,6 +50,7 @@ export function loadState() {
       state.perfectMinigames    = s.perfectMinigames ?? 0;
       state.achievements        = s.achievements ?? [];
       state.plantedTrees        = s.plantedTrees ?? [];
+      state.quizzes             = s.quizzes ?? {};
       state.eggCompleted        = s.eggCompleted === true;
       state.lastSavedAt         = s.lastSavedAt ?? null;
     }

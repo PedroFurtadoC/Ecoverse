@@ -28,6 +28,8 @@ create table if not exists public.progress (
   pomodoros_completed int not null default 0,
   best_streak        int  not null default 0,
   perfect_minigames  int  not null default 0,
+  -- progresso dos 17 quizzes ODS por id: { "1": { score, perfect, attempts }, ... }
+  quizzes            jsonb not null default '{}'::jsonb,
   updated_at         timestamptz not null default now()
 );
 

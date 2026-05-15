@@ -166,7 +166,7 @@ function openEasterEgg() {
         return;
       }
       state.eggCompleted = true;
-      saveState();
+      persist();
       checkAchievements();
       showToast('Conquista desbloqueada: Caçador de Easter Egg', 'reward');
     } else if (!success) {
@@ -455,7 +455,7 @@ function plantTree(nearLat, nearLng, count) {
     };
     state.plantedTrees.push(tree);
   }
-  saveState();
+  persist();
   renderPlantedTreesOnGlobe();
 }
 
@@ -531,7 +531,7 @@ if (btnStartMission) {
           completeMission(m, perfect);
         } else {
           if (willCharge) state.energy += m.costEnergy;
-          updateHUD(); saveState();
+          updateHUD(); persist();
           showToast('Missão falhou. Energia devolvida. Tente novamente!', 'info');
         }
       });
@@ -546,7 +546,7 @@ function completeMission(mission, perfect) {
   state.impact += mission.impactCO2;
   state.completed.push(mission.id);
   if (perfect) state.perfectMinigames++;
-  saveState(); updateHUD(); celebrate();
+  persist(); updateHUD(); celebrate();
 
   // Show completion photo modal
   showCompletionPhoto(mission);
@@ -604,13 +604,22 @@ function showCompletionPhoto(mission) {
 function addReward(energy, coins) {
   state.energy += energy;
   state.coins += coins;
-  saveState(); updateHUD();
+  persist(); updateHUD();
+}
+
+// Centraliza saveState + sync na nuvem. Antes vários caminhos chamavam
+// só saveState() e o Supabase ficava sem receber o progresso (missão
+// concluída, conquistas, árvores plantadas). Sempre que mutamos state,
+// passamos por aqui — debounce de 2s no Sync agrupa as mutações.
+function persist() {
+  saveState();
+  Sync.scheduleSync();
 }
 
 function onPomodoroComplete(streak) {
   state.pomodorosCompleted++;
   if (streak > state.bestStreak) state.bestStreak = streak;
-  saveState(); checkAchievements();
+  persist(); checkAchievements();
   const biome = MISSIONS[Math.floor(Math.random() * MISSIONS.length)];
   plantTree(biome.lat, biome.lng, 1);
   showToast('🌳 Uma nova árvore foi plantada no planeta!', 'success');
@@ -622,7 +631,7 @@ function checkAchievements() {
     if (!state.achievements.includes(a.id)) state.achievements.push(a.id);
     AchievementSystem.showUnlockNotification(a);
   });
-  if (newUnlocks.length > 0) saveState();
+  if (newUnlocks.length > 0) persist();
 }
 
 on(EVENTS.REWARD, ({ energy = 0, coins = 0 }) => { addReward(energy, coins); Sync.scheduleSync(); });
@@ -716,17 +725,45 @@ async function loadAssets() {
   await startGame();
 }
 
+// Considera "progresso real" qualquer coisa que indique que o jogador
+// realmente avançou — moedas, missão concluída, pomodoro, conquista ou
+// quiz feito. Usado pra decidir quem vence no merge nuvem ↔ local.
+function hasMeaningfulProgress(s) {
+  if (!s) return false;
+  return (s.coins ?? 0) > 0
+      || (s.completed?.length ?? 0) > 0
+      || (s.pomodoros_completed ?? s.pomodorosCompleted ?? 0) > 0
+      || (s.achievements?.length ?? 0) > 0
+      || Object.keys(s.quizzes ?? {}).length > 0;
+}
+
 async function startGame() {
   loadState();
   AchievementSystem.init(state.achievements);
+  QuizODS.init({ onChange: persist });
   Pomodoro.init();
   syncHUDImmediate();
   resizeCanvas();
   Auth.init().then(async (user) => {
     if (!user) return;
     const cloudState = await Sync.pullState();
-    if (cloudState && new Date(cloudState.updated_at) > new Date(state.lastSavedAt ?? 0)) {
-      // Estado de nuvem mais recente — adota.
+    if (!cloudState) {
+      // Sem linha na nuvem ainda — manda o local pra cima.
+      Sync.scheduleSync();
+      return;
+    }
+
+    const cloudIsNewer = new Date(cloudState.updated_at) > new Date(state.lastSavedAt ?? 0);
+    const cloudHasProgress = hasMeaningfulProgress(cloudState);
+    const localHasProgress = hasMeaningfulProgress(state);
+
+    // Adota a nuvem quando ela tem mais coisa que o local OU é genuinamente
+    // mais recente E tem algum progresso. Se o local tem progresso e a nuvem
+    // está zerada (caso típico do primeiro signup após jogar anônimo),
+    // preserva o local e manda pra cima.
+    const adoptCloud = cloudHasProgress && (!localHasProgress || cloudIsNewer);
+
+    if (adoptCloud) {
       state.energy = cloudState.energy ?? state.energy;
       state.coins = cloudState.coins ?? state.coins;
       state.impact = Number(cloudState.impact ?? state.impact);
@@ -736,6 +773,8 @@ async function startGame() {
       state.pomodorosCompleted = cloudState.pomodoros_completed ?? state.pomodorosCompleted;
       state.bestStreak = cloudState.best_streak ?? state.bestStreak;
       state.perfectMinigames = cloudState.perfect_minigames ?? state.perfectMinigames;
+      state.quizzes = cloudState.quizzes ?? state.quizzes ?? {};
+      AchievementSystem.init(state.achievements);
       saveState();
       syncHUDImmediate();
       refreshGlobeMarkers();

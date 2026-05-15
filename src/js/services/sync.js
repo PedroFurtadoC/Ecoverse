@@ -15,7 +15,8 @@ function snapshot() {
     planted_trees: state.plantedTrees,
     pomodoros_completed: state.pomodorosCompleted,
     best_streak: state.bestStreak,
-    perfect_minigames: state.perfectMinigames
+    perfect_minigames: state.perfectMinigames,
+    quizzes: state.quizzes ?? {}
   };
 }
 
