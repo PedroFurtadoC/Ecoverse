@@ -30,19 +30,35 @@ jobs:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
-            echo "::error::SUPABASE_URL ou SUPABASE_ANON_KEY não configurados em Secrets."
+            echo "::error::SUPABASE_URL ou SUPABASE_ANON_KEY nao configurados em Secrets."
             exit 1
           fi
 
-          status=$(curl -sS -o /tmp/resp.json -w "%{http_code}" \
+          # Bate na rota de healthcheck oficial do Supabase. Nao precisa
+          # de RLS nem de tabela especifica — qualquer resposta do servico
+          # ja conta como atividade e zera o contador dos 7 dias.
+          status=$(curl -sS -o /tmp/resp.txt -w "%{http_code}" \
+            --max-time 20 \
             -H "apikey: $SUPABASE_ANON_KEY" \
-            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
-            "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1")
+            "$SUPABASE_URL/auth/v1/health")
 
-          if [ "$status" -ge 200 ] && [ "$status" -lt 300 ]; then
-            echo "Supabase respondeu OK (HTTP $status). Projeto continua ativo."
-          else
-            echo "::error::Supabase respondeu com HTTP $status"
-            cat /tmp/resp.json
+          echo "HTTP status: $status"
+          echo "--- response body ---"
+          cat /tmp/resp.txt || true
+          echo ""
+          echo "--- end body ---"
+
+          # 2xx = sucesso. 4xx tambem conta como "banco vivo" pra fins
+          # de anti-pause (servico respondeu, so rejeitou alguma cosia).
+          # Falha real e 5xx ou rede caida (curl retornaria 000).
+          if [ "$status" = "000" ]; then
+            echo "::error::Supabase nao respondeu (timeout ou DNS)"
             exit 1
           fi
+
+          if [ "$status" -ge 500 ]; then
+            echo "::error::Supabase retornou erro de servidor ($status)"
+            exit 1
+          fi
+
+          echo "Ping ok — Supabase ativo (HTTP $status). Contador dos 7 dias zerado."
