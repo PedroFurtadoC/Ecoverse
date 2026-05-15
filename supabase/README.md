@@ -98,4 +98,30 @@ Deve retornar zero linhas sem erro de permissão. Se der erro, alguma policy nã
 
 Em **Advisors → Security** o resultado esperado é:
 - Zero erros nas nossas tabelas e funções.
-- Pode aparecer um aviso sobre `public.rls_auto_enable()` — essa função vem do próprio setup do Supabase, não é nossa, e é seguro ignorar.
+- Podem aparecer avisos sobre `public.rls_auto_enable()` (função do próprio setup do Supabase, não é nossa) e sobre `public.get_leaderboard()` ser SECURITY DEFINER — esse último é **intencional**: a função expõe só colunas seguras do ranking público, sem acesso direto à tabela `progress`.
+
+## 8. Template do email de magic link
+
+Substitua o template padrão pelo da marca Ecoverse:
+
+1. **Authentication → Email Templates → Magic Link**.
+2. **Subject heading**: `Seu acesso ao Ecoverse`.
+3. **Message body**: cole o conteúdo de [`email-magic-link.html`](./email-magic-link.html).
+4. Salve.
+
+O template usa as variáveis `{{ .ConfirmationURL }}` e `{{ .Email }}` do próprio Supabase — não precisa mexer nelas.
+
+## 9. SMTP custom (opcional, depois do domínio próprio)
+
+O Supabase free entrega magic links via SMTP nativo limitado a 3-4 emails/hora. Pra ter `noreply@ecoverse.dev` no remetente e escala maior:
+
+1. Crie conta no [Resend](https://resend.com) (free, 3000 emails/mês).
+2. Adicione o domínio `ecoverse.dev` no Resend e copie os 3 registros DNS (SPF, DKIM, DMARC).
+3. No painel da Vercel: **Domains → ecoverse.dev → DNS Records** → cole os três registros.
+4. Aguarde verificação do domínio no Resend (~10 min).
+5. Crie uma API key no Resend.
+6. No Supabase: **Authentication → SMTP Settings** → enable custom SMTP:
+   - Host: `smtp.resend.com` · Port: `587`
+   - Username: `resend` · Password: a API key
+   - Sender email: `noreply@ecoverse.dev`
+   - Sender name: `Ecoverse`

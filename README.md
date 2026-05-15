@@ -35,7 +35,8 @@ npm run preview     # serve dist/ localmente
 - **Pomodoro** integrado — sessões de 25/5/15 minutos geram energia e moedas para iniciar missões.
 - **Quizzes ODS** — 17 quizzes baseados nos Objetivos de Desenvolvimento Sustentável da ONU, desbloqueados em três fases conforme você completa missões.
 - **15 conquistas** que ensinam conceitos de resíduos enquanto recompensam.
-- **Leaderboard de turma** opcional via Supabase — para acompanhar o progresso coletivo.
+- **Conta opcional com magic link** (sem senha). Quem cadastra sincroniza o progresso na nuvem e aparece no **ranking de turma** (filtros Mensal/Geral).
+- **Conformidade com a LGPD** — políticas claras, botão de exclusão de conta e exportação de dados em JSON direto no menu.
 
 ---
 
@@ -77,9 +78,11 @@ Hospedagem na **Vercel**, com deploy automático a partir da branch `main`:
 
 ## Banco de dados (Supabase)
 
-O leaderboard de turma e a sincronização de progresso entre dispositivos são **opcionais** e usam Supabase. Sem configurar, o jogo roda usando `localStorage` no navegador.
+O leaderboard de turma, autenticação por magic link e a sincronização de progresso entre dispositivos usam Supabase. Sem as variáveis de ambiente configuradas, o jogo roda anônimo usando `localStorage` no navegador — toda a parte de login fica oculta.
 
-Setup em [`supabase/README.md`](./supabase/README.md).
+- Setup completo em [`supabase/README.md`](./supabase/README.md).
+- Template do email de magic link branded em [`supabase/email-magic-link.html`](./supabase/email-magic-link.html).
+- Workflow [`keep-supabase-warm`](./.github/workflows/keep-supabase-warm.yml) faz um ping semanal automático pra evitar o auto-pause do plano free.
 
 ---
 
