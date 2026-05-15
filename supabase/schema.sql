@@ -1,5 +1,6 @@
 -- Schema do Ecoverse — Supabase (Postgres)
--- Rode este arquivo no SQL Editor do projeto Supabase. Idempotente.
+-- Tabelas, view de leaderboard e triggers de updated_at.
+-- Idempotente — pode rodar várias vezes sem quebrar nada.
 
 -- =============================================================
 -- profiles: 1 linha por usuário autenticado
@@ -47,9 +48,10 @@ create index if not exists idx_pomodoro_sessions_user_started
 
 -- =============================================================
 -- Trigger para atualizar updated_at automaticamente
+-- search_path fixo em public para evitar schema poisoning.
 -- =============================================================
 create or replace function public.touch_updated_at()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql set search_path = public as $$
 begin
   new.updated_at = now();
   return new;
@@ -67,9 +69,14 @@ create trigger trg_profiles_updated_at
   for each row execute function public.touch_updated_at();
 
 -- =============================================================
--- View pública do leaderboard (sem expor user_id)
+-- View pública do leaderboard (sem expor email)
+-- security_invoker = true → respeita a RLS do consultante,
+-- não da role que criou a view.
 -- =============================================================
-create or replace view public.leaderboard as
+drop view if exists public.leaderboard;
+
+create view public.leaderboard
+with (security_invoker = true) as
 select
   p.user_id,
   pr.display_name,
