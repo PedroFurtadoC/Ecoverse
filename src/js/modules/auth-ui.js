@@ -83,12 +83,26 @@ function bindAuthForm() {
       $('#auth-sent').hidden = false;
       $('#auth-sent-email').textContent = email;
     } catch (err) {
-      const msg = err?.message?.includes('rate') || err?.status === 429
-        ? 'Aguarde um minuto antes de pedir outro link.'
-        : 'Não foi possível enviar agora. Tente novamente em alguns segundos.';
+      // O Supabase retorna 429 com error_code: over_email_send_rate_limit
+      // quando o limite do SMTP nativo (3-4 emails/hora por email) estoura.
+      // O message não contém "rate" — precisa olhar o code/status também.
+      const isRateLimit = err?.status === 429
+        || err?.code === 'over_email_send_rate_limit'
+        || /rate.?limit|over_email/i.test(err?.message ?? '');
+      const isInvalidEmail = /invalid.*email|email.*invalid/i.test(err?.message ?? '');
+
+      let msg;
+      if (isRateLimit) {
+        msg = 'Muitos pedidos em pouco tempo. Espere uns 30 minutos e tente de novo (limite do servidor de email).';
+      } else if (isInvalidEmail) {
+        msg = 'Esse email não parece válido. Confere e tenta de novo.';
+      } else {
+        msg = 'Não foi possível enviar agora. Tente novamente em alguns segundos.';
+      }
       deps.showToast(msg, 'info');
       button.disabled = false;
       button.textContent = original;
+      console.warn('[auth] envio do magic link falhou:', err);
     }
   });
 
