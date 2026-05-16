@@ -37,7 +37,48 @@ export function init(injected) {
 
   bindAuthForm();
   bindLeaderboardTabs();
+  bindSyncStatus();
 }
+
+// =============================================================
+// Indicador de status do sync no menu.
+// Subscribe na máquina de eventos do sync.js e reflete na bolinha
+// + label visíveis no card do usuário logado.
+// =============================================================
+const SYNC_LABELS = {
+  idle:     'Aguardando…',
+  syncing:  'Sincronizando…',
+  online:   'Sincronizado',
+  offline:  'Offline · só local',
+  error:    'Falha — tente sincronizar de novo'
+};
+
+function bindSyncStatus() {
+  const el = $('#sync-status');
+  if (!el) return;
+  const labelEl = el.querySelector('.sync-status__label');
+  Sync.onStatusChange((status, syncedAt) => {
+    el.dataset.status = status;
+    let label = SYNC_LABELS[status] ?? '';
+    if (status === 'online' && syncedAt) {
+      label = `${SYNC_LABELS.online} · ${formatRelativeTime(syncedAt)}`;
+    }
+    if (labelEl) labelEl.textContent = label;
+  });
+}
+
+function formatRelativeTime(date) {
+  const diff = Math.max(0, Date.now() - date.getTime());
+  const sec = Math.floor(diff / 1000);
+  if (sec < 5)   return 'agora';
+  if (sec < 60)  return `há ${sec}s`;
+  const min = Math.floor(sec / 60);
+  if (min < 60)  return `há ${min}min`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24)   return `há ${hr}h`;
+  return date.toLocaleDateString('pt-BR');
+}
+
 
 function syncMenuByAuth(user) {
   const isIn = !!user;

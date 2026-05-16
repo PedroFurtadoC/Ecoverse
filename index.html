@@ -513,6 +513,10 @@
             <div class="menu-user__lines">
               <strong class="menu-user__name" id="menu-user-name"></strong>
               <span class="menu-user__email" id="menu-user-email"></span>
+              <span class="sync-status" id="sync-status" data-status="idle" aria-live="polite">
+                <span class="sync-status__dot" aria-hidden="true"></span>
+                <span class="sync-status__label">Sincronizando…</span>
+              </span>
             </div>
           </div>
 
@@ -536,6 +540,10 @@
             </button>
 
             <hr class="menu-divider" data-auth-state="signed-in" hidden />
+
+            <button class="menu-item" data-menu-action="sync-now" data-auth-state="signed-in" hidden>
+              🔄 Sincronizar agora
+            </button>
 
             <button class="menu-item" data-menu-action="edit-nickname" data-auth-state="signed-in" hidden>
               ✏️ Trocar apelido do ranking

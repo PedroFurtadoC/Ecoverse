@@ -1,6 +1,6 @@
 import '../css/main.css';
 import { MISSIONS, TIPS, ASSET_LIST, POMODORO_CONFIG, TEAM } from './config/data.js';
-import { state, saveState, loadState } from './store/state.js';
+import { state, saveState, loadState, applyCloudState, hasMeaningfulProgress } from './store/state.js';
 import { on, EVENTS } from './store/events.js';
 import { Pomodoro } from './modules/pomodoro.js';
 import { MiniGames } from './modules/minigames.js';
@@ -209,8 +209,29 @@ $$('[data-menu-action]').forEach((btn) => {
     if (action === 'export')       AuthUI.exportData();
     if (action === 'delete')       AuthUI.deleteAccount();
     if (action === 'edit-nickname') AuthUI.editNickname();
+    if (action === 'sync-now')      syncNow();
   });
 });
+
+// Sincronização manual: puxa o que tem na nuvem, faz merge no local
+// e empurra o snapshot mergeado de volta. Cobre o cenário de "quero
+// ver agora o progresso que fiz em outro PC" sem depender do Realtime
+// nem do visibilitychange. O reconcile usa silent: true porque dá
+// um toast final unificado aqui no fim, evitando dupla notificação.
+async function syncNow() {
+  if (!Auth.getUser()) {
+    showToast('Entre na sua conta pra sincronizar.', 'info');
+    return;
+  }
+  try {
+    await reconcileFromCloud({ silent: true });
+    await Sync.pushNow();
+    showToast('Sincronizado com a nuvem.', 'reward');
+  } catch (err) {
+    showToast('Não consegui sincronizar agora. Tente daqui a pouco.', 'info');
+    console.warn('[main] sync now falhou:', err);
+  }
+}
 
 // Inicializa a UI de auth depois que os listeners do menu já estão registrados.
 AuthUI.init({
@@ -725,17 +746,52 @@ async function loadAssets() {
   await startGame();
 }
 
-// Considera "progresso real" qualquer coisa que indique que o jogador
-// realmente avançou — moedas, missão concluída, pomodoro, conquista ou
-// quiz feito. Usado pra decidir quem vence no merge nuvem ↔ local.
-function hasMeaningfulProgress(s) {
-  if (!s) return false;
-  return (s.coins ?? 0) > 0
-      || (s.completed?.length ?? 0) > 0
-      || (s.pomodoros_completed ?? s.pomodorosCompleted ?? 0) > 0
-      || (s.achievements?.length ?? 0) > 0
-      || Object.keys(s.quizzes ?? {}).length > 0;
+// Roda o merge nuvem ↔ local. Centraliza a lógica usada em três momentos:
+// 1) boot (startGame, quando o user está logado)
+// 2) aba voltando ao foco (visibilitychange)
+// 3) push em tempo real do Supabase Realtime
+//
+// applyCloudState faz o merge inteligente (UNION pra arrays, MAX pra
+// contadores, lado-mais-avançado pra energia). Sempre retorna true se
+// algum campo mudou — aí atualizamos HUD, globo e damos feedback.
+async function reconcileFromCloud({ silent = false } = {}) {
+  const user = Auth.getUser();
+  if (!user) return;
+
+  const cloudState = await Sync.pullState();
+  if (!cloudState) {
+    // Sem linha na nuvem ainda — manda o local pra cima.
+    if (hasMeaningfulProgress(state)) Sync.scheduleSync();
+    return;
+  }
+
+  const changed = applyCloudState(cloudState);
+  if (!changed) {
+    // Já estamos em dia. Se o local tem MAIS que a nuvem, sobe (caso
+    // típico: usuário jogou anônimo, depois logou — local "vence" e
+    // precisa subir o progresso novo).
+    if (hasMeaningfulProgress(state)) Sync.scheduleSync();
+    return;
+  }
+
+  AchievementSystem.init(state.achievements);
+  saveState();
+  syncHUDImmediate();
+  refreshGlobeMarkers();
+  if (!silent) {
+    showToast('Progresso sincronizado de outro dispositivo', 'reward');
+  }
+  // Depois de adotar a nuvem, sobe o snapshot mergeado pra alinhar
+  // os dois lados (em caso de UNION: o lado que tinha menos agora tem
+  // mais — precisa empurrar).
+  Sync.scheduleSync();
 }
+
+// Marca quando o boot terminou a primeira reconciliação. Antes disso,
+// o onAuthChange ignora o notify inicial do Auth.init — quem trata é
+// o authBoot.then logo abaixo. Sem isso, reconcileFromCloud roda 2x no
+// boot (uma via listener, outra via .then) — idempotente, mas desperdício.
+let bootSyncReady = false;
 
 async function startGame() {
   loadState();
@@ -744,48 +800,72 @@ async function startGame() {
   Pomodoro.init();
   syncHUDImmediate();
   resizeCanvas();
-  Auth.init().then(async (user) => {
-    if (!user) return;
-    const cloudState = await Sync.pullState();
-    if (!cloudState) {
-      // Sem linha na nuvem ainda — manda o local pra cima.
-      Sync.scheduleSync();
-      return;
-    }
 
-    const cloudIsNewer = new Date(cloudState.updated_at) > new Date(state.lastSavedAt ?? 0);
-    const cloudHasProgress = hasMeaningfulProgress(cloudState);
-    const localHasProgress = hasMeaningfulProgress(state);
+  // Boot bloqueante: aguarda Auth + reconciliação ANTES de mostrar o globo
+  // com dados desatualizados. Timeout de 4s garante que rede ruim não
+  // congela o boot — se cair o timeout, o app sobe com state local e o
+  // sync continua em background (visibilitychange + Realtime cobrem depois).
+  const authBoot = Auth.init()
+    .then(async (user) => {
+      if (!user) return;
+      await reconcileFromCloud({ silent: true });
+      // Inscreve em Realtime pra receber atualizações de outros devices
+      // sem precisar de refresh ou foco da aba.
+      Sync.subscribeProgress(handleRealtimeProgress);
+    })
+    .catch((err) => console.warn('[main] boot auth falhou:', err))
+    .finally(() => { bootSyncReady = true; });
 
-    // Adota a nuvem quando ela tem mais coisa que o local OU é genuinamente
-    // mais recente E tem algum progresso. Se o local tem progresso e a nuvem
-    // está zerada (caso típico do primeiro signup após jogar anônimo),
-    // preserva o local e manda pra cima.
-    const adoptCloud = cloudHasProgress && (!localHasProgress || cloudIsNewer);
+  const timeout = new Promise((r) => setTimeout(r, 4000));
+  await Promise.race([authBoot, timeout]);
+  // Se o timeout venceu, libera o gate mesmo assim — listener subsequente
+  // pode tratar o auth quando finalmente resolver.
+  bootSyncReady = true;
 
-    if (adoptCloud) {
-      state.energy = cloudState.energy ?? state.energy;
-      state.coins = cloudState.coins ?? state.coins;
-      state.impact = Number(cloudState.impact ?? state.impact);
-      state.completed = cloudState.completed ?? state.completed;
-      state.achievements = cloudState.achievements ?? state.achievements;
-      state.plantedTrees = cloudState.planted_trees ?? state.plantedTrees;
-      state.pomodorosCompleted = cloudState.pomodoros_completed ?? state.pomodorosCompleted;
-      state.bestStreak = cloudState.best_streak ?? state.bestStreak;
-      state.perfectMinigames = cloudState.perfect_minigames ?? state.perfectMinigames;
-      state.quizzes = cloudState.quizzes ?? state.quizzes ?? {};
-      AchievementSystem.init(state.achievements);
-      saveState();
-      syncHUDImmediate();
-      refreshGlobeMarkers();
-    } else {
-      Sync.scheduleSync();
-    }
-  });
   await initGlobe();
   running = true;
   requestAnimationFrame(gameLoop);
 }
+
+// Handler de push do Realtime. Aplica direto via applyCloudState e
+// atualiza UI se mudou. Usa updateHUD pra animar suavemente do valor
+// antigo pro novo. Não chama scheduleSync (evita loop upsert ↔ realtime),
+// porque o snapshot que veio já é o oficial — qualquer ajuste que
+// applyCloudState fez vai ser propagado pelos eventos seguintes.
+function handleRealtimeProgress(cloudState) {
+  if (!cloudState) return;
+  const changed = applyCloudState(cloudState);
+  if (!changed) return;
+  AchievementSystem.init(state.achievements);
+  saveState();
+  updateHUD();
+  refreshGlobeMarkers();
+  showToast('Progresso atualizado em outro dispositivo', 'reward');
+}
+
+// Quando a aba volta a ficar visível, conferimos a nuvem. Cobre os
+// casos em que Realtime falhou (websocket caiu, browser pausou a aba
+// em background, conexão flakey). É barato: um único GET com filtro
+// por user_id.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  if (!Auth.getUser()) return;
+  reconcileFromCloud({ silent: false }).catch(() => { /* já logado dentro */ });
+});
+
+// Quando o user faz signin/signout DEPOIS do boot (sem reload), reagimos:
+// signin → reconcilia + inscreve Realtime; signout → unsubscribe.
+// O bootSyncReady evita disparar duplicado durante o notify() inicial do
+// Auth.init, que o authBoot.then já cobre.
+Auth.onAuthChange(async (user) => {
+  if (!bootSyncReady) return;
+  if (user) {
+    await reconcileFromCloud({ silent: true });
+    Sync.subscribeProgress(handleRealtimeProgress);
+  } else {
+    Sync.unsubscribeProgress();
+  }
+});
 
 function delay(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
