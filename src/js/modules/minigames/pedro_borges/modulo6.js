@@ -17,6 +17,11 @@ import {
    Constantes de física e jogo
    ═══════════════════════════════════════════════════════════════════════════ */
 const CANVAS_RATIO  = 0.56;
+
+// Constantes de render (evitam alocação por frame)
+const BG_VEG  = ['🌴', '🌿', '🎋', '🌿', '🌴'];
+const BG_POS  = [0.05, 0.22, 0.50, 0.72, 0.92];
+const LILY_POS = [0.12, 0.38, 0.60, 0.84];
 const GRAVITY       = 0.58;
 const JUMP_VY       = -13;
 const PLAYER_SPEED  = 4.5;
@@ -180,11 +185,9 @@ export class Modulo6 extends CanvasMinigame {
         this._totalCollected = 0;
         this._touchBtns      = { left: false, right: false, jump: false };
 
-        // Cache de gradientes de fundo
-        this._skyGrad      = null;
-        this._waterGrad    = null;
-        this._gradH        = -1;
-        this._gradGroundY  = -1;
+        // Cache de render estático por nível (reconstruído em _initLevel)
+        this._platCache = null;
+        this._bgCache   = null;
     }
 
     /* ── start ─────────────────────────────────── */
@@ -236,6 +239,7 @@ export class Modulo6 extends CanvasMinigame {
                 <span class="m6-hud-sep"></span>
                 <span id="m6-hearts">❤️❤️❤️</span>
                 <span id="m6-best-wrap" style="${best > 0 ? '' : 'display:none'}">🏆 <strong id="m6-best">${best}</strong></span>
+                <span id="m6-fps" style="margin-left:auto;font-size:0.66rem;font-family:monospace;opacity:0.4;letter-spacing:-0.02em">FPS:--</span>
             </div>
             <p class="m6-tip" id="m6-tip">…</p>
             <div style="position:relative;width:100%">
@@ -250,6 +254,7 @@ export class Modulo6 extends CanvasMinigame {
 
         const canvasEl = this.container.querySelector('#m6-canvas');
         this._setupCanvas(canvasEl, CANVAS_RATIO);
+        this._fpsEl = this.container.querySelector('#m6-fps');
 
         this.hud = new HUDController(this.container, {
             level:    '#m6-lv',
@@ -350,6 +355,59 @@ export class Modulo6 extends CanvasMinigame {
         this.hud.setText('tot',   trashCount);
         const tip = this.container.querySelector('#m6-tip');
         if (tip) tip.textContent = lv.tip;
+
+        this._buildCaches(W, H);
+    }
+
+    _buildCaches(W, H) {
+        const groundY = this._platforms[0]?.y ?? H * 0.82;
+
+        // ── fundo estático ──────────────────────────────
+        this._bgCache = new OffscreenCanvas(W, H);
+        const bg = this._bgCache.getContext('2d');
+
+        const skyGrad = bg.createLinearGradient(0, 0, 0, H * 0.75);
+        skyGrad.addColorStop(0, '#1a5276');
+        skyGrad.addColorStop(1, '#76b8d4');
+        bg.fillStyle = skyGrad;
+        bg.fillRect(0, 0, W, H);
+
+        for (let i = 0; i < BG_VEG.length; i++) {
+            const sp = emojiSprite(BG_VEG[i], 36);
+            bg.globalAlpha = 0.28;
+            bg.drawImage(sp, BG_POS[i] * W - sp.width / 2, groundY - sp.height * 0.7);
+        }
+        bg.globalAlpha = 1;
+
+        const waterGrad = bg.createLinearGradient(0, groundY, 0, H);
+        waterGrad.addColorStop(0, '#117a65');
+        waterGrad.addColorStop(1, '#0b4a3c');
+        bg.fillStyle = waterGrad;
+        bg.fillRect(0, groundY, W, H - groundY);
+
+        for (const lp of LILY_POS) {
+            const sp = emojiSprite('🪷', 20);
+            bg.globalAlpha = 0.55;
+            bg.drawImage(sp, lp * W - sp.width / 2, groundY + 4);
+        }
+        bg.globalAlpha = 1;
+
+        // ── plataformas estáticas ───────────────────────
+        this._platCache = new OffscreenCanvas(W, H);
+        const pc = this._platCache.getContext('2d');
+        for (const plat of this._platforms) {
+            if (plat.type === 'ground') continue;
+            const { x, y, w, h, type } = plat;
+            const isLog = type === 'log';
+            pc.fillStyle = isLog ? '#6b3a1f' : '#5a5a5a';
+            pc.beginPath(); pc.roundRect(x, y, w, h, 5); pc.fill();
+            pc.fillStyle = isLog ? '#8b5e3c' : '#777';
+            pc.fillRect(x + 3, y + 2, w - 6, 4);
+            const sp = emojiSprite(isLog ? '🪵' : '🪨', 14);
+            pc.globalAlpha = 0.65;
+            pc.drawImage(sp, x + w / 2 - sp.width / 2, y - sp.height * 0.35);
+            pc.globalAlpha = 1;
+        }
     }
 
     /* ── Update ────────────────────────────────── */
@@ -453,37 +511,10 @@ export class Modulo6 extends CanvasMinigame {
     _drawBackground(ctx, W, H) {
         const groundY = this._platforms[0]?.y ?? H * 0.82;
 
-        // Gradiente do céu — cacheado, recriado apenas se o canvas mudar
-        if (this._gradH !== H) {
-            this._skyGrad = ctx.createLinearGradient(0, 0, 0, H * 0.75);
-            this._skyGrad.addColorStop(0, '#1a5276');
-            this._skyGrad.addColorStop(1, '#76b8d4');
-            this._gradH = H;
-        }
-        ctx.fillStyle = this._skyGrad;
-        ctx.fillRect(0, 0, W, H);
+        // Fundo estático via cache
+        if (this._bgCache) ctx.drawImage(this._bgCache, 0, 0);
 
-        // Árvores e vegetação de fundo (estáticas, semitransparentes)
-        const bgVeg = ['🌴', '🌿', '🎋', '🌿', '🌴'];
-        const bgPos  = [0.05, 0.22, 0.50, 0.72, 0.92];
-        for (let i = 0; i < bgVeg.length; i++) {
-            const sp = emojiSprite(bgVeg[i], 36);
-            ctx.globalAlpha = 0.28;
-            ctx.drawImage(sp, bgPos[i] * W - sp.width / 2, groundY - sp.height * 0.7);
-            ctx.globalAlpha = 1;
-        }
-
-        // Gradiente da água — cacheado, recriado apenas se groundY mudar
-        if (this._gradGroundY !== groundY) {
-            this._waterGrad = ctx.createLinearGradient(0, groundY, 0, H);
-            this._waterGrad.addColorStop(0, '#117a65');
-            this._waterGrad.addColorStop(1, '#0b4a3c');
-            this._gradGroundY = groundY;
-        }
-        ctx.fillStyle = this._waterGrad;
-        ctx.fillRect(0, groundY, W, H - groundY);
-
-        // Ondas animadas
+        // Ondas animadas (único elemento não-estático do fundo)
         ctx.strokeStyle = 'rgba(144,238,144,0.25)';
         ctx.lineWidth   = 1.5;
         for (let i = 0; i < 5; i++) {
@@ -494,41 +525,10 @@ export class Modulo6 extends CanvasMinigame {
             ctx.bezierCurveTo(rx + 12, ry - 3, rx + 22, ry + 3, rx + 35, ry);
             ctx.stroke();
         }
-
-        // Nenúfares decorativos na água
-        const lilyPos = [0.12, 0.38, 0.60, 0.84];
-        for (const lp of lilyPos) {
-            const sp = emojiSprite('🪷', 20);
-            ctx.globalAlpha = 0.55;
-            ctx.drawImage(sp, lp * W - sp.width / 2, groundY + 4);
-            ctx.globalAlpha = 1;
-        }
     }
 
     _drawPlatforms(ctx) {
-        for (const plat of this._platforms) {
-            if (plat.type === 'ground') continue; // chão = borda da água
-
-            const { x, y, w, h, type } = plat;
-            const isLog = type === 'log';
-
-            // Corpo da plataforma
-            ctx.fillStyle = isLog ? '#6b3a1f' : '#5a5a5a';
-            ctx.beginPath();
-            ctx.roundRect(x, y, w, h, 5);
-            ctx.fill();
-
-            // Reflexo superior
-            ctx.fillStyle = isLog ? '#8b5e3c' : '#777';
-            ctx.fillRect(x + 3, y + 2, w - 6, 4);
-
-            // Emoji de textura no centro (pequeno)
-            const emoji = isLog ? '🪵' : '🪨';
-            const sp = emojiSprite(emoji, 14);
-            ctx.globalAlpha = 0.65;
-            ctx.drawImage(sp, x + w / 2 - sp.width / 2, y - sp.height * 0.35);
-            ctx.globalAlpha = 1;
-        }
+        if (this._platCache) ctx.drawImage(this._platCache, 0, 0);
     }
 
     _drawItems(ctx) {
@@ -539,18 +539,14 @@ export class Modulo6 extends CanvasMinigame {
             const cy  = item.y + item.h / 2 + bob;
 
             if (item.isHazard) {
-                // Brilho vermelho-laranja pulsante
                 const pulse = 0.25 + Math.sin(this._frame * 0.14 + item.phase) * 0.12;
+                const hr = item.w * 0.72 | 0;
                 ctx.fillStyle = `rgba(220,60,20,${pulse})`;
-                ctx.beginPath();
-                ctx.arc(cx, cy, item.w * 0.72, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.fillRect(cx - hr, cy - hr, hr * 2, hr * 2);
             } else {
-                // Brilho verde suave
+                const gr = item.w * 0.65 | 0;
                 ctx.fillStyle = 'rgba(100,220,120,0.22)';
-                ctx.beginPath();
-                ctx.arc(cx, cy, item.w * 0.65, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.fillRect(cx - gr, cy - gr, gr * 2, gr * 2);
             }
 
             const sp = emojiSprite(item.emoji, item.w * 0.88);
@@ -568,10 +564,9 @@ export class Modulo6 extends CanvasMinigame {
 
         // Sombra no chão
         if (p.onGround) {
-            ctx.fillStyle = 'rgba(0,0,0,0.28)';
-            ctx.beginPath();
-            ctx.ellipse(cx, p.y + p.h + 2, p.w * 0.4, 4, 0, 0, Math.PI * 2);
-            ctx.fill();
+            const sw = p.w * 0.8 | 0;
+            ctx.fillStyle = 'rgba(0,0,0,0.18)';
+            ctx.fillRect(cx - sw / 2, p.y + p.h + 1, sw, 4);
         }
 
         // Capivara-lontra (🦦) espelhada conforme direção
@@ -748,10 +743,11 @@ export class Modulo6 extends CanvasMinigame {
         this._totalCollected = 0;
         this._invincible     = 0;
         this._touchBtns      = { left: false, right: false, jump: false };
+        this._input          = new InputController(this.canvas);
         this.isReplay        = true;
         // Invalida cache de gradientes para forçar recriação
-        this._gradH       = -1;
-        this._gradGroundY = -1;
+        this._platCache = null;
+        this._bgCache   = null;
 
         this.score.reset();
         this.lives.reset();
