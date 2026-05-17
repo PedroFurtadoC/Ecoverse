@@ -22,7 +22,7 @@ import {
    Constantes
    ═══════════════════════════════════════════════════════════════════════ */
 const ASSETS_PATH   = '/assets/generated/cutouts/';
-const TOTAL_SECONDS = 80;
+const TOTAL_SECONDS = 50;
 const WIN_SCORE     = 60;
 const FLY_FRAMES    = 50;   // frames da animação Bézier até a lixeira
 const RESULT_FRAMES = 55;   // pausa pós-avaliação

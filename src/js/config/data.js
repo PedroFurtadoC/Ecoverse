@@ -33,7 +33,7 @@ const MISSIONS = [
     // igarapés próximos a centros urbanos como Manaus.
     desc: 'Comunidades ribeirinhas convivem com resíduos plásticos que descem com as cheias e ameaçam botos, pirarucus e a pesca artesanal. Recolha o lixo antes que ele chegue ao igarapé.',
     location: 'Amazônia, Brasil',
-    photo: 'assets/photo-amazon.jpg',
+    photo: 'assets/photo-amazon-river.png',
     costEnergy: 1, rewardCoins: 10, impactCO2: 0.5,
     lat: -3.4653, lng: -62.2159,
     prereqId: null, minigame: 'andre_1'
@@ -57,7 +57,7 @@ const MISSIONS = [
     // em encostas urbanas é principal fonte de contaminação de nascentes.
     desc: 'A Mata Atlântica fornece água para 7 em cada 10 brasileiros, mas suas encostas viraram lixões irregulares. Limpe as nascentes antes que o resíduo chegue ao rio.',
     location: 'Mata Atlântica, Brasil',
-    photo: 'assets/photo-atlantic.jpg',
+    photo: 'assets/photo-waterfall.jpg',
     costEnergy: 2, rewardCoins: 25, impactCO2: 1.2,
     lat: -22.9519, lng: -43.2106,
     prereqId: 2, minigame: 'felipe_1'
@@ -117,7 +117,7 @@ const MISSIONS = [
     // cordilheira deixa rejeitos que contaminam nascentes do rio Amazonas.
     desc: 'Trilhas turísticas e atividade mineira deixam rejeitos que contaminam as nascentes do rio Amazonas. Recolha o lixo da rota sem sair do caminho marcado.',
     location: 'Andes, Peru',
-    photo: null,
+    photo: 'assets/photo-andes.jpg',
     costEnergy: 5, rewardCoins: 75, impactCO2: 3.5,
     lat: -13.1631, lng: -72.5450,
     prereqId: 7, minigame: 'thiago_2'

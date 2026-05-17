@@ -19,7 +19,7 @@ const ASSETS_PATH   = '/assets/generated/cutouts/';
 const THROW_FRAMES  = 52;   // frames do voo até a lixeira (~0.87 s a 60 fps)
 const RESULT_FRAMES = 58;   // frames de pausa pós-avaliação
 const WIN_SCORE     = 60;
-const TOTAL_SECONDS = 60;
+const TOTAL_SECONDS = 45;
 
 /* ── 11 Tipos de lixo ───────────────────────────────────────────────────
    correctBin deve corresponder a um id em BIN_DEFS (paper | plastic | metal | trash).
