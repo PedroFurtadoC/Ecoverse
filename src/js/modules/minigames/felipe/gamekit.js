@@ -1060,6 +1060,13 @@ export class CanvasMinigame extends MinigameBase {
         this.ctx      = null;
         /** @type {number|null} */
         this.animFrame = null;
+        /** @private — timestamp do último frame processado (cap de 60 fps) */
+        this._lastFrameTime = 0;
+        /** Elemento DOM opcional para exibir FPS — atribua após montar o HTML. */
+        this._fpsEl     = null;
+        /** @private */
+        this._fpsFrames = 0;
+        this._fpsTime   = 0;
     }
 
     /* ── Interface abstrata ───────────────────── */
@@ -1100,12 +1107,31 @@ export class CanvasMinigame extends MinigameBase {
 
     /* ── Loop de jogo ─────────────────────────── */
 
-    /** Inicia o loop rAF: update() → draw() → requestAnimationFrame. */
-    gameLoop() {
+    /** Inicia o loop rAF: update() → draw() → requestAnimationFrame, limitado a 60 fps. */
+    gameLoop(timestamp = 0) {
         if (!this.gameActive) return;
-        this.update();
-        this.draw();
-        this.animFrame = requestAnimationFrame(() => this.gameLoop());
+        if (timestamp - this._lastFrameTime >= 16) {
+            this._lastFrameTime = timestamp;
+            const _t0 = performance.now();
+            this.update();
+            const _t1 = performance.now();
+            this.draw();
+            const _t2 = performance.now();
+            if (this._fpsEl) this._fpsEl._dbg = { u: _t1 - _t0, d: _t2 - _t1 };
+            this._fpsFrames++;
+            if (this._fpsTime === 0) {
+                this._fpsTime = timestamp;
+            } else if (timestamp - this._fpsTime >= 500) {
+                if (this._fpsEl) {
+                    const dbg = this._fpsEl._dbg ?? {};
+                    this._fpsEl.textContent =
+                        `FPS:${Math.round(this._fpsFrames * 1000 / (timestamp - this._fpsTime))} u:${(dbg.u??0).toFixed(1)} d:${(dbg.d??0).toFixed(1)}`;
+                }
+                this._fpsFrames = 0;
+                this._fpsTime   = timestamp;
+            }
+        }
+        this.animFrame = requestAnimationFrame((ts) => this.gameLoop(ts));
     }
 
     /** Cancela o frame de animação pendente. */
@@ -1114,6 +1140,9 @@ export class CanvasMinigame extends MinigameBase {
             cancelAnimationFrame(this.animFrame);
             this.animFrame = null;
         }
+        this._lastFrameTime = 0;
+        this._fpsFrames     = 0;
+        this._fpsTime       = 0;
     }
 
     /* ── Utilitários visuais ──────────────────── */

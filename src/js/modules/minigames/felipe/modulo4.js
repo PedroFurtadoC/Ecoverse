@@ -1075,6 +1075,7 @@ export class Modulo4 extends GridCanvasGame {
 
         this.initGrid();
         this.gameActive = true;
+        window.addEventListener('keydown', this._keyHandler, { capture: true });
         this.hud.setText('wave', 1);
         this.timer.start();
         this.missions.start();

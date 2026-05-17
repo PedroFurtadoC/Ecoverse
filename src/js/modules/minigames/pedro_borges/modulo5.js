@@ -81,6 +81,9 @@ export class Modulo5 extends PlatformMinigame {
         // Cache de gradiente de fundo
         this._bgGrad  = null;
         this._bgGradH = -1;
+
+        // Cache de plataformas estáticas + coral (baked)
+        this._platCache = null;
     }
 
     /* ── Ciclo de vida ────────────────────────────────── */
@@ -122,6 +125,7 @@ export class Modulo5 extends PlatformMinigame {
                 <div class="m5-hud-g" id="m5-best-wrap" style="${best > 0 ? '' : 'display:none'}">
                     🏆 <strong id="m5-best">${best}</strong>
                 </div>
+                <span id="m5-fps" style="margin-left:auto;font-size:0.66rem;font-family:monospace;opacity:0.4;letter-spacing:-0.02em">FPS:--</span>
             </div>
             <div style="position:relative;width:100%;">
                 <canvas id="m5-canvas"></canvas>
@@ -136,6 +140,7 @@ export class Modulo5 extends PlatformMinigame {
 
         const canvasEl = this.container.querySelector('#m5-canvas');
         this._setupCanvas(canvasEl, CANVAS_RATIO);
+        this._fpsEl = this.container.querySelector('#m5-fps');
 
         this.hud = new HUDController(this.container, {
             hearts:   '#m5-hearts',
@@ -293,7 +298,52 @@ export class Modulo5 extends PlatformMinigame {
         const spikeXs = [170, 390, 580, 760, 940, 1100, 1320, 1520];
         for (const sx of spikeXs)
             this._spikes.push({ x: sx, y: H - 15 - 18, w: 28, h: 18 });
+
+        this._buildPlatCache();
     }
+
+    _buildPlatCache() {
+        const H = this.canvas.height;
+        if (!this._platCache || this._platCache.height !== H)
+            this._platCache = new OffscreenCanvas(WORLD_W, H);
+        const oc = this._platCache.getContext('2d');
+        oc.clearRect(0, 0, WORLD_W, H);
+        for (const def of this.world.platforms) {
+            if (def.type === 'hazard' && def.data?.moving) continue;
+            this._drawPlatform(oc, def);
+        }
+        // Coral estático: baked aqui pra eliminar 60 arc() por frame em _drawDecorations
+        oc.save();
+        oc.globalAlpha = 0.58;
+        for (const d of this._decorations) {
+            if (d.type !== 'coral') continue;
+            oc.fillStyle = d.color;
+            oc.beginPath();
+            oc.arc(d.x,               d.y - d.scale * 10, d.scale * 8, Math.PI, Math.PI * 2);
+            oc.arc(d.x - d.scale * 8, d.y - d.scale * 18, d.scale * 5, Math.PI, Math.PI * 2);
+            oc.arc(d.x + d.scale * 7, d.y - d.scale * 14, d.scale * 6, Math.PI, Math.PI * 2);
+            oc.fill();
+        }
+        oc.restore();
+        // Espinhos estáticos: todos num único path → 1 GPU fill, elimina 24 fill() por frame
+        oc.save();
+        oc.fillStyle = '#dc2626'; oc.globalAlpha = 0.88;
+        oc.beginPath();
+        for (const s of this._spikes) {
+            const count = Math.floor(s.w / 9);
+            const sw = s.w / count;
+            for (let i = 0; i < count; i++) {
+                const sx = s.x + i * sw + sw / 2;
+                oc.moveTo(sx, s.y + s.h);
+                oc.lineTo(sx - sw * 0.38, s.y + s.h);
+                oc.lineTo(sx, s.y);
+                oc.closePath();
+            }
+        }
+        oc.fill();
+        oc.restore();
+    }
+
 
     /* ── Inimigos iniciais ────────────────────────────── */
 
@@ -437,10 +487,12 @@ export class Modulo5 extends PlatformMinigame {
                 vy: -(0.7 + Math.random() * 0.55),
                 vx: (Math.random() - 0.5) * 0.35,
             });
+        let bi = 0;
         for (const b of this._bubbles) {
             b.y += b.vy; b.x += b.vx + Math.sin(b.y * 0.09) * 0.22; b.alpha -= 0.009;
+            if (b.alpha > 0) this._bubbles[bi++] = b;
         }
-        this._bubbles = this._bubbles.filter(b => b.alpha > 0);
+        this._bubbles.length = bi;
 
         // ─ Peixes decorativos ─
         for (const fish of this._fish) {
@@ -569,15 +621,18 @@ export class Modulo5 extends PlatformMinigame {
 
     draw() {
         const ctx = this.ctx;
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        const W   = this.canvas.width;
+        ctx.clearRect(0, 0, W, this.canvas.height);
         this.drawBackground(ctx);
 
         ctx.save();
         ctx.translate(-Math.round(this.world.cameraX), 0);
         this._drawDecorations(ctx);
-        this._drawSpikes(ctx);
-        for (const def of this.world.getVisiblePlatforms(this.canvas.width))
-            this._drawPlatform(ctx, def);
+        // Plataformas estáticas + coral + espinhos (baked): 1 drawImage por frame
+        if (this._platCache) ctx.drawImage(this._platCache, 0, 0);
+        // Plataformas dinâmicas: apenas redes em movimento
+        for (const def of this.world.getVisiblePlatforms(W))
+            if (def.type === 'hazard' && def.data?.moving) this._drawPlatform(ctx, def);
         this._drawTrash(ctx);
         this._drawAnimals(ctx);
         this._drawEnemies(ctx);
@@ -601,7 +656,7 @@ export class Modulo5 extends PlatformMinigame {
                 const sx = platform.x + platform.w / 2 - this.world.cameraX;
                 this.particles.spawnBurst(sx, platform.y, '#f59e0b', 10, 0.06);
                 this.particles.spawnFloat(sx, platform.y - 14, '💥 Plataforma destruída!', '#fbbf24', 12);
-                this._setTimeout(() => this.world.removePlatform(platform), 200);
+                this._setTimeout(() => { this.world.removePlatform(platform); this._buildPlatCache(); }, 200);
             }
         }
     }
@@ -625,17 +680,17 @@ export class Modulo5 extends PlatformMinigame {
         ctx.fillStyle = this._bgGrad;
         ctx.fillRect(0, 0, W, H);
 
-        // Raios de luz reduzidos de 5 para 3
+        // Raios de luz: todos num único path → 1 fill() em vez de 3
         ctx.save();
+        ctx.globalAlpha = 0.044; ctx.fillStyle = '#7dd3fc';
+        ctx.beginPath();
         for (let i = 0; i < 3; i++) {
             const rx = W * (0.15 + i * 0.35) + Math.sin(t + i * 1.2) * 18;
-            ctx.globalAlpha = 0.035 + Math.sin(t * 1.6 + i) * 0.018;
-            ctx.fillStyle   = '#7dd3fc';
-            ctx.beginPath();
             ctx.moveTo(rx - 14, 0); ctx.lineTo(rx + 14, 0);
             ctx.lineTo(rx + 65, H); ctx.lineTo(rx - 65, H);
-            ctx.closePath(); ctx.fill();
+            ctx.closePath();
         }
+        ctx.fill();
         ctx.restore();
 
         ctx.save();
@@ -645,16 +700,18 @@ export class Modulo5 extends PlatformMinigame {
         ctx.setLineDash([]);
         ctx.restore();
 
-        // Bolhas (espaço de tela)
+        // Bolhas: ctx.rect() acumula geometria → 1 ctx.fill() em vez de 40 fillRect()
         if (this._bubbles.length) {
             ctx.save();
-            ctx.strokeStyle = 'rgba(180,222,255,0.85)'; ctx.lineWidth = 1;
+            ctx.fillStyle = 'rgba(180,222,255,0.72)';
+            ctx.beginPath();
             for (const b of this._bubbles) {
                 const sx = b.x - this.world.cameraX;
                 if (sx < -10 || sx > W + 10) continue;
-                ctx.globalAlpha = b.alpha;
-                ctx.beginPath(); ctx.arc(sx, b.y, b.r, 0, Math.PI * 2); ctx.stroke();
+                const d = b.r * 2 | 0;
+                ctx.rect(Math.round(sx - b.r), Math.round(b.y - b.r), d || 1, d || 1);
             }
+            ctx.fill();
             ctx.restore();
         }
     }
@@ -837,14 +894,21 @@ export class Modulo5 extends PlatformMinigame {
         const spTurtle = emojiSprite('🐢', 22);
         const spDugong = emojiSprite('🐬', 22);
         ctx.save();
-        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2.5;
+        // Halos: todos num único path → 1 fill() em vez de 8 fillRect()
+        ctx.fillStyle = '#fbbf24'; ctx.globalAlpha = 0.30;
+        ctx.beginPath();
+        for (const a of this.animals) {
+            if (a.freed) continue;
+            const bob = Math.sin(t * 0.052 + a.phase) * 3;
+            ctx.rect(Math.round(a.x - 17), Math.round(a.y + bob - 17), 34, 34);
+        }
+        ctx.fill();
+        // Sprites (drawImage não é batchable)
+        ctx.globalAlpha = 1;
         for (const a of this.animals) {
             if (a.freed) continue;
             const bob = Math.sin(t * 0.052 + a.phase) * 3;
             const sp  = a.type === 'turtle' ? spTurtle : spDugong;
-            ctx.globalAlpha = 0.28 + Math.sin(t * 0.09 + a.phase) * 0.16;
-            ctx.beginPath(); ctx.arc(a.x, a.y + bob, 17, 0, Math.PI * 2); ctx.stroke();
-            ctx.globalAlpha = 1;
             ctx.drawImage(sp, Math.round(a.x - sp.width / 2), Math.round(a.y + bob - sp.height / 2));
         }
         ctx.restore();
@@ -893,50 +957,71 @@ export class Modulo5 extends PlatformMinigame {
             ctx.save();
 
             if (e.type === 'shark') {
-                ctx.translate(e.x + e.w / 2, e.y + e.h / 2);
-                ctx.scale(-1, 1); // tubarão sempre olha para esquerda
-                ctx.fillStyle = '#64748b';
-                // Corpo
-                ctx.beginPath(); ctx.ellipse(0, 0, e.w / 2, e.h / 2, 0, 0, Math.PI * 2); ctx.fill();
-                // Cauda
-                ctx.beginPath();
-                ctx.moveTo(-e.w * 0.48, 0);
-                ctx.lineTo(-e.w * 0.78, -e.h * 0.70);
-                ctx.lineTo(-e.w * 0.78,  e.h * 0.70);
-                ctx.closePath(); ctx.fill();
-                // Barbatana dorsal
-                ctx.fillStyle = '#475569';
-                ctx.beginPath();
-                ctx.moveTo(e.w * 0.05, -e.h * 0.45);
-                ctx.lineTo(e.w * 0.28, -e.h * 1.18);
-                ctx.lineTo(e.w * 0.50, -e.h * 0.45);
-                ctx.closePath(); ctx.fill();
-                // Olho
-                ctx.fillStyle = '#fff';
-                ctx.beginPath(); ctx.arc(e.w * 0.30, -e.h * 0.08, 3.5, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#000';
-                ctx.beginPath(); ctx.arc(e.w * 0.30, -e.h * 0.08, 2,   0, Math.PI * 2); ctx.fill();
+                // Cache permanente: tubarão não anima forma, só posição
+                if (!e._sharkOc) {
+                    const pad = 5;
+                    const cy  = Math.ceil(e.h * 1.2 + pad);
+                    e._sharkOc = new OffscreenCanvas(e.w + pad * 2, Math.ceil(e.h * 2 + pad * 2));
+                    e._sharkCx = e.w / 2 + pad;
+                    e._sharkCy = cy;
+                    const oc = e._sharkOc.getContext('2d');
+                    oc.translate(e._sharkCx, e._sharkCy);
+                    oc.scale(-1, 1);
+                    oc.fillStyle = '#64748b';
+                    oc.beginPath(); oc.ellipse(0, 0, e.w / 2, e.h / 2, 0, 0, Math.PI * 2); oc.fill();
+                    oc.beginPath();
+                    oc.moveTo(-e.w * 0.48, 0);
+                    oc.lineTo(-e.w * 0.78, -e.h * 0.70);
+                    oc.lineTo(-e.w * 0.78,  e.h * 0.70);
+                    oc.closePath(); oc.fill();
+                    oc.fillStyle = '#475569';
+                    oc.beginPath();
+                    oc.moveTo(e.w * 0.05, -e.h * 0.45);
+                    oc.lineTo(e.w * 0.28, -e.h * 1.18);
+                    oc.lineTo(e.w * 0.50, -e.h * 0.45);
+                    oc.closePath(); oc.fill();
+                    oc.fillStyle = '#fff';
+                    oc.beginPath(); oc.arc(e.w * 0.30, -e.h * 0.08, 3.5, 0, Math.PI * 2); oc.fill();
+                    oc.fillStyle = '#000';
+                    oc.beginPath(); oc.arc(e.w * 0.30, -e.h * 0.08, 2,   0, Math.PI * 2); oc.fill();
+                }
+                ctx.drawImage(e._sharkOc,
+                    e.x + e.w / 2 - e._sharkCx,
+                    e.y + e.h / 2 - e._sharkCy);
 
             } else if (e.type === 'jelly') {
-                const bob = Math.sin(t * 0.10 + e.phase) * 4;
-                ctx.translate(e.x + e.w / 2, e.y + e.h * 0.3 + bob);
-                // Cúpula (cor sólida em vez de gradiente — muito mais rápido)
-                ctx.globalAlpha = 0.72;
-                ctx.fillStyle = 'rgba(192,132,252,0.80)';
-                ctx.beginPath();
-                ctx.arc(0, 0, e.w / 2, Math.PI, 0); ctx.closePath(); ctx.fill();
-                // Tentáculos
-                ctx.strokeStyle = 'rgba(192,132,252,0.60)'; ctx.lineWidth = 1.4;
-                for (let i = 0; i < 5; i++) {
-                    const tx = -e.w * 0.38 + i * (e.w * 0.19);
-                    ctx.beginPath(); ctx.moveTo(tx, 3);
-                    ctx.bezierCurveTo(
-                        tx + Math.sin(t * 0.14 + i) * 5, 10,
-                        tx - Math.sin(t * 0.14 + i) * 5, 18,
-                        tx + Math.sin(t * 0.09 + i * 0.8) * 4, e.h * 0.85,
-                    );
-                    ctx.stroke();
+                // Cache temporal por medusa: 1 arc + 5 bezier → 1 drawImage por frame
+                if (!e._jellyOc) {
+                    const pad = 10;
+                    e._jellyOc  = new OffscreenCanvas(e.w + pad * 2, e.h + pad);
+                    e._jellyCx  = e.w / 2 + pad;
+                    e._jellyCy  = Math.round(e.h * 0.3) + pad;
+                    e._jellyTick = -99;
                 }
+                if (this._frame - e._jellyTick >= 3) {
+                    e._jellyTick = this._frame;
+                    const oc = e._jellyOc.getContext('2d');
+                    oc.clearRect(0, 0, e._jellyOc.width, e._jellyOc.height);
+                    oc.save(); oc.translate(e._jellyCx, e._jellyCy);
+                    oc.globalAlpha = 0.72;
+                    oc.fillStyle = 'rgba(192,132,252,0.80)';
+                    oc.beginPath();
+                    oc.arc(0, 0, e.w / 2, Math.PI, 0); oc.closePath(); oc.fill();
+                    oc.strokeStyle = 'rgba(192,132,252,0.60)'; oc.lineWidth = 1.4;
+                    for (let i = 0; i < 5; i++) {
+                        const tx  = -e.w * 0.38 + i * (e.w * 0.19);
+                        const mid = Math.sin(t * 0.14 + i) * 5;
+                        oc.beginPath(); oc.moveTo(tx, 3);
+                        oc.lineTo(tx + mid, e.h * 0.45);
+                        oc.lineTo(tx + Math.sin(t * 0.09 + i * 0.8) * 4, e.h * 0.85);
+                        oc.stroke();
+                    }
+                    oc.restore();
+                }
+                const bob = Math.sin(t * 0.10 + e.phase) * 4;
+                ctx.drawImage(e._jellyOc,
+                    e.x + e.w / 2 - e._jellyCx,
+                    e.y + e.h * 0.3 + bob - e._jellyCy);
             }
 
             ctx.restore();
@@ -946,46 +1031,56 @@ export class Modulo5 extends PlatformMinigame {
     /* ── Decorações ───────────────────────────────────── */
 
     _drawDecorations(ctx) {
+        // Algas: batched por cor → 2 stroke() em vez de 30 (cada stroke() = 1 GPU flush)
         const t   = this._frame;
         const cam = this.world.cameraX;
         const vW  = this.canvas.width;
         ctx.save();
         ctx.globalAlpha = 0.58;
         ctx.lineWidth = 2.8; ctx.lineCap = 'round';
-        for (const d of this._decorations) {
-            // Culling: pula decorações fora do viewport
-            if (d.x < cam - 80 || d.x > cam + vW + 80) continue;
-            if (d.type === 'seaweed') {
+        for (const color of ['#1a6b3a', '#2d8b55']) {
+            ctx.strokeStyle = color;
+            ctx.beginPath();
+            for (const d of this._decorations) {
+                if (d.type !== 'seaweed' || d.color !== color) continue;
+                if (d.x < cam - 80 || d.x > cam + vW + 80) continue;
                 const sway = Math.sin(t * 0.042 + d.phase) * 7;
-                ctx.strokeStyle = d.color;
-                ctx.beginPath(); ctx.moveTo(d.x, d.y);
-                ctx.bezierCurveTo(d.x + sway, d.y - d.height * 0.33,
-                    d.x - sway, d.y - d.height * 0.66, d.x + sway * 0.5, d.y - d.height);
-                ctx.stroke();
-            } else {
-                ctx.fillStyle = d.color;
-                ctx.beginPath();
-                ctx.arc(d.x,               d.y - d.scale * 10, d.scale * 8, Math.PI, Math.PI * 2);
-                ctx.arc(d.x - d.scale * 8, d.y - d.scale * 18, d.scale * 5, Math.PI, Math.PI * 2);
-                ctx.arc(d.x + d.scale * 7, d.y - d.scale * 14, d.scale * 6, Math.PI, Math.PI * 2);
-                ctx.fill();
+                ctx.moveTo(d.x, d.y);
+                ctx.lineTo(d.x + sway * 0.5, d.y - d.height * 0.5);
+                ctx.lineTo(d.x + sway * 0.5, d.y - d.height);
             }
+            ctx.stroke();
         }
         ctx.restore();
+        // Corais: baked no _platCache (estáticos), não renderizados aqui
 
+        // Peixes decorativos: sprite por objeto (elimina ellipse+fill por frame)
         ctx.save();
         ctx.globalAlpha = 0.40;
         for (const fish of this._fish) {
+            if (!fish._sprite) {
+                const ox = fish.size * 1.45 + 1;
+                const sw = Math.ceil(ox + fish.size + 2);
+                const sh = Math.ceil(fish.size * 1.2 + 4);
+                const oc = new OffscreenCanvas(sw, sh);
+                const o  = oc.getContext('2d');
+                const oy = sh / 2;
+                o.fillStyle = fish.color;
+                o.beginPath();
+                o.ellipse(ox, oy, fish.size, fish.size * 0.54, 0, 0, Math.PI * 2);
+                o.fill();
+                o.beginPath();
+                o.moveTo(ox - fish.size * 0.8,  oy);
+                o.lineTo(ox - fish.size * 1.45, oy - fish.size * 0.52);
+                o.lineTo(ox - fish.size * 1.45, oy + fish.size * 0.52);
+                o.closePath(); o.fill();
+                fish._sprite = oc;
+                fish._ox = ox; fish._oy = oy;
+            }
             ctx.save();
             ctx.translate(fish.x, fish.y + Math.sin(fish.phase) * 2);
             if (fish.dir < 0) ctx.scale(-1, 1);
-            ctx.fillStyle = fish.color;
-            ctx.beginPath(); ctx.ellipse(0, 0, fish.size, fish.size * 0.54, 0, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath();
-            ctx.moveTo(-fish.size * 0.8, 0);
-            ctx.lineTo(-fish.size * 1.45, -fish.size * 0.52);
-            ctx.lineTo(-fish.size * 1.45,  fish.size * 0.52);
-            ctx.closePath(); ctx.fill();
+            ctx.drawImage(fish._sprite, -fish._ox, -fish._oy);
             ctx.restore();
         }
         ctx.restore();
@@ -1065,8 +1160,9 @@ export class Modulo5 extends PlatformMinigame {
         this.lives.reset();
         this.score.reset();
         this.particles.clear();
-        this._netCache = null; // nets são recriados com novas posições
-        this._bgGradH  = -1;
+        this._netCache  = null; // nets são recriados com novas posições
+        this._platCache = null;
+        this._bgGradH   = -1;
 
         this.hud.setText('score', 0);
         this.hud.setText('freed',  0);
