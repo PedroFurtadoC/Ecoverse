@@ -25,6 +25,7 @@ const ROUTES = {
 let callback = null;
 let dom = null;
 let bound = false;
+let current = null;
 
 function getDom() {
   if (dom) return dom;
@@ -77,8 +78,26 @@ function setupShell(route) {
   d.container.classList.add('active');
 }
 
+// Desliga o minigame que está na tela, se houver algum.
+//
+// Sair pelo botão Voltar ou pelo Esc não passa pelo fim de partida do próprio
+// jogo, então é aqui que os laços de animação e os timers pendentes são
+// cortados. Sem isso eles continuariam rodando sobre um DOM já descartado, e
+// um resultado atrasado chegaria a encerrar a missão aberta depois.
+function encerrarAtual() {
+  if (!current) return;
+  const jogo = current;
+  current = null;
+  try {
+    jogo.destroy?.();
+  } catch (erro) {
+    console.warn('[minigames] falha ao encerrar o minigame:', erro);
+  }
+}
+
 function close({ success, perfect }) {
   const d = getDom();
+  encerrarAtual();
   d.container.classList.remove('active');
   const cb = callback;
   callback = null;
@@ -86,6 +105,8 @@ function close({ success, perfect }) {
 }
 
 export function open(gameType, cb) {
+  // Se sobrou um jogo da rodada anterior, encerra antes de montar o próximo.
+  encerrarAtual();
   callback = cb;
   const route = ROUTES[gameType];
 
@@ -105,6 +126,7 @@ export function open(gameType, cb) {
       perfect: result?.perfect === true
     });
   });
+  current = instance;
   instance.start();
 }
 

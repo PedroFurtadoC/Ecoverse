@@ -424,4 +424,11 @@ export class Modulo8 {
       this.overlayEl.querySelector('#t8-finish').onclick = () => this.onGameEnd({ success, finalScore: this.score });
     }
   }
+
+  // Chamado pelo shell quando o jogador sai no meio da partida, pelo botão
+  // Voltar ou pelo Esc. Derrubar a flag basta: o laço de animação checa ela
+  // logo na entrada e não reagenda o próximo frame.
+  destroy() {
+    this.gameActive = false;
+  }
 }

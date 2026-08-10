@@ -1026,6 +1026,18 @@ export class MinigameBase {
         this._timeouts.clear();
     }
 
+    /**
+     * Interrompe o jogo e solta tudo que ficou agendado.
+     *
+     * Quem chama é o shell, quando o jogador sai pelo botão Voltar ou pelo Esc.
+     * Esse caminho não passa pelo endGame() do minigame, então sem isso os
+     * timers continuariam vivos mexendo num DOM que já foi limpo.
+     */
+    destroy() {
+        this.gameActive = false;
+        this._clearAllTimers();
+    }
+
     /* ── Resultado ────────────────────────────── */
 
     /**
@@ -1159,6 +1171,12 @@ export class CanvasMinigame extends MinigameBase {
         this._lastFrameTime = 0;
         this._fpsFrames     = 0;
         this._fpsTime       = 0;
+    }
+
+    /** Além de soltar os timers da base, cancela o frame de animação pendente. */
+    destroy() {
+        super.destroy();
+        this.stopLoop();
     }
 
     /* ── Utilitários visuais ──────────────────── */

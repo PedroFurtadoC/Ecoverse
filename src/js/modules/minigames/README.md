@@ -15,7 +15,7 @@ Contexto e sprites disponíveis de cada missão estão no `README.md` dentro da 
 
 ## Contrato técnico
 
-Toda classe `ModuloN` recebe um `container` (DIV vazia) e um `onGameEnd` (callback). Implementa `start()` e chama `onGameEnd({ success, finalScore, perfect })` quando o jogo termina.
+Toda classe `ModuloN` recebe um `container` (DIV vazia) e um `onGameEnd` (callback). Implementa `start()` e `destroy()`, e chama `onGameEnd({ success, finalScore, perfect })` quando o jogo termina.
 
 ```js
 export class Modulo1 {
@@ -27,6 +27,10 @@ export class Modulo1 {
   start() {
     // construir UI, configurar listeners, iniciar a mecânica
   }
+
+  destroy() {
+    // parar laços e timers: o shell chama isso quando o jogador sai no meio
+  }
 }
 ```
 
@@ -36,7 +40,15 @@ export class Modulo1 {
 
 Quem estende `MinigameBase` não precisa calcular o `perfect`: o `finishGame` do gamekit já preenche sozinho, marcando true quando o jogador vence sem perder nenhuma vida. O critério sai do `LivesSystem` do próprio jogo, então cada minigame define a exigência pela dificuldade que já escolheu. Jogo que não usa `LivesSystem` nunca marca perfeito, o que é proposital: melhor não marcar do que marcar por engano.
 
+As missões 7 e 8 são de sobrevivência: só terminam quando a barra de vida zera, então nunca reportam partida perfeita. Não é esquecimento, é o formato delas. As outras seis e a triagem relâmpago cobrem essas conquistas de sobra.
+
 Se um minigame chamar `onGameEnd` direto, sem passar pelo gamekit, aí sim precisa mandar o campo por conta própria.
+
+## Sair no meio da partida
+
+O jogador pode fechar o minigame a qualquer momento pelo botão Voltar ou pelo Esc. Esse caminho não passa pelo fim de partida do jogo, então o shell chama `destroy()` antes de esconder a tela. Sem isso, o laço de animação continuaria rodando sobre um DOM já descartado e um resultado atrasado poderia encerrar por engano a missão aberta em seguida.
+
+Quem estende `MinigameBase` já herda um `destroy()` que derruba a flag e limpa os timers rastreados por `_setTimeout` e `_setInterval`. Quem monta o jogo por fora do gamekit precisa escrever o seu, nem que seja só para desligar a flag que o laço consulta.
 
 ## Padrão visual
 

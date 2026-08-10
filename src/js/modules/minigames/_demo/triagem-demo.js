@@ -42,6 +42,7 @@ export class TriagemEasterEgg {
     this.tempoRestante = TEMPO_TOTAL;
     this.timerId = null;
     this.fila = [];
+    this.encerrado = false;
   }
 
   start() {
@@ -104,6 +105,7 @@ export class TriagemEasterEgg {
   }
 
   proximaRodada() {
+    if (this.encerrado) return;
     if (this.rodada >= RODADAS) {
       this.terminar();
       return;
@@ -158,6 +160,7 @@ export class TriagemEasterEgg {
   }
 
   terminar() {
+    if (this.encerrado) return;
     if (this.timerId) clearInterval(this.timerId);
     this.timerId = null;
     const taxa = this.acertos / RODADAS;
@@ -183,7 +186,18 @@ export class TriagemEasterEgg {
   }
 
   finishGame(success, score, perfect) {
+    if (this.encerrado) return;
+    this.encerrado = true;
     if (this.timerId) { clearInterval(this.timerId); this.timerId = null; }
     this.onGameEnd({ success, finalScore: score, perfect: perfect === true });
+  }
+
+  // Chamado pelo shell quando o jogador sai no meio da partida. O resultado
+  // fica agendado pra 2,4 segundos depois da última rodada, então sem isso ele
+  // dispararia com o jogo já fechado e encerraria por engano a missão que o
+  // jogador tivesse aberto nesse intervalo.
+  destroy() {
+    this.encerrado = true;
+    if (this.timerId) { clearInterval(this.timerId); this.timerId = null; }
   }
 }
