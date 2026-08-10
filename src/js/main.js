@@ -539,8 +539,15 @@ if (btnStartMission) {
     if (m.minigame) {
       MiniGames.open(m.minigame, (success, perfect) => {
         if (isPractice) {
-          // Treino (replay ou dev mode): nenhum efeito no save, só feedback.
+          // Treino (replay ou dev mode): nada de moeda, impacto ou missão nova.
           if (success) {
+            // Desempenho perfeito é a única coisa que conta na revisita, porque
+            // mede habilidade e não rende recompensa: moedas e impacto seguem
+            // bloqueados, então repetir a missão mais fácil não vira fonte de
+            // moeda. Sem isso, quem zerasse as 8 missões sem nenhuma partida
+            // perfeita ficava trancado fora das conquistas de triagem pra
+            // sempre, sem caminho de volta.
+            if (perfect && !DEV_FREE) creditaPartidaPerfeita();
             const msg = DEV_FREE && !isReplay
               ? 'Teste concluído. Nada foi salvo.'
               : (perfect ? 'Mandou bem! Pontuação máxima de novo.' : 'Missão revisitada. Boa prática!');
@@ -560,6 +567,14 @@ if (btnStartMission) {
       completeMission(m, false);
     }
   });
+}
+
+// Contador de partidas perfeitas. Vive separado de completeMission porque
+// também é alimentado por revisitas, que não creditam mais nada.
+function creditaPartidaPerfeita() {
+  state.perfectMinigames++;
+  persist();
+  checkAchievements();
 }
 
 function completeMission(mission, perfect) {

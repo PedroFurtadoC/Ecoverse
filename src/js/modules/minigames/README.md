@@ -32,7 +32,11 @@ export class Modulo1 {
 
 - `success: true` → missão completa, jogador ganha as moedas/CO₂.
 - `success: false` → missão falhou, energia gasta é devolvida.
-- `perfect: true` → pontuação máxima, conta para a conquista "Triagem Perfeita".
+- `perfect: true` → partida impecável, conta para as conquistas de triagem.
+
+Quem estende `MinigameBase` não precisa calcular o `perfect`: o `finishGame` do gamekit já preenche sozinho, marcando true quando o jogador vence sem perder nenhuma vida. O critério sai do `LivesSystem` do próprio jogo, então cada minigame define a exigência pela dificuldade que já escolheu. Jogo que não usa `LivesSystem` nunca marca perfeito, o que é proposital: melhor não marcar do que marcar por engano.
+
+Se um minigame chamar `onGameEnd` direto, sem passar pelo gamekit, aí sim precisa mandar o campo por conta própria.
 
 ## Padrão visual
 

@@ -930,7 +930,7 @@ export class GameOverlay {
 export class MinigameBase {
     /**
      * @param {HTMLElement} containerElement
-     * @param {Function} onGameEnd  callback({ success: boolean, finalScore: number })
+     * @param {Function} onGameEnd  callback({ success: boolean, finalScore: number, perfect: boolean })
      * @param {Object} [options]
      * @param {boolean} [options.replay=false]
      */
@@ -1030,11 +1030,27 @@ export class MinigameBase {
 
     /**
      * Reporta o resultado do jogo ao orquestrador externo.
+     *
+     * "Perfeito" é vencer sem perder nenhuma vida. O critério sai do próprio
+     * LivesSystem do jogo, então cada minigame define a exigência pela
+     * dificuldade que já escolheu, sem número arbitrado de fora. Minigame que
+     * não usa LivesSystem nunca marca perfeito, e isso é proposital: melhor
+     * não marcar do que marcar por engano.
+     *
      * @param {boolean} isSuccess
      * @param {number}  score
      */
     finishGame(isSuccess, score) {
-        this.onGameEnd({ success: isSuccess, finalScore: score });
+        const semDano = !!this.lives
+            && Number.isFinite(this.lives.lives)
+            && Number.isFinite(this.lives.maxLives)
+            && this.lives.lives >= this.lives.maxLives;
+
+        this.onGameEnd({
+            success: isSuccess,
+            finalScore: score,
+            perfect: isSuccess === true && semDano
+        });
     }
 }
 
@@ -2263,7 +2279,7 @@ export class InputController {
 export class PlatformMinigame extends CanvasMinigame {
     /**
      * @param {HTMLElement} containerElement
-     * @param {Function} onGameEnd  callback({ success: boolean, finalScore: number })
+     * @param {Function} onGameEnd  callback({ success: boolean, finalScore: number, perfect: boolean })
      * @param {{
      *   replay?:        boolean,
      *   gravity?:       number,   px/frame² (default 0.55)
