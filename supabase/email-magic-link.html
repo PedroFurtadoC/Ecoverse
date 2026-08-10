@@ -1,116 +1,117 @@
 <!--
-  Template de email do Ecoverse — serve pros 2 fluxos de entrada:
+  Template do email de acesso do Ecoverse.
 
-  1. Authentication → Email Templates → **Confirm signup**
-     Subject heading: Seu acesso ao Ecoverse
-     Message body: cole todo o HTML abaixo.
-     (Este template e disparado no PRIMEIRO acesso de um email.)
+  Serve para os dois fluxos de entrada, e os dois precisam receber este mesmo
+  HTML. Se aplicar em só um, o primeiro acesso de cada pessoa chega com o
+  template padrão do Supabase, em inglês, destoando do resto da identidade.
 
-  2. Authentication → Email Templates → **Magic Link**
-     Subject heading: Seu acesso ao Ecoverse
-     Message body: cole todo o HTML abaixo (mesmo conteudo).
-     (Este template e disparado nos acessos seguintes do mesmo email.)
+    Authentication > Email Templates > Confirm signup
+      Subject heading: Seu acesso ao Ecoverse
+      Message body: cole todo o HTML abaixo.
+      Dispara no primeiro acesso de um email.
 
-  Sem aplicar nos DOIS, o primeiro signup vai com o template padrao
-  do Supabase em ingles ("Confirm Your Signup"), o que destoa do
-  resto da identidade visual.
+    Authentication > Email Templates > Magic Link
+      Subject heading: Seu acesso ao Ecoverse
+      Message body: cole o mesmo HTML.
+      Dispara nos acessos seguintes do mesmo email.
 
-  Variaveis do Supabase usadas: {{ .ConfirmationURL }} e {{ .Email }}.
-  Nao mexer nelas — sao substituidas em runtime.
+  As variáveis {{ .ConfirmationURL }} e {{ .Email }} são substituídas pelo
+  Supabase em tempo de envio. Não altere a grafia delas.
 
-  HTML pensado pra ler bem em Gmail, Outlook web, Apple Mail e mobile.
-  Usa estilo inline porque varios clientes ignoram <style> no head.
+  O estilo é todo inline de propósito: boa parte dos clientes de email ignora
+  a tag <style> no head. O layout em tabela é pelo mesmo motivo, e foi testado
+  em Gmail, Outlook web, Apple Mail e nos aplicativos de celular.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Seu acesso ao Ecoverse</title>
-</head>
-<body style="margin:0;padding:0;background:#0e1a14;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#e8f1ea;">
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#0e1a14;padding:32px 12px;">
-    <tr>
-      <td align="center">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px;width:100%;background:#16241b;border-radius:14px;overflow:hidden;border:1px solid rgba(46,204,113,0.18);">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Seu acesso ao Ecoverse</title>
+  </head>
+  <body style="margin:0;padding:0;background:#0e1a14;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#e8f1ea;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#0e1a14;padding:32px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px;width:100%;background:#16241b;border-radius:14px;overflow:hidden;border:1px solid rgba(46,204,113,0.18);">
 
-          <!-- Header -->
-          <tr>
-            <td style="padding:28px 32px 16px;text-align:center;background:linear-gradient(135deg,#0a3320 0%,#16523a 100%);">
-              <div style="font-size:32px;line-height:1;margin-bottom:8px;">🌱</div>
-              <h1 style="margin:0;font-size:22px;font-weight:700;letter-spacing:0.02em;color:#f4faf6;">
-                Ecoverse
-              </h1>
-              <p style="margin:6px 0 0;font-size:12px;color:#7cdba1;letter-spacing:0.1em;text-transform:uppercase;">
-                Combate aos resíduos pelo mundo
-              </p>
-            </td>
-          </tr>
+            <!-- Cabeçalho -->
+            <tr>
+              <td style="padding:28px 32px 16px;text-align:center;background:linear-gradient(135deg,#0a3320 0%,#16523a 100%);">
+                <div style="font-size:32px;line-height:1;margin-bottom:8px;">🌱</div>
+                <h1 style="margin:0;font-size:22px;font-weight:700;letter-spacing:0.02em;color:#f4faf6;">
+                  Ecoverse
+                </h1>
+                <p style="margin:6px 0 0;font-size:12px;color:#7cdba1;letter-spacing:0.1em;text-transform:uppercase;">
+                  Combate aos resíduos pelo mundo
+                </p>
+              </td>
+            </tr>
 
-          <!-- Body -->
-          <tr>
-            <td style="padding:32px;">
-              <h2 style="margin:0 0 16px;font-size:18px;font-weight:700;color:#f4faf6;">
-                Seu link de acesso chegou
-              </h2>
-              <p style="margin:0 0 22px;font-size:15px;line-height:1.6;color:#cfe6d6;">
-                Pediu pra entrar no Ecoverse com este email. Clica no botão abaixo
-                e a gente te reconhece automaticamente — sem senha, sem
-                cadastro chato.
-              </p>
+            <!-- Corpo -->
+            <tr>
+              <td style="padding:32px;">
+                <h2 style="margin:0 0 16px;font-size:18px;font-weight:700;color:#f4faf6;">
+                  Seu link de acesso chegou
+                </h2>
+                <p style="margin:0 0 22px;font-size:15px;line-height:1.6;color:#cfe6d6;">
+                  Alguém pediu para entrar no Ecoverse com este email. Clique no
+                  botão abaixo e a gente reconhece você automaticamente, sem senha
+                  e sem formulário longo.
+                </p>
 
-              <!-- CTA Button -->
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                <tr>
-                  <td align="center" style="padding:6px 0 22px;">
-                    <a href="{{ .ConfirmationURL }}"
-                       style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#2ecc71 0%,#27ae60 100%);color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:10px;letter-spacing:0.02em;">
-                      Entrar no Ecoverse
-                    </a>
-                  </td>
-                </tr>
-              </table>
+                <!-- Botão principal -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                  <tr>
+                    <td align="center" style="padding:6px 0 22px;">
+                      <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#2ecc71 0%,#27ae60 100%);color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:10px;letter-spacing:0.02em;">
+                        Entrar no Ecoverse
+                      </a>
+                    </td>
+                  </tr>
+                </table>
 
-              <p style="margin:0 0 8px;font-size:12px;color:#94a89c;line-height:1.5;">
-                Se o botão não funcionar, copia e cola este endereço no navegador:
-              </p>
-              <p style="margin:0 0 24px;font-size:11px;color:#7cdba1;word-break:break-all;line-height:1.5;">
-                {{ .ConfirmationURL }}
-              </p>
+                <p style="margin:0 0 8px;font-size:12px;color:#94a89c;line-height:1.5;">
+                  Se o botão não funcionar, copie e cole este endereço no navegador:
+                </p>
+                <p style="margin:0 0 24px;font-size:11px;color:#7cdba1;word-break:break-all;line-height:1.5;">
+                  {{ .ConfirmationURL }}
+                </p>
 
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:22px;margin-top:8px;">
-                <tr>
-                  <td style="padding-top:18px;">
-                    <p style="margin:0 0 8px;font-size:12px;color:#94a89c;line-height:1.55;">
-                      <strong style="color:#cfe6d6;">Não pediu este email?</strong>
-                      Pode ignorar — sem você clicar, ninguém entra.
-                    </p>
-                    <p style="margin:0;font-size:12px;color:#94a89c;line-height:1.55;">
-                      O link vale 1 hora e funciona uma vez só.
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+                <!-- Avisos -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;">
+                  <tr>
+                    <td style="padding-top:18px;">
+                      <p style="margin:0 0 8px;font-size:12px;color:#94a89c;line-height:1.55;">
+                        <strong style="color:#cfe6d6;">Não pediu este email?</strong>
+                        Pode ignorar. Sem alguém clicar no link, ninguém entra.
+                      </p>
+                      <p style="margin:0;font-size:12px;color:#94a89c;line-height:1.55;">
+                        O link vale por uma hora e funciona uma única vez.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
 
-          <!-- Footer -->
-          <tr>
-            <td style="padding:18px 32px;background:#0e1a14;border-top:1px solid rgba(255,255,255,0.06);text-align:center;">
-              <p style="margin:0 0 4px;font-size:11px;color:#6b7d72;line-height:1.5;">
-                UNAERP · Sustentabilidade Ambiental · 2026
-              </p>
-              <p style="margin:0;font-size:11px;color:#6b7d72;line-height:1.5;">
-                <a href="https://ecoverse.dev" style="color:#7cdba1;text-decoration:none;">ecoverse.dev</a>
-                ·
-                <a href="https://github.com/PedroFurtadoC/Ecoverse" style="color:#7cdba1;text-decoration:none;">código aberto</a>
-              </p>
-            </td>
-          </tr>
+            <!-- Rodapé -->
+            <tr>
+              <td style="padding:18px 32px;background:#0e1a14;border-top:1px solid rgba(255,255,255,0.06);text-align:center;">
+                <p style="margin:0 0 4px;font-size:11px;color:#6b7d72;line-height:1.5;">
+                  UNAERP · Sustentabilidade Ambiental · 2026
+                </p>
+                <p style="margin:0;font-size:11px;color:#6b7d72;line-height:1.5;">
+                  <a href="https://ecoverse.dev" style="color:#7cdba1;text-decoration:none;">ecoverse.dev</a>
+                  ·
+                  <a href="https://github.com/PedroFurtadoC/Ecoverse" style="color:#7cdba1;text-decoration:none;">código aberto</a>
+                </p>
+              </td>
+            </tr>
 
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>
