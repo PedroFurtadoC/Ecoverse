@@ -126,7 +126,7 @@
   height: 20px;
 }
 
-/* Pomodoro CTA — prominent labeled pill */
+/* Pomodoro CTA: prominent labeled pill */
 .hud-btn--pomo, .hud-btn--quiz {
   width: auto;
   height: auto;
@@ -166,7 +166,7 @@
   font-size: 16px;
 }
 
-/* Pulso usa apenas transform — única propriedade composta na GPU
+/* Pulso usa apenas transform: única propriedade composta na GPU
    sem disparar layout/paint/CLS. O brilho fica estático no box-shadow base. */
 @keyframes pomoPulse {
 

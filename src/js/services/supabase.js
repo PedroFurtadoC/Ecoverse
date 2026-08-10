@@ -1,5 +1,5 @@
 // Cliente Supabase único, lazy. Falha silenciosa se as variáveis não estiverem
-// configuradas — o app continua jogável só com localStorage.
+// configuradas: o app continua jogável só com localStorage.
 
 let clientPromise = null;
 

@@ -57,7 +57,7 @@ export function loadState() {
   } catch (e) { /* start fresh */ }
 }
 
-// Score determinístico e monotonicamente crescente — uma vez que o
+// Score determinístico e monotonicamente crescente, uma vez que o
 // jogador avança numa dimensão, ela nunca regride. Usado como tie-breaker
 // pra decidir qual save é o "mais avançado" sem depender de timestamp
 // (parser de data falha em alguns formatos do Postgres, clock drift,
@@ -75,7 +75,7 @@ export function progressScore(s) {
 }
 
 // Indica se o save tem qualquer sinal de progresso real. Usado pra
-// decidir o lado "vazio" do merge — quando um save está zerado, o outro
+// decidir o lado "vazio" do merge: quando um save está zerado, o outro
 // vence sem comparação.
 export function hasMeaningfulProgress(s) {
   if (!s) return false;
@@ -87,14 +87,14 @@ export function hasMeaningfulProgress(s) {
 }
 
 // Aplica os campos da nuvem no state local fazendo merge inteligente:
-// - arrays (completed, achievements): UNION — preserva itens dos dois lados
+// - arrays (completed, achievements): UNION: preserva itens dos dois lados
 // - contadores monotônicos (coins, pomodoros, impact): MAX
 // - energia (oscila por gasto): adota o lado com maior progressScore
 // - plantedTrees: lado com mais árvores vence (não dá pra unir bem porque
 //   coordenadas são aleatórias e podem duplicar visualmente)
 // - quizzes: por ID, mantém o melhor score
 //
-// Retorna true se alguma coisa mudou em state — útil pra decidir se
+// Retorna true se alguma coisa mudou em state, útil pra decidir se
 // dispara HUD update / refresh de globo / toast pro usuário.
 export function applyCloudState(cloudState) {
   if (!cloudState) return false;

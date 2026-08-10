@@ -1,6 +1,6 @@
 # Ecoverse
 
-> Plataforma educacional gamificada sobre resíduos e sustentabilidade. 8 missões em biomas reais com minigames temáticos, Pomodoro integrado e quizzes ODS. Trabalho final da disciplina de Sustentabilidade Ambiental — UNAERP 2026.
+> Plataforma educacional gamificada sobre resíduos e sustentabilidade. 8 missões em biomas reais com minigames temáticos, Pomodoro integrado e quizzes ODS. Trabalho final da disciplina de Sustentabilidade Ambiental, UNAERP 2026.
 
 ## Sobre
 
@@ -10,7 +10,7 @@ Aplicação web criada por Pedro Furtado Cunha e equipe da Universidade de Ribei
 
 - Vite + JavaScript ES Modules (sem framework, projeto leve e didático)
 - Globe.GL e Three.js para a visualização 3D
-- Supabase (Auth e leaderboard) — opcional
+- Supabase (Auth e leaderboard): opcional
 - CSS puro com design system mobile-first
 - PWA instalável com service worker
 

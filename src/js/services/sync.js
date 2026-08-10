@@ -37,7 +37,7 @@ export function onStatusChange(fn) {
 }
 
 // =============================================================
-// Snapshot — formato que sobe pra tabela progress.
+// Snapshot: formato que sobe pra tabela progress.
 // =============================================================
 function snapshot() {
   return {
@@ -116,7 +116,7 @@ export async function pullState() {
     setStatus('error');
     return null;
   }
-  // Sucesso de leitura conta como "online" pra UI — confirma que o cliente
+  // Sucesso de leitura conta como "online" pra UI: confirma que o cliente
   // conseguiu falar com o backend, mesmo que ainda não tenha gravado nada.
   setStatus('online');
   return data;
@@ -155,7 +155,7 @@ export async function recordPomodoro({ durationSeconds, taskName, wasBreak = fal
 }
 
 // =============================================================
-// Realtime — recebe push quando outro device atualizar nosso progress.
+// Realtime: recebe push quando outro device atualizar nosso progress.
 // =============================================================
 // Mantém um único canal aberto por sessão. Resubscribe automático em
 // caso de troca de usuário (sign-in/out). O onUpdate recebe a linha
@@ -194,7 +194,7 @@ export async function subscribeProgress(onUpdate) {
     )
     .subscribe((status) => {
       // Eventos: SUBSCRIBED | CHANNEL_ERROR | CLOSED | TIMED_OUT.
-      // Não derruba currentStatus do sync push — Realtime é canal paralelo.
+      // Não derruba currentStatus do sync push: Realtime é canal paralelo.
       if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
         console.warn('[sync] realtime channel:', status);
       }

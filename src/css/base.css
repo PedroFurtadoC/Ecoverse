@@ -61,7 +61,7 @@ img {
   border: 0;
 }
 
-/* Skip link — primeiro foco do teclado, fica visível ao receber foco */
+/* Skip link: primeiro foco do teclado, fica visível ao receber foco */
 .skip-link {
   position: absolute;
   top: -100%;

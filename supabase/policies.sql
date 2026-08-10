@@ -2,13 +2,13 @@
 -- Rode DEPOIS do schema.sql.
 --
 -- Usa (select auth.uid()) em vez de auth.uid() para evitar
--- re-execução da função em cada linha — melhora performance,
+-- re-execução da função em cada linha: melhora performance,
 -- especialmente em queries que tocam várias linhas como o leaderboard.
 
 -- =============================================================
 -- GRANTs basicos pras roles do Supabase. Sem isso, o Postgres
 -- bloqueia qualquer SELECT/INSERT/UPDATE/DELETE com "permission
--- denied for table" antes mesmo de avaliar a RLS — porque tabelas
+-- denied for table" antes mesmo de avaliar a RLS: porque tabelas
 -- criadas via SQL direto so recebem privilegios secundarios pra
 -- anon/authenticated. As policies abaixo continuam sendo o que
 -- de fato restringe os dados; estes grants so abrem a porta.

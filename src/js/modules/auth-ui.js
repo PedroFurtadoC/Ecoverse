@@ -50,7 +50,7 @@ const SYNC_LABELS = {
   syncing:  'Sincronizando…',
   online:   'Sincronizado',
   offline:  'Offline · só local',
-  error:    'Falha — tente sincronizar de novo'
+  error:    'Falha: tente sincronizar de novo'
 };
 
 function bindSyncStatus() {
@@ -126,7 +126,7 @@ function bindAuthForm() {
     } catch (err) {
       // O Supabase retorna 429 com error_code: over_email_send_rate_limit
       // quando o limite do SMTP nativo (3-4 emails/hora por email) estoura.
-      // O message não contém "rate" — precisa olhar o code/status também.
+      // O message não contém "rate": precisa olhar o code/status também.
       const isRateLimit = err?.status === 429
         || err?.code === 'over_email_send_rate_limit'
         || /rate.?limit|over_email/i.test(err?.message ?? '');
@@ -227,7 +227,7 @@ export async function exportData() {
 
 export async function deleteAccount() {
   const confirm1 = window.confirm(
-    'Tem certeza? Vamos apagar seu perfil, progresso e histórico de Pomodoros do servidor.\n\nO save local deste navegador continua intacto — você pode continuar jogando anônimo.'
+    'Tem certeza? Vamos apagar seu perfil, progresso e histórico de Pomodoros do servidor.\n\nO save local deste navegador continua intacto, você pode continuar jogando anônimo.'
   );
   if (!confirm1) return;
 

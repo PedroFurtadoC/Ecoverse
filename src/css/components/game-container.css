@@ -1,4 +1,4 @@
-/* Container raiz do jogo — globo, HUD e overlays. */
+/* Container raiz do jogo: globo, HUD e overlays. */
 
 #game-container {
   position: fixed;

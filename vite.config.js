@@ -11,7 +11,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          // Globe.GL + Three.js — pesados, separados pra carregar em paralelo
+          // Globe.GL + Three.js: pesados, separados pra carregar em paralelo
           // enquanto o loading screen está visível.
           globe: ['globe.gl']
         }

@@ -1,4 +1,4 @@
-/* Breakpoints centralizados — fonte da verdade do mobile. */
+/* Breakpoints centralizados: fonte da verdade do mobile. */
 
 @media (max-width: 600px) {
   .hud {
@@ -53,7 +53,7 @@
   }
 }
 
-/* Pomodoro — modal e ring de progresso. */
+/* Pomodoro: modal e ring de progresso. */
 .pomo-modal {
   max-width: 400px;
 }
@@ -206,7 +206,7 @@
   color: #FF7043;
 }
 
-/* Conquistas — galeria, pop-up de desbloqueio e contador. */
+/* Conquistas: galeria, pop-up de desbloqueio e contador. */
 .achievements-modal {
   max-width: 480px;
 }
@@ -336,7 +336,7 @@
   display: flex;
 }
 
-/* Botão "Voltar" universal — aparece em todos os minigames, fixo no canto. */
+/* Botão "Voltar" universal: aparece em todos os minigames, fixo no canto. */
 .mg-exit {
   position: absolute;
   top: max(env(safe-area-inset-top, 0px), 12px);

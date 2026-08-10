@@ -1,6 +1,6 @@
--- Schema do Ecoverse — Supabase (Postgres)
+-- Schema do Ecoverse: Supabase (Postgres)
 -- Tabelas, view de leaderboard e triggers de updated_at.
--- Idempotente — pode rodar várias vezes sem quebrar nada.
+-- Idempotente: pode rodar várias vezes sem quebrar nada.
 
 -- =============================================================
 -- profiles: 1 linha por usuário autenticado

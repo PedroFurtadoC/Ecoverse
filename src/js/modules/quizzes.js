@@ -73,14 +73,14 @@ export function renderGallery() {
 
   if (headerCount) headerCount.textContent = `${completedCount}/17`;
   if (headerPhase) {
-    const phaseLabels = ['🔒 Nenhuma fase desbloqueada', '🌱 Fase 1 — Fundamentos', '🌿 Fase 2 — Crescimento', '🌳 Fase 3 — Completo'];
+    const phaseLabels = ['🔒 Nenhuma fase desbloqueada', '🌱 Fase 1: Fundamentos', '🌿 Fase 2: Crescimento', '🌳 Fase 3: Completo'];
     headerPhase.textContent = phaseLabels[phase];
   }
 
   const phases = [
-    { phase: 1, label: 'FASE 1 — Fundamentos', sublabel: 'Complete 1 missão para desbloquear', ids: [1,2,3,4,5,6] },
-    { phase: 2, label: 'FASE 2 — Crescimento', sublabel: 'Complete 3 missões para desbloquear', ids: [7,8,9,10,11,12] },
-    { phase: 3, label: 'FASE 3 — Transformação', sublabel: 'Complete 5 missões para desbloquear', ids: [13,14,15,16,17] }
+    { phase: 1, label: 'FASE 1: Fundamentos', sublabel: 'Complete 1 missão para desbloquear', ids: [1,2,3,4,5,6] },
+    { phase: 2, label: 'FASE 2: Crescimento', sublabel: 'Complete 3 missões para desbloquear', ids: [7,8,9,10,11,12] },
+    { phase: 3, label: 'FASE 3: Transformação', sublabel: 'Complete 5 missões para desbloquear', ids: [13,14,15,16,17] }
   ];
 
   phases.forEach(ph => {
@@ -116,7 +116,7 @@ export function renderGallery() {
 }
 
 // Recebe o estado visual do card como `cardState` pra evitar sombrear o
-// `state` importado da store — antes esse shadow fazia state.quizzes virar
+// `state` importado da store: antes esse shadow fazia state.quizzes virar
 // undefined dentro desta função e o score não renderizava.
 function createOdsCard(ods, cardState) {
   const card = document.createElement('div');
@@ -315,7 +315,7 @@ function startQuiz(ods) {
 
     // Anti-farming: só credita moedas quando o quiz é uma novidade ou um
     // upgrade real. Refazer um quiz com a mesma ou pior pontuação não dá
-    // recompensa de novo — evita inflar o ranking da turma artificialmente.
+    // recompensa de novo: evita inflar o ranking da turma artificialmente.
     if (!state.quizzes) state.quizzes = {};
     const prev = state.quizzes[ods.id];
     const isFirstWin = passed && !prev;

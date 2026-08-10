@@ -1,4 +1,4 @@
-/* Toasts — feedback efêmero, ancorados no canto inferior direito. */
+/* Toasts: feedback efêmero, ancorados no canto inferior direito. */
 
 .toast-container {
   position: fixed;

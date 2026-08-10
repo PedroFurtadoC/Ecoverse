@@ -53,7 +53,7 @@
   text-overflow: ellipsis;
 }
 
-/* Status do sync com a nuvem — bolinha colorida + label curto.
+/* Status do sync com a nuvem: bolinha colorida + label curto.
    Cores: verde (online), amarelo (syncing), laranja (offline/idle),
    vermelho (error). Pulsa enquanto sincroniza. */
 .sync-status {
@@ -221,7 +221,7 @@ body.auth-disabled .menu-divider {
 
 /* Links inline (privacidade/termos) renderizados como <button> pra
    evitar navegação. Reset agressivo pra não herdar min-height de
-   regras globais de touch-target — assim o texto flui naturalmente
+   regras globais de touch-target: assim o texto flui naturalmente
    e quebra de linha não introduz gap visual. */
 .auth-link {
   display: inline;

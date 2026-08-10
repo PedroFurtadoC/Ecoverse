@@ -10,7 +10,7 @@ import * as Auth from './services/auth.js';
 import * as Sync from './services/sync.js';
 import * as AuthUI from './modules/auth-ui.js';
 
-// Modo de teste — `?dev=free` na URL destrava tudo pra revisar o jogo:
+// Modo de teste: `?dev=free` na URL destrava tudo pra revisar o jogo:
 // todas as missões liberadas, sem custo de energia, sem persistir progresso
 // (nenhuma jogada credita conquistas ou marca missão como concluída).
 // Ex.: http://localhost:3000/?dev=free
@@ -114,7 +114,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Easter egg: digitar "ECO" fora de um input abre um minigame escondido.
-// Está disponível desde o primeiro boot — sem pré-requisito. O timer entre
+// Está disponível desde o primeiro boot: sem pré-requisito. O timer entre
 // teclas é generoso pra cobrir digitação tranquila.
 let eggSeq = '';
 let eggResetTimer = null;
@@ -160,7 +160,7 @@ function openEasterEgg() {
   showToast('🥚 Easter egg encontrado! Triagem relâmpago.', 'success');
   MiniGames.open('egg_triagem', (success) => {
     if (success && !state.eggCompleted) {
-      // Em dev mode, o easter egg roda só como teste — não credita conquista.
+      // Em dev mode, o easter egg roda só como teste, não credita conquista.
       if (DEV_FREE) {
         showToast('Easter egg testado em dev. Nada foi salvo.', 'success');
         return;
@@ -196,7 +196,7 @@ $$('[data-menu-action]').forEach((btn) => {
   btn.addEventListener('click', () => {
     const action = btn.dataset.menuAction;
     // Privacy/terms podem ser abertos de dentro do próprio modal-auth
-    // (links na checkbox de consentimento) — nesses casos não há menu aberto.
+    // (links na checkbox de consentimento): nesses casos não há menu aberto.
     closeModal('modal-menu');
     const open = (id) => setTimeout(() => openModal(id), 220);
     if (action === 'donate')      open('modal-donate');
@@ -631,7 +631,7 @@ function addReward(energy, coins) {
 // Centraliza saveState + sync na nuvem. Antes vários caminhos chamavam
 // só saveState() e o Supabase ficava sem receber o progresso (missão
 // concluída, conquistas, árvores plantadas). Sempre que mutamos state,
-// passamos por aqui — debounce de 2s no Sync agrupa as mutações.
+// passamos por aqui: debounce de 2s no Sync agrupa as mutações.
 function persist() {
   saveState();
   Sync.scheduleSync();
@@ -723,7 +723,7 @@ async function loadAssets() {
   showTip(); tipInterval = setInterval(showTip, 2500);
   let loaded = 0; const total = ASSET_LIST.length;
   const tick = () => { loaded++; setProgress(Math.round((loaded / total) * 100)); };
-  // Pré-carga via Image() — entra no cache HTTP normal e os <img> reusam sem refetch.
+  // Pré-carga via Image(): entra no cache HTTP normal e os <img> reusam sem refetch.
   const promises = ASSET_LIST.map((url) => new Promise((resolve) => {
     const img = new Image();
     img.onload = img.onerror = () => { tick(); resolve(); };
@@ -753,14 +753,14 @@ async function loadAssets() {
 //
 // applyCloudState faz o merge inteligente (UNION pra arrays, MAX pra
 // contadores, lado-mais-avançado pra energia). Sempre retorna true se
-// algum campo mudou — aí atualizamos HUD, globo e damos feedback.
+// algum campo mudou: aí atualizamos HUD, globo e damos feedback.
 async function reconcileFromCloud({ silent = false } = {}) {
   const user = Auth.getUser();
   if (!user) return;
 
   const cloudState = await Sync.pullState();
   if (!cloudState) {
-    // Sem linha na nuvem ainda — manda o local pra cima.
+    // Sem linha na nuvem ainda: manda o local pra cima.
     if (hasMeaningfulProgress(state)) Sync.scheduleSync();
     return;
   }
@@ -768,7 +768,7 @@ async function reconcileFromCloud({ silent = false } = {}) {
   const changed = applyCloudState(cloudState);
   if (!changed) {
     // Já estamos em dia. Se o local tem MAIS que a nuvem, sobe (caso
-    // típico: usuário jogou anônimo, depois logou — local "vence" e
+    // típico: usuário jogou anônimo, depois logou, local "vence" e
     // precisa subir o progresso novo).
     if (hasMeaningfulProgress(state)) Sync.scheduleSync();
     return;
@@ -783,14 +783,14 @@ async function reconcileFromCloud({ silent = false } = {}) {
   }
   // Depois de adotar a nuvem, sobe o snapshot mergeado pra alinhar
   // os dois lados (em caso de UNION: o lado que tinha menos agora tem
-  // mais — precisa empurrar).
+  // mais: precisa empurrar).
   Sync.scheduleSync();
 }
 
 // Marca quando o boot terminou a primeira reconciliação. Antes disso,
-// o onAuthChange ignora o notify inicial do Auth.init — quem trata é
+// o onAuthChange ignora o notify inicial do Auth.init, quem trata é
 // o authBoot.then logo abaixo. Sem isso, reconcileFromCloud roda 2x no
-// boot (uma via listener, outra via .then) — idempotente, mas desperdício.
+// boot (uma via listener, outra via .then): idempotente, mas desperdício.
 let bootSyncReady = false;
 
 async function startGame() {
@@ -803,7 +803,7 @@ async function startGame() {
 
   // Boot bloqueante: aguarda Auth + reconciliação ANTES de mostrar o globo
   // com dados desatualizados. Timeout de 4s garante que rede ruim não
-  // congela o boot — se cair o timeout, o app sobe com state local e o
+  // congela o boot: se cair o timeout, o app sobe com state local e o
   // sync continua em background (visibilitychange + Realtime cobrem depois).
   const authBoot = Auth.init()
     .then(async (user) => {
@@ -818,7 +818,7 @@ async function startGame() {
 
   const timeout = new Promise((r) => setTimeout(r, 4000));
   await Promise.race([authBoot, timeout]);
-  // Se o timeout venceu, libera o gate mesmo assim — listener subsequente
+  // Se o timeout venceu, libera o gate mesmo assim, listener subsequente
   // pode tratar o auth quando finalmente resolver.
   bootSyncReady = true;
 
@@ -830,7 +830,7 @@ async function startGame() {
 // Handler de push do Realtime. Aplica direto via applyCloudState e
 // atualiza UI se mudou. Usa updateHUD pra animar suavemente do valor
 // antigo pro novo. Não chama scheduleSync (evita loop upsert ↔ realtime),
-// porque o snapshot que veio já é o oficial — qualquer ajuste que
+// porque o snapshot que veio já é o oficial: qualquer ajuste que
 // applyCloudState fez vai ser propagado pelos eventos seguintes.
 function handleRealtimeProgress(cloudState) {
   if (!cloudState) return;

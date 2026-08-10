@@ -1,7 +1,7 @@
 /* Tokens do Ecoverse. Único lugar com :root. */
 
 :root {
-  /* Paleta primária — verde como cor da marca */
+  /* Paleta primária: verde como cor da marca */
   --c-green-dark:   #1A5632;
   --c-green:        #2ECC71;
   --c-green-light:  #A8D5BA;
@@ -25,7 +25,7 @@
   --waste-toxic:      #EF5350;
   --waste-electronic: #9C27B0;
 
-  /* Superfícies (escuras por padrão — projeto é dark-first) */
+  /* Superfícies (escuras por padrão: projeto é dark-first) */
   --c-bg-dark:    #0B2E1A;
   --c-bg-card:    rgba(12, 42, 24, 0.94);
   --c-text:       #E8F5E9;
@@ -43,7 +43,7 @@
   --shadow-md:  0 8px 24px rgba(0, 0, 0, 0.45);
   --shadow-lg:  0 16px 48px rgba(0, 0, 0, 0.6);
 
-  /* Movimento — `prefers-reduced-motion` é tratado em base.css */
+  /* Movimento: `prefers-reduced-motion` é tratado em base.css */
   --transition:        0.3s ease;
   --transition-fast:   0.15s ease;
   --duration-base:     300ms;
@@ -71,7 +71,7 @@
   --space-7: 3rem;
   --space-8: 4rem;
 
-  /* Z-index — escala global */
+  /* Z-index: escala global */
   --z-globe:        1;
   --z-hud:          50;
   --z-celebration:  100;

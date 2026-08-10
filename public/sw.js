@@ -1,4 +1,4 @@
-// Service worker do Ecoverse — cache mínimo para suporte offline básico.
+// Service worker do Ecoverse: cache mínimo para suporte offline básico.
 // Estratégia: cache-first para os ativos do build (carimbados com hash pelo Vite),
 // network-first para tudo que vai pra Supabase ou APIs externas.
 
@@ -28,7 +28,7 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
 
-  // Sem cache pra origens externas (Supabase, fontes do Google) — deixa o browser cuidar.
+  // Sem cache pra origens externas (Supabase, fontes do Google), deixa o browser cuidar.
   if (url.origin !== self.location.origin) return;
 
   const isStatic = STATIC_PATTERNS.some((pattern) => pattern.test(url.pathname));

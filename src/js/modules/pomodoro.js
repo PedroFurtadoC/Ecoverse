@@ -173,7 +173,7 @@ function playBeep() {
       osc.start(audioCtx.currentTime + i * 0.15);
       osc.stop(audioCtx.currentTime + i * 0.15 + 0.4);
     });
-  } catch (e) { /* WebAudio indisponível — segue sem som */ }
+  } catch (e) { /* WebAudio indisponível: segue sem som */ }
 }
 
 export function getStats() {

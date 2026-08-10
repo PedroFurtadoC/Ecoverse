@@ -91,7 +91,7 @@ const MISSIONS = [
     // MapBiomas / WWF-Brasil (2020): 30% do Pantanal queimou em 2020.
     // Embalagens de agrotóxico e palhada acumulada são combustível recorrente
     // para incêndios na estação seca.
-    desc: 'Em 2020, 30% do Pantanal queimou. Embalagens de agrotóxico e palhada acumulada viram combustível das queimadas — organize o descarte antes do fogo.',
+    desc: 'Em 2020, 30% do Pantanal queimou. Embalagens de agrotóxico e palhada acumulada viram combustível das queimadas. Organize o descarte antes do fogo.',
     location: 'Pantanal, Brasil',
     photo: 'assets/photo-pantanal.jpg',
     costEnergy: 4, rewardCoins: 40, impactCO2: 2.4,
@@ -133,7 +133,7 @@ const ACHIEVEMENTS = [
   { id: 'streak_3',         icon: '🔗', title: 'Sequência Tripla',    desc: 'Complete 3 Pomodoros consecutivos sem reset.',                 condition: (s) => s.bestStreak >= 3 },
   { id: 'first_mission',    icon: '🌱', title: 'Primeiro Passo',      desc: 'Complete sua primeira missão.',                                condition: (s) => s.completed.length >= 1 },
   { id: 'missions_3',       icon: '🌿', title: 'Mão na Massa',        desc: 'Complete 3 missões de combate aos resíduos.',                  condition: (s) => s.completed.length >= 3 },
-  { id: 'logistics_5',      icon: '🔄', title: 'Logística Reversa',   desc: 'Complete 5 missões — feche o ciclo dos resíduos.',             condition: (s) => s.completed.length >= 5 },
+  { id: 'logistics_5',      icon: '🔄', title: 'Logística Reversa',   desc: 'Complete 5 missões e feche o ciclo dos resíduos.',             condition: (s) => s.completed.length >= 5 },
   { id: 'all_missions',     icon: '🌍', title: 'Mundo em Equilíbrio', desc: 'Complete todas as 8 missões ao redor do mundo.',               condition: (s) => s.completed.length >= 8 },
   { id: 'minigame_perfect', icon: '⭐', title: 'Triagem Perfeita',    desc: 'Atinja pontuação máxima em um minigame.',                      condition: (s) => s.perfectMinigames >= 1 },
   { id: 'separates_3',      icon: '♻️', title: 'Triagem Mestre',     desc: 'Faça pontuação máxima em 3 minigames de triagem.',             condition: (s) => s.perfectMinigames >= 3 },
@@ -141,10 +141,10 @@ const ACHIEVEMENTS = [
   { id: 'coins_200',        icon: '🏦', title: 'Banco Ecológico',     desc: 'Acumule 200 moedas.',                                          condition: (s) => s.coins >= 200 },
   { id: 'impact_5',         icon: '🌬️', title: 'Ar Mais Puro',        desc: 'Evite 5 kg de CO₂ pelas suas missões.',                       condition: (s) => s.impact >= 5 },
   { id: 'impact_10',        icon: '🏔️', title: 'Impacto Real',        desc: 'Evite 10 kg de CO₂ pelas suas missões.',                      condition: (s) => s.impact >= 10 },
-  { id: 'egg_triagem',      icon: '🥚', title: 'Caçador de Easter Egg', desc: 'Você achou o minigame escondido — triagem relâmpago em 60 segundos. Bem-vindo ao clube.', hint: 'Três letras escondidas no nome do jogo (digite no teclado), ou três toques rápidos no contador de missões.', condition: (s) => s.eggCompleted === true, secret: true }
+  { id: 'egg_triagem',      icon: '🥚', title: 'Caçador de Easter Egg', desc: 'Você achou o minigame escondido: triagem relâmpago em 60 segundos. Bem-vindo ao clube.', hint: 'Três letras escondidas no nome do jogo (digite no teclado), ou três toques rápidos no contador de missões.', condition: (s) => s.eggCompleted === true, secret: true }
 ];
 
-// Quizzes ODS — 17 Objetivos de Desenvolvimento Sustentável (ONU, Agenda 2030).
+// Quizzes ODS: 17 Objetivos de Desenvolvimento Sustentável (ONU, Agenda 2030).
 const QUIZ_ODS_DATA = [
   {
     id: 1, title: 'Erradicação da Pobreza', icon: '🏚️',
@@ -358,7 +358,7 @@ const TIPS = [
   '♻️ Reciclar uma tonelada de papel poupa 17 árvores e milhares de litros de água. (CEMPRE)',
   '🛒 Cada brasileiro produz cerca de 1 kg de resíduo por dia. (ABRELPE 2023)',
   '🥤 Uma garrafa PET leva mais de 400 anos para se decompor no ambiente. (UNEP)',
-  '📱 O mundo gera 62 milhões de toneladas de lixo eletrônico por ano — só 22% são formalmente reciclados. (UN E-waste Monitor 2024)',
+  '📱 O mundo gera 62 milhões de toneladas de lixo eletrônico por ano. Só 22% são formalmente reciclados. (UN E-waste Monitor 2024)',
   '🌊 Cerca de 8 milhões de toneladas de plástico chegam aos oceanos a cada ano. (UNEP)',
   '🥫 Reciclar uma lata de alumínio economiza 95% da energia de produzir uma nova. (CEMPRE)',
   '🍎 Aproximadamente 1/3 dos alimentos produzidos no mundo viram desperdício. (FAO)',
@@ -374,7 +374,7 @@ const ASSET_LIST = [
 ];
 
 // Equipe que fez o projeto. As fotos vivem em `public/assets/team/`.
-// `github`, `linkedin` e `portfolio` são opcionais — campos `null` simplesmente
+// `github`, `linkedin` e `portfolio` são opcionais, campos `null` simplesmente
 // não renderizam o link na card.
 const TEAM = [
   {
@@ -402,7 +402,7 @@ const TEAM = [
     portfolio: null
   },
   {
-    name: 'Pedro Casaroti',
+    name: 'Pedro Borges Casaroti',
     role: 'Missões 5 e 6: Madagascar e Pantanal',
     photo: 'assets/team/pedro_borges.jpg',
     github: 'https://github.com/pbcz1k4',
