@@ -1,64 +1,123 @@
-# Mantém o projeto Supabase free ativo.
+# Segunda camada do ping que mantém o projeto Supabase free acordado.
 #
-# O plano gratuito pausa projetos depois de 7 dias sem requisição.
-# Esse workflow dispara um SELECT trivial 1x por semana e mantém o
-# banco acordado sem custo nenhum. Também roda sob demanda pelo
-# painel do GitHub (botão "Run workflow").
+# Por que este arquivo mudou tanto:
+# a versão anterior batia em /auth/v1/health e rodava 1x por semana. Duas
+# coisas erradas nisso. A primeira é que o health check responde 200 sem
+# consultar o Postgres, e o Supabase mede atividade *no banco*, o ping
+# passava verde enquanto o contador dos 7 dias seguia correndo. A segunda é
+# que 7 dias de intervalo pra um prazo de 7 dias não deixa folga nenhuma, e o
+# agendador do GitHub costuma atrasar algumas horas. Em junho de 2026 o atraso
+# passou do prazo e o projeto pausou.
 #
-# Para a UNAERP usar:
-# 1. Settings → Secrets and variables → Actions
-# 2. Cadastrar:
-#    - SUPABASE_URL          (a URL do projeto, ex.: https://xxx.supabase.co)
-#    - SUPABASE_ANON_KEY     (a publishable key, pública por design)
+# Agora: SELECT de verdade, todo dia.
+#
+# Limitação que vale conhecer: em repositório público o GitHub desliga sozinho
+# workflow agendado depois de 60 dias sem commit novo, foi o que aconteceu
+# aqui depois que o projeto ficou parado. Por isso o ping principal passou a
+# ser o cron da Vercel (api/keep-alive.js + vercel.json), que não depende de
+# movimento no repositório. Este workflow é a rede de segurança. Se o repo
+# ficar quieto muito tempo, reative em Actions → keep-supabase-warm → Enable.
+#
+# Secrets necessários (Settings → Secrets and variables → Actions):
+#   SUPABASE_URL      : ex.: https://xxxx.supabase.co
+#   SUPABASE_ANON_KEY : a publishable key (pública por design)
 
 name: keep-supabase-warm
 
 on:
   schedule:
-    # Toda segunda-feira às 09:00 UTC (06:00 horário de Brasília).
-    - cron: '0 9 * * 1'
+    # Todo dia às 08:23 UTC (05:23 em Brasília). O minuto é quebrado de
+    # propósito: a própria documentação do GitHub avisa que agendamento na
+    # virada da hora pega fila e às vezes é descartado.
+    - cron: '23 8 * * *'
   workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
 
 jobs:
   ping:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
-      - name: Ping leve no Supabase
+      - name: Consulta o banco
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
-            echo "::error::SUPABASE_URL ou SUPABASE_ANON_KEY nao configurados em Secrets."
+          set -uo pipefail
+
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_ANON_KEY:-}" ]; then
+            echo "::error::SUPABASE_URL ou SUPABASE_ANON_KEY não estão cadastrados em Secrets."
             exit 1
           fi
 
-          # Bate na rota de healthcheck oficial do Supabase. Nao precisa
-          # de RLS nem de tabela especifica — qualquer resposta do servico
-          # ja conta como atividade e zera o contador dos 7 dias.
-          status=$(curl -sS -o /tmp/resp.txt -w "%{http_code}" \
-            --max-time 20 \
+          # limit=1 já resolve. O que importa não é o dado que volta, é a query
+          # atravessar o PostgREST e chegar no Postgres.
+          status=$(curl -sS -o /tmp/resp.txt -w '%{http_code}' \
+            --max-time 30 --retry 3 --retry-delay 15 --retry-connrefused \
             -H "apikey: $SUPABASE_ANON_KEY" \
-            "$SUPABASE_URL/auth/v1/health")
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H 'Cache-Control: no-cache' \
+            "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1") || true
 
-          echo "HTTP status: $status"
-          echo "--- response body ---"
-          cat /tmp/resp.txt || true
+          echo "HTTP $status"
+          echo "--- resposta ---"
+          head -c 500 /tmp/resp.txt || true
           echo ""
-          echo "--- end body ---"
+          echo "--- fim ---"
 
-          # 2xx = sucesso. 4xx tambem conta como "banco vivo" pra fins
-          # de anti-pause (servico respondeu, so rejeitou alguma cosia).
-          # Falha real e 5xx ou rede caida (curl retornaria 000).
-          if [ "$status" = "000" ]; then
-            echo "::error::Supabase nao respondeu (timeout ou DNS)"
-            exit 1
-          fi
+          case "$status" in
+            2*)
+              echo "Ping ok: o banco respondeu. Contador dos 7 dias zerado."
+              ;;
+            000)
+              echo "::error::Sem resposta do Supabase (DNS ou timeout). Quando o DNS do projeto não resolve, quase sempre é porque ele já está pausado, nesse caso só o painel resolve, ping nenhum acorda."
+              exit 1
+              ;;
+            *)
+              echo "::error::O banco respondeu $status em vez de 2xx. A query não está chegando no Postgres, confira as grants e a policy de anon em profiles (supabase/policies.sql)."
+              exit 1
+              ;;
+          esac
 
-          if [ "$status" -ge 500 ]; then
-            echo "::error::Supabase retornou erro de servidor ($status)"
-            exit 1
-          fi
+      # A versão anterior falhou seis semanas seguidas sem ninguém perceber.
+      # Uma issue aberta na primeira falha evita repetir isso.
+      - name: Avisa se o ping falhou
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marcador = 'keep-supabase-warm-falhou';
+            const abertas = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: marcador
+            });
 
-          echo "Ping ok — Supabase ativo (HTTP $status). Contador dos 7 dias zerado."
+            // Já tem issue aberta sobre isso? Não abre outra todo dia.
+            if (abertas.data.length > 0) return;
+
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'O ping que mantém o Supabase acordado falhou',
+              labels: [marcador],
+              body: [
+                'O ping diário do banco não passou. Enquanto ele estiver falhando, o projeto',
+                'corre risco de pausar por inatividade (o prazo do plano free é de 7 dias).',
+                '',
+                `Log da execução: ${run}`,
+                '',
+                'Por onde começar:',
+                '',
+                '- Erro de DNS: o projeto provavelmente já pausou. Resolva em Supabase → Dashboard → Resume project.',
+                '- HTTP 401 ou 404: as grants/policies de anon em `profiles` mudaram. Rode `supabase/policies.sql` de novo.',
+                '- Secret faltando: confira SUPABASE_URL e SUPABASE_ANON_KEY em Settings → Secrets and variables → Actions.',
+                '',
+                'Fechar esta issue depois de resolver: o workflow abre outra se falhar de novo.'
+              ].join('\n')
+            });
