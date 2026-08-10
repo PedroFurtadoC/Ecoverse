@@ -118,11 +118,11 @@ Em **Advisors → Security** o resultado esperado é:
 
 ## 8. Templates de email branded
 
-O Supabase tem templates separados pro **primeiro acesso de um email** (`Confirm signup`) e pros **acessos seguintes** (`Magic Link`). Os dois precisam ser personalizados, senão o primeiro email chega genérico em inglês.
+O Supabase tem templates separados pro **primeiro acesso de um email** (`Confirm sign up`) e pros **acessos seguintes** (`Magic link or OTP`). Os dois precisam ser personalizados, senão o primeiro email chega genérico em inglês. Os nomes exatos mudam de tempos em tempos na interface, então procure pelo sentido e não pelo rótulo.
 
 Para os dois, faça o mesmo passo:
 
-1. **Authentication → Email Templates → Confirm signup** (e depois **Magic Link**).
+1. **Authentication → Emails → Templates → Confirm sign up** (e depois **Magic link or OTP**).
 2. **Subject heading**: `Seu acesso ao Ecoverse`.
 3. **Message body**: cole o conteúdo de [`email-magic-link.html`](./email-magic-link.html).
 4. Salve.
