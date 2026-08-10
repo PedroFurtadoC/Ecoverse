@@ -37,11 +37,22 @@ Em paralelo, o Pomodoro emite `EVENTS.REWARD` e `EVENTS.POMODORO_COMPLETE`: `mai
 
 ## Build
 
-`vite.config.js` separa `globe.gl` em chunk próprio (lazy-load via `import('globe.gl')` em `main.js`). Resultado típico:
+`vite.config.js` separa `globe.gl` em chunk próprio (lazy-load via `import('globe.gl')` em `main.js`). Números da entrega atual, comprimidos:
 
-- `index.js`: ~18 KB gzip (app)
-- `globe.js`: ~519 KB gzip (Three.js + Globe.GL, lazy)
-- `index.css`: ~7.5 KB gzip
-- chunk Supabase: ~53 KB gzip (lazy quando o usuário loga)
+| Arquivo | gzip | Quando carrega |
+| --- | --- | --- |
+| `index.html` | ~7,7 KB | sempre |
+| `index.css` | ~15 KB | sempre |
+| chunk do app | ~71 KB | sempre |
+| chunk do Supabase | ~57 KB | só quando o usuário entra na conta |
+| chunk do globo | ~519 KB | depois da tela de carregamento |
+
+O globo carrega Three.js junto e por isso pesa. Fica fora do caminho crítico de propósito: a tela de carregamento aparece antes, e o download acontece enquanto ela está visível.
+
+Esses valores mudam a cada alteração de conteúdo ou dependência. Se precisar do número atual, rode `npm run build` e leia a saída, que é a fonte de verdade.
 
 Target ES2020. Cobre 95%+ dos navegadores atuais.
+
+## Rotina de manutenção
+
+Fora das três camadas da aplicação existe uma função serverless em `api/keep-alive.js`, publicada junto com o site. Ela não faz parte do produto: só executa uma consulta de leitura diária no banco para evitar que o plano gratuito pause o projeto por inatividade. O agendamento fica no bloco `crons` do `vercel.json`, e o detalhe de por que isso é necessário está em [`supabase/README.md`](../supabase/README.md).

@@ -1,6 +1,6 @@
 # Documentação
 
-Cinco documentos, cada um com um leitor em mente.
+Seis documentos, cada um com um leitor em mente.
 
 ## Para quem vai assumir o projeto
 
@@ -11,6 +11,10 @@ O que muda de mãos, como transferir cada serviço, quanto custa manter, o que r
 **[Ecoverse - Bateria de testes.docx](./Ecoverse%20-%20Bateria%20de%20testes.docx)**
 
 Roteiro de 27 testes para confirmar que a plataforma está funcionando por inteiro. Leva cerca de quarenta minutos e não exige ter participado do desenvolvimento. Vale rodar antes de cada semestre novo.
+
+**[Ecoverse - Anexo de diagramas.docx](./Ecoverse%20-%20Anexo%20de%20diagramas.docx)**
+
+As seis figuras do sistema em formato pronto para anexar, cada uma numerada, com título e fonte. Gerado a partir de [diagramas.md](./diagramas.md), então regere quando algum diagrama mudar.
 
 ## Para quem vai mexer no código
 
