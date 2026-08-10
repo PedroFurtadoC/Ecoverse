@@ -148,6 +148,16 @@ Sobre o limite dos 60 dias do GitHub: é regra da plataforma pra repositório p�
 
 Se o ping falhar, o workflow abre uma issue no repositório. Antes ele falhava calado, e foram seis semanas de falha até alguém notar.
 
+### Variável CRON_SECRET
+
+O endpoint `/api/keep-alive` fica exposto na internet como qualquer rota do site. Ele não devolve dado nenhum, só o status do ping, mas sem proteção qualquer um pode chamar em volume e consumir a cota de execuções do plano gratuito.
+
+A variável `CRON_SECRET`, cadastrada nas variáveis de ambiente da Vercel, resolve isso. A própria Vercel passa a enviá-la no cabeçalho `Authorization` quando dispara o cron, e o código rejeita quem não mandar. Use uma cadeia aleatória de pelo menos 16 caracteres.
+
+Para conferir se está ativa, abra o endereço no navegador. Com a variável configurada, a resposta deve ser `{"ok":false,"erro":"nao autorizado"}`. Sem ela, vem `{"ok":true}` e o endpoint está aberto.
+
+Se a variável não existir, o ping continua funcionando normalmente. A proteção é opcional do ponto de vista funcional, e recomendada do ponto de vista de custo.
+
 ## 10. SMTP próprio (já configurado)
 
 O SMTP nativo do Supabase entrega poucos emails por hora, o que trava uma turma inteira tentando entrar ao mesmo tempo. Por isso o envio foi movido para o [Resend](https://resend.com) em maio de 2026, e é assim que os magic links saem hoje.
