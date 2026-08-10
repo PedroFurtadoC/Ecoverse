@@ -184,6 +184,11 @@ this.container.innerHTML = `
       if (item.x > areaW - 110) {
         if (item.type !== 'fish') { this.takeDamage(12); this.resetCombo(); }
 
+        // Esse dano pode ter zerado a vida, e aí o endGame() já esvaziou a
+        // lista de itens. Seguir daqui faria o laço ler um item que não existe
+        // mais, então sai agora e deixa o endGame terminar o serviço.
+        if (!this.gameActive) return;
+
         // Esconde já e remove no próximo tick pra não recalcular layout dentro do loop.
         const elToRemove = item.el;
         elToRemove.style.display = 'none';
@@ -270,5 +275,12 @@ this.container.innerHTML = `
       this.overlayEl.querySelector('#t7-retry').onclick = () => this.initGame();
       this.overlayEl.querySelector('#t7-finish').onclick = () => this.onGameEnd({ success: this.score >= 50, finalScore: this.score });
     }
+  }
+
+  // Chamado pelo shell quando o jogador sai no meio da partida, pelo botão
+  // Voltar ou pelo Esc. Derrubar a flag basta: o laço de animação checa ela
+  // logo na entrada e não reagenda o próximo frame.
+  destroy() {
+    this.gameActive = false;
   }
 }
