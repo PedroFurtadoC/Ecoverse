@@ -125,7 +125,9 @@ function bindAuthForm() {
       $('#auth-sent-email').textContent = email;
     } catch (err) {
       // O Supabase retorna 429 com error_code: over_email_send_rate_limit
-      // quando o limite do SMTP nativo (3-4 emails/hora por email) estoura.
+      // quando o próprio Auth barra o excesso de pedidos. Esse limite é dele,
+      // não do provedor de email: continua existindo mesmo com SMTP próprio
+      // configurado, só que numa folga bem maior.
       // O message não contém "rate": precisa olhar o code/status também.
       const isRateLimit = err?.status === 429
         || err?.code === 'over_email_send_rate_limit'
@@ -134,7 +136,7 @@ function bindAuthForm() {
 
       let msg;
       if (isRateLimit) {
-        msg = 'Muitos pedidos em pouco tempo. Espere uns 30 minutos e tente de novo (limite do servidor de email).';
+        msg = 'Muitos pedidos em pouco tempo. Espere alguns minutos e tente de novo.';
       } else if (isInvalidEmail) {
         msg = 'Esse email não parece válido. Confere e tenta de novo.';
       } else {
