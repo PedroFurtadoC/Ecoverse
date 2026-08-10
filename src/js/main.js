@@ -158,19 +158,33 @@ function openEasterEgg() {
   // Fecha qualquer modal aberto pra não ficar empilhado por cima.
   $$('.modal-overlay.active').forEach((m) => m.classList.remove('active'));
   showToast('🥚 Easter egg encontrado! Triagem relâmpago.', 'success');
-  MiniGames.open('egg_triagem', (success) => {
-    if (success && !state.eggCompleted) {
-      // Em dev mode, o easter egg roda só como teste, não credita conquista.
-      if (DEV_FREE) {
-        showToast('Easter egg testado em dev. Nada foi salvo.', 'success');
-        return;
-      }
-      state.eggCompleted = true;
-      persist();
-      checkAchievements();
-      showToast('Conquista desbloqueada: Caçador de Easter Egg', 'reward');
-    } else if (!success) {
+  MiniGames.open('egg_triagem', (success, perfect) => {
+    if (!success) {
       showToast('Quase! Tente "ECO" de novo pra repetir.', 'info');
+      return;
+    }
+
+    // Em dev mode, o easter egg roda só como teste, não credita conquista.
+    if (DEV_FREE) {
+      showToast('Easter egg testado em dev. Nada foi salvo.', 'success');
+      return;
+    }
+
+    const primeiraVez = !state.eggCompleted;
+    state.eggCompleted = true;
+
+    // A triagem relâmpago é uma partida de triagem como as das missões, então
+    // acertar as oito categorias sem errar nenhuma conta pras conquistas de
+    // triagem. É também o caminho mais curto pra quem ficou perto de fechá-las.
+    if (perfect) state.perfectMinigames++;
+
+    persist();
+    checkAchievements();
+
+    // Quem desbloqueia a conquista já recebe o aviso pelo checkAchievements.
+    // Aqui entra só o retorno das partidas seguintes, pra não avisar duas vezes.
+    if (!primeiraVez) {
+      showToast(perfect ? 'Triagem impecável de novo!' : 'Boa! Triagem relâmpago concluída.', 'success');
     }
   });
 }
@@ -550,7 +564,7 @@ if (btnStartMission) {
             if (perfect && !DEV_FREE) creditaPartidaPerfeita();
             const msg = DEV_FREE && !isReplay
               ? 'Teste concluído. Nada foi salvo.'
-              : (perfect ? 'Mandou bem! Pontuação máxima de novo.' : 'Missão revisitada. Boa prática!');
+              : (perfect ? 'Mandou bem! Nenhuma vida perdida.' : 'Missão revisitada. Boa prática!');
             showToast(msg, 'success');
           }
           return;
