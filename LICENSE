@@ -1,6 +1,7 @@
 MIT License
 
-Copyright (c) 2026 Pedro Furtado Cunha, André, Felipe, Pedro Borges, Thiago
+Copyright (c) 2026 Pedro Furtado Cunha, Felipe de Sousa Pegoraro,
+André Fernando Machado, Pedro Borges Casaroti, Thiago Salata Siena
 e Universidade de Ribeirão Preto (UNAERP)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,9 +13,6 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
-Forks de natureza acadêmica devem manter o arquivo NOTICE.md e o crédito à
-UNAERP enquanto parceira institucional.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
