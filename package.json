@@ -1,7 +1,7 @@
 {
   "name": "ecoverse",
   "version": "1.0.0",
-  "description": "Ecoverse — combate aos resíduos pelo mundo, com Pomodoro e minigames. Projeto acadêmico UNAERP.",
+  "description": "Ecoverse: combate aos resíduos pelo mundo, com Pomodoro e minigames. Projeto acadêmico UNAERP.",
   "type": "module",
   "scripts": {
     "dev": "vite",
