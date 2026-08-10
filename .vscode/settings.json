@@ -1,0 +1,9 @@
+{
+  // O vercel.json declara o schema oficial da Vercel para dar autocomplete no
+  // editor. Por padrão o VS Code recusa baixar schema de domínio que não está
+  // na lista dele, e mostra um aviso no arquivo. Liberar o domínio resolve.
+  // A Vercel não lê esse campo em nenhum momento, ele serve só para o editor.
+  "json.schemaDownload.trustedDomains": {
+    "https://openapi.vercel.sh/": true
+  }
+}

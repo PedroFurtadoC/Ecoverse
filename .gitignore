@@ -13,14 +13,18 @@ dist/
 dist-ssr/
 *.local
 
-# Variáveis de ambiente — nunca commitar segredos
+# Variáveis de ambiente: nunca commitar segredos
 .env
 .env.local
 .env.*.local
 
+# Arquivos temporários que o Word cria ao abrir um .docx
+~$*
+
 # Editor / IDE
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
 .DS_Store
 Thumbs.db
@@ -35,9 +39,7 @@ Thumbs.db
 .vite/
 .cache/
 
-# Ferramentas de assistente que possam ser instaladas localmente
-# (mantém o repo livre de configs específicas de qualquer agente/IDE)
-.claude/
-.mcp.json
-.agents/
-skills-lock.json
+# Documentos de trabalho que não fazem parte da entrega.
+# O dossiê do INPI é processo interno de registro, não documentação do produto.
+Questões para elaboração de dossiê INPI.docx
+*.docx.bak
