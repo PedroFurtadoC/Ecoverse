@@ -21,6 +21,22 @@ grant select, insert, update, delete on public.progress to authenticated;
 grant select, insert, delete on public.pomodoro_sessions to authenticated;
 
 -- =============================================================
+-- Menor privilegio: o bootstrap do Supabase concede TRUNCATE,
+-- TRIGGER e REFERENCES para anon e authenticated em tudo que
+-- nasce no schema public. A aplicacao nunca usa nenhum dos tres.
+--
+-- TRUNCATE merece atencao especial porque ignora Row Level
+-- Security por completo: quem conseguisse executa-lo apagaria a
+-- tabela inteira independentemente das policies. Hoje a API REST
+-- nao expoe esse comando, entao nao ha caminho de exploracao, mas
+-- manter o privilegio e risco desnecessario. Revogar nao afeta
+-- nada, porque o app so faz leitura e escrita comuns.
+-- =============================================================
+revoke truncate, trigger, references on public.profiles from anon, authenticated;
+revoke truncate, trigger, references on public.progress from anon, authenticated;
+revoke truncate, trigger, references on public.pomodoro_sessions from anon, authenticated;
+
+-- =============================================================
 -- profiles: legível por qualquer um (alimenta o leaderboard),
 -- gravável só pelo dono.
 -- =============================================================
