@@ -1,6 +1,6 @@
-# Easter egg — Triagem relâmpago
+# Easter egg: Triagem relâmpago
 
-Minigame escondido. Não aparece no globo nem no menu — só abre se a pessoa
+Minigame escondido. Não aparece no globo nem no menu. Só abre se a pessoa
 digitar **`ECO`** em qualquer tela da aplicação (fora de um campo de texto).
 
 ## Mecânica
@@ -20,7 +20,7 @@ só abre se nenhum outro minigame estiver ativo.
 
 ## Como o jogo se integra
 
-Mesma interface dos outros minigames — passa pelo roteador `src/js/modules/minigames.js`
+Mesma interface dos outros minigames, passa pelo roteador `src/js/modules/minigames.js`
 com a rota `egg_triagem`. Recebe `container` e `onGameEnd`, e chama
 `onGameEnd({ success, finalScore, perfect })` quando termina. Por isso o botão
 "Voltar" universal e o handler de ESC funcionam aqui também.

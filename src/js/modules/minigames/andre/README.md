@@ -1,8 +1,8 @@
-# Missões 1 e 2 — Amazônia e Bacia do Congo
+# Missões 1 e 2: Amazônia e Bacia do Congo
 
 > Setup, contrato técnico, padrão visual e boas práticas: [`../README.md`](../README.md).
 
-## Missão 1 — Plásticos no rio Amazonas (`modulo1.js`)
+## Missão 1: Plásticos no rio Amazonas (`modulo1.js`)
 
 **Contexto:** comunidades ribeirinhas convivem com plástico que desce com as cheias e ameaça botos, pirarucus e a pesca artesanal. O rio Amazonas e seus afluentes recebem toneladas de resíduo vindas de centros urbanos como Manaus.
 
@@ -12,7 +12,7 @@
 
 Se precisar de algo que não existe (canoa, peixes, fundo do rio etc.), me avisa.
 
-## Missão 2 — Lixo eletrônico no Congo (`modulo2.js`)
+## Missão 2: Lixo eletrônico no Congo (`modulo2.js`)
 
 **Contexto:** o Global E-waste Monitor 2024 (UNU/ITU) reporta 62 milhões de toneladas de e-waste por ano no mundo, com apenas 22% formalmente reciclados. Parte é exportada ilegalmente para a Bacia do Congo, onde gambiarras de triagem liberam mercúrio e chumbo no solo.
 

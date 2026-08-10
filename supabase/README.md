@@ -6,7 +6,7 @@ Setup do banco e da autenticação. Rode uma vez por ambiente (dev e prod podem 
 
 1. Acesse https://supabase.com → **New project**.
 2. Nome: `ecoverse`. Region: `South America (São Paulo)` ou a mais próxima dos usuários. Plano: Free.
-3. Salve a senha do banco assim que aparecer — ela só aparece uma vez.
+3. Salve a senha do banco assim que aparecer: ela só aparece uma vez.
 
 ## 2. Pegar URL e API key
 
@@ -15,16 +15,16 @@ Setup do banco e da autenticação. Rode uma vez por ambiente (dev e prod podem 
 - **Project URL** → vai pro `.env.local` como `VITE_SUPABASE_URL`.
 - **Publishable key** (`sb_publishable_...`) → vai pro `.env.local` como `VITE_SUPABASE_ANON_KEY`.
 
-A publishable key é pública por design — a RLS (Row Level Security) garante a segurança dos dados. Nunca use a secret key no frontend.
+A publishable key é pública por design. A RLS (Row Level Security) garante a segurança dos dados. Nunca use a secret key no frontend.
 
 ## 3. Rodar os SQLs
 
 **SQL Editor → New query**, cole e rode em ordem:
 
-1. `schema.sql` — cria tabelas, view (com `security_invoker`) e triggers.
-2. `policies.sql` — habilita RLS e define as políticas otimizadas com `(select auth.uid())`.
+1. `schema.sql`: cria tabelas, view (com `security_invoker`) e triggers.
+2. `policies.sql`: habilita RLS e define as políticas otimizadas com `(select auth.uid())`.
 
-Os dois são idempotentes — rodar de novo não quebra nada.
+Os dois são idempotentes: rodar de novo não quebra nada.
 
 ## 4. Configurar Auth
 
@@ -41,7 +41,7 @@ Os dois são idempotentes — rodar de novo não quebra nada.
 
 ## 5. Trigger de novo usuário + hardening
 
-Toda nova conta precisa de uma linha em `profiles` e `progress`. O `display_name` vem do metadata do signup (campo opcional no modal de login) e, se vazio, cai num default neutro tipo `Eco-explorador-A4F8` — não derivado do email, preservando a privacidade do titular.
+Toda nova conta precisa de uma linha em `profiles` e `progress`. O `display_name` vem do metadata do signup (campo opcional no modal de login) e, se vazio, cai num default neutro tipo `Eco-explorador-A4F8`: não derivado do email, preservando a privacidade do titular.
 
 Cole no **SQL Editor**:
 
@@ -77,7 +77,7 @@ revoke execute on function public.handle_new_user() from anon, authenticated;
 
 ## 6. Adicionar ao `.env.local` e na Vercel
 
-Local — crie `.env.local` na raiz do projeto (já está no `.gitignore`):
+Local: crie `.env.local` na raiz do projeto (já está no `.gitignore`):
 
 ```env
 VITE_SUPABASE_URL=https://xxxxxxxxxxx.supabase.co
@@ -86,7 +86,7 @@ VITE_SUPABASE_ANON_KEY=sb_publishable_...
 
 Reinicie o `npm run dev` pra o Vite reler as variáveis.
 
-Produção — no painel Vercel do projeto, **Settings → Environment Variables**, cadastre as mesmas duas variáveis em todos os environments (Production, Preview, Development). Sensitive desmarcado — variáveis `VITE_*` são embutidas no bundle JS por design.
+Produção: no painel Vercel do projeto, **Settings → Environment Variables**, cadastre as mesmas duas variáveis em todos os environments (Production, Preview, Development). Sensitive desmarcado, porque variáveis `VITE_*` são embutidas no bundle JS por design.
 
 ## 7. Validar
 
@@ -96,7 +96,7 @@ No SQL Editor:
 select * from public.get_leaderboard('total', 50);
 ```
 
-Deve retornar zero linhas sem erro. Se der "permission denied for table", o grant da função pras roles anon/authenticated não foi aplicado — rode `policies.sql` de novo.
+Deve retornar zero linhas sem erro. Se der "permission denied for table", o grant da função pras roles anon/authenticated não foi aplicado. Rode `policies.sql` de novo.
 
 Pra conferir que as tabelas têm os GRANTs corretos (anon lê profiles pro ranking, authenticated faz CRUD nas próprias linhas):
 
@@ -114,11 +114,11 @@ Esperado: 12 linhas (4 SELECT/INSERT/UPDATE/DELETE em progress, 5 em profiles, 3
 
 Em **Advisors → Security** o resultado esperado é:
 - Zero erros nas nossas tabelas e funções.
-- Podem aparecer avisos sobre `public.rls_auto_enable()` (função do próprio setup do Supabase, não é nossa) e sobre `public.get_leaderboard()` ser SECURITY DEFINER — esse último é **intencional**: a função expõe só colunas seguras do ranking público, sem acesso direto à tabela `progress`.
+- Podem aparecer avisos sobre `public.rls_auto_enable()` (função do próprio setup do Supabase, não é nossa) e sobre `public.get_leaderboard()` ser SECURITY DEFINER. Esse último é **intencional**: a função expõe só colunas seguras do ranking público, sem acesso direto à tabela `progress`.
 
 ## 8. Templates de email branded
 
-O Supabase tem templates separados pro **primeiro acesso de um email** (`Confirm signup`) e pros **acessos seguintes** (`Magic Link`). Os dois precisam ser personalizados — senão o primeiro email chega genérico em inglês.
+O Supabase tem templates separados pro **primeiro acesso de um email** (`Confirm signup`) e pros **acessos seguintes** (`Magic Link`). Os dois precisam ser personalizados, senão o primeiro email chega genérico em inglês.
 
 Para os dois, faça o mesmo passo:
 
@@ -127,19 +127,49 @@ Para os dois, faça o mesmo passo:
 3. **Message body**: cole o conteúdo de [`email-magic-link.html`](./email-magic-link.html).
 4. Salve.
 
-O HTML é o mesmo para os dois templates — o conteúdo do email não muda, só o gatilho. As variáveis `{{ .ConfirmationURL }}` e `{{ .Email }}` são substituídas em runtime pelo Supabase.
+O HTML é o mesmo para os dois templates. O conteúdo do email não muda, só o gatilho. As variáveis `{{ .ConfirmationURL }}` e `{{ .Email }}` são substituídas em runtime pelo Supabase.
 
-## 9. SMTP custom (opcional, depois do domínio próprio)
+## 9. Manter o projeto acordado
 
-O Supabase free entrega magic links via SMTP nativo limitado a 3-4 emails/hora. Pra ter `noreply@ecoverse.dev` no remetente e escala maior:
+O plano gratuito pausa projetos que passam 7 dias sem atividade **no banco**. Pausou, o subdomínio sai do DNS e o app inteiro para. Só um clique em **Resume project** no painel traz de volta. Nenhum ping acorda projeto pausado.
 
-1. Crie conta no [Resend](https://resend.com) (free, 3000 emails/mês).
-2. Adicione o domínio `ecoverse.dev` no Resend e copie os 3 registros DNS (SPF, DKIM, DMARC).
-3. No painel da Vercel: **Domains → ecoverse.dev → DNS Records** → cole os três registros.
-4. Aguarde verificação do domínio no Resend (~10 min).
-5. Crie uma API key no Resend.
-6. No Supabase: **Authentication → SMTP Settings** → enable custom SMTP:
-   - Host: `smtp.resend.com` · Port: `587`
-   - Username: `resend` · Password: a API key
-   - Sender email: `noreply@ecoverse.dev`
-   - Sender name: `Ecoverse`
+O detalhe que derrubou a primeira versão desse setup: o Supabase conta query no Postgres, não requisição HTTP qualquer. Bater em `/auth/v1/health` devolve 200 sem encostar no banco, então o ping passava verde enquanto o contador seguia correndo.
+
+Hoje são duas camadas, as duas fazendo um `SELECT` real em `profiles`:
+
+| Camada | Onde | Frequência | Observação |
+| --- | --- | --- | --- |
+| Principal | Cron da Vercel: [`api/keep-alive.js`](../api/keep-alive.js) + `crons` no `vercel.json` | diária | Não depende de movimento no repositório |
+| Reserva | GitHub Actions: [`keep-supabase-warm.yml`](../.github/workflows/keep-supabase-warm.yml) | diária | Desliga sozinho após 60 dias sem commit |
+
+Nada disso exige plano pago: cron diário roda no Hobby da Vercel e Actions é gratuito em repositório público. O Pro do Supabase (US$ 25/mês) resolve por outro caminho: projeto pago não pausa, ponto. Vale se o app precisar de disponibilidade garantida; pra uso acadêmico as duas camadas acima dão conta.
+
+Sobre o limite dos 60 dias do GitHub: é regra da plataforma pra repositório público, e não tem como desativar. Se o repositório ficar parado (o que é normal depois da entrega), o workflow aparece como *disabled_inactivity* em **Actions**: basta clicar em **Enable workflow**. Por isso a camada principal é a da Vercel.
+
+Se o ping falhar, o workflow abre uma issue no repositório. Antes ele falhava calado, e foram seis semanas de falha até alguém notar.
+
+## 10. SMTP próprio (já configurado)
+
+O SMTP nativo do Supabase entrega poucos emails por hora, o que trava uma turma inteira tentando entrar ao mesmo tempo. Por isso o envio foi movido para o [Resend](https://resend.com) em maio de 2026, e é assim que os magic links saem hoje.
+
+**Configuração em produção:**
+
+| Item | Valor |
+| --- | --- |
+| Domínio verificado | `auth.ecoverse.dev`, subdomínio dedicado ao envio |
+| Remetente | `"Ecoverse" <noreply@auth.ecoverse.dev>` |
+| Região | `sa-east-1` |
+| Limite do plano gratuito | 3.000 emails por mês |
+
+Usar um subdomínio em vez do apex é escolha deliberada: isola a reputação de envio do domínio principal, então um problema de entrega no email não afeta o site, e vice-versa. Os registros de DKIM e o MX de retorno ficam sob `auth.ecoverse.dev`, não sob `ecoverse.dev`.
+
+**Se precisar refazer em outro ambiente:**
+
+1. Crie a conta no Resend e adicione o subdomínio de envio.
+2. Copie os registros DNS que o Resend gerar e cole no provedor de DNS do domínio. Na Vercel isso fica em **Domains → DNS Records**.
+3. Aguarde a verificação, que costuma levar poucos minutos.
+4. Gere uma API key no Resend.
+5. No Supabase, em **Authentication → SMTP Settings**, habilite o SMTP customizado com host `smtp.resend.com`, porta `587`, usuário `resend` e a API key como senha.
+6. Preencha o remetente com o endereço do subdomínio verificado.
+
+Depois de qualquer alteração no arquivo [`email-magic-link.html`](./email-magic-link.html), o conteúdo precisa ser colado de novo nos dois templates do painel, conforme a seção 8. O Supabase guarda uma cópia do HTML, não lê o arquivo do repositório.

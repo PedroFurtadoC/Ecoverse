@@ -1,8 +1,8 @@
-# Missões 7 e 8 — Grande Barreira de Coral e Cordilheira dos Andes
+# Missões 7 e 8: Grande Barreira de Coral e Cordilheira dos Andes
 
 > Setup, contrato técnico, padrão visual e boas práticas: [`../README.md`](../README.md).
 
-## Missão 7 — Microplástico na Grande Barreira (`modulo7.js`)
+## Missão 7: Microplástico na Grande Barreira (`modulo7.js`)
 
 **Contexto:** o AIMS (Australian Institute of Marine Science) registra perda de cerca de 50% da cobertura de coral nas últimas três décadas. Microplásticos vindos de cidades costeiras se infiltram nos pólipos e bloqueiam o crescimento.
 
@@ -12,9 +12,9 @@
 
 Se precisar de corais, plâncton, fundo submarino etc., me avisa.
 
-## Missão 8 — Trilhas e mineração nos Andes (`modulo8.js`)
+## Missão 8: Trilhas e mineração nos Andes (`modulo8.js`)
 
-**Contexto:** trilhas de altitude (Inca, Huayna Picchu) acumulam toneladas de resíduo turístico por temporada. Mineração na cordilheira deixa rejeitos que contaminam nascentes — incluindo as cabeceiras do rio Amazonas.
+**Contexto:** trilhas de altitude (Inca, Huayna Picchu) acumulam toneladas de resíduo turístico por temporada. Mineração na cordilheira deixa rejeitos que contaminam nascentes, incluindo as cabeceiras do rio Amazonas.
 
 **Sprites disponíveis em `public/assets/generated/cutouts/`:**
 - `waste-plastic-pet.png`, `waste-metal-can.png`, `waste-banana-peel.png`, `waste-blister.png`, `waste-glass-jar.png`

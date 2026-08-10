@@ -18,12 +18,12 @@ Abre em `http://localhost:3000`. Use `?dev=free` na URL durante o desenvolviment
 
 1. Leia `src/js/modules/minigames/<seu-nome>/README.md` (tema, mecânicas, sprites disponíveis).
 2. Confira os sprites prontos em `public/assets/generated/cutouts/`.
-3. (Opcional) Veja o minigame de **inspiração** na branch `demo/triagem-inspiracao` — é só referência de estrutura, não entra em produção.
+3. (Opcional) Veja o minigame de **inspiração** na branch `demo/triagem-inspiracao`: é só referência de estrutura, não entra em produção.
 
 ## Branches e commits
 
-- `main` — branch principal, sempre deployável.
-- `feat/<dev>-modulo-N` — sua branch (ex.: `feat/andre-modulo-1`).
+- `main`: branch principal, sempre deployável.
+- `feat/<dev>-modulo-N`: sua branch (ex.: `feat/andre-modulo-1`).
 - PR direto para `main` quando estiver pronto.
 
 [Conventional Commits](https://www.conventionalcommits.org) em português:
@@ -44,10 +44,10 @@ Use o checklist do `.github/PULL_REQUEST_TEMPLATE.md` que aparece automaticament
 
 PRs são revisados pelo Pedro Furtado. Se quiser segunda opinião, marque o colega da pasta vizinha. Foco da revisão:
 
-1. **Tema certo** — resíduos NAQUELE bioma, não genérico?
-2. **Mecânica funciona** — joga do início ao fim sem bugs?
-3. **Mobile-first** — funciona em 320px?
-4. **Acessibilidade** — teclado e leitor de tela?
+1. **Tema certo**: resíduos NAQUELE bioma, não genérico?
+2. **Mecânica funciona**: joga do início ao fim sem bugs?
+3. **Mobile-first**: funciona em 320px?
+4. **Acessibilidade**: teclado e leitor de tela?
 
 ## Onde pedir ajuda
 
@@ -59,5 +59,5 @@ PRs são revisados pelo Pedro Furtado. Se quiser segunda opinião, marque o cole
 
 - Não mexa em arquivos fora da sua pasta sem alinhar antes.
 - Não use `window.<algo>` para compartilhar dados com outros módulos.
-- Não importe assets de URLs externas em runtime — use `public/assets/`.
+- Não importe assets de URLs externas em runtime. Use `public/assets/`.
 - Não coloque API keys no código. Sempre via `.env`.

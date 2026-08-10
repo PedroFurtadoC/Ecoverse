@@ -1,6 +1,6 @@
 # Minigames
 
-Cada missão do globo dispara um minigame temático sobre o problema de resíduos daquele bioma. As classes ficam separadas em pastas só pra evitar colisão de código durante o desenvolvimento — em tempo de execução o jogo roda como um único produto.
+Cada missão do globo dispara um minigame temático sobre o problema de resíduos daquele bioma. As classes ficam separadas em pastas só pra evitar colisão de código durante o desenvolvimento. Em tempo de execução o jogo roda como um único produto.
 
 ## Divisão por pasta
 
@@ -38,16 +38,16 @@ export class Modulo1 {
 
 Pra que os 8 minigames tenham coerência entre si:
 
-- Fundo: verde escuro `#0B2E1A` — cor base do app, definida em `src/css/variables.css`.
+- Fundo: verde escuro `#0B2E1A`: cor base do app, definida em `src/css/variables.css`.
 - Container do jogo: centralizado com `max-width` pra ficar bom em desktop.
 - Pode haver textura ou overlay temático sutil sobre o fundo, sem comprometer legibilidade.
 
 ## Boas práticas
 
 - CSS em arquivo próprio: `src/css/components/minigame-<pasta>-<n>.css`. Importe em `src/css/main.css`.
-- Classes com prefixo da pasta: `.andre-1-canvas`, `.felipe-3-bin` — evita colisão entre módulos.
+- Classes com prefixo da pasta: `.andre-1-canvas`, `.felipe-3-bin`: evita colisão entre módulos.
 - Sem `window.<algo>` global. Use propriedades da classe ou `let`/`const` locais.
-- Pointer events (`pointerdown`/`move`/`up`) cobrem mouse e touch — não use `mouse*`/`touch*` separados.
+- Pointer events (`pointerdown`/`move`/`up`) cobrem mouse e touch, então não use `mouse*`/`touch*` separados.
 - Touch targets ≥ 44×44 px.
 - Respeite `prefers-reduced-motion: reduce` nas animações.
 
@@ -56,15 +56,19 @@ Pra que os 8 minigames tenham coerência entre si:
 1. `npm run dev` na raiz.
 2. Abra `http://localhost:3000/?dev=free` (energia liberada, não precisa Pomodoro).
 3. Clique no marcador da missão no globo → "Iniciar Missão".
-4. A tela do minigame aparece — substitua o stub pela implementação.
-5. Edite o arquivo e recarregue (o Vite faz HMR automático).
+4. A tela do minigame aparece por cima do globo.
+5. Edite o arquivo do módulo e salve. O Vite recarrega sozinho.
+
+Os oito minigames estão implementados. Este guia serve pra quem for dar manutenção ou criar um novo módulo seguindo o mesmo contrato.
 
 ## Sprites
 
-Versões com fundo transparente (prontas pra usar) em `public/assets/generated/cutouts/`. Originais com fundo branco em `public/assets/generated/originals/`. A lista específica de sprites já gerados para cada missão está no README dentro da pasta.
+Versões com fundo transparente (prontas pra usar) em `public/assets/generated/cutouts/`. A lista específica de sprites já gerados para cada missão está no README dentro da pasta.
+
+Os originais com fundo branco ficam em `design/sprites-originais/`, fora de `public/` de propósito: são material de origem para reeditar um sprite, não são servidos ao navegador. Tudo que está dentro de `public/` vai junto no deploy, então só entra ali o que o jogo realmente carrega.
 
 Se precisar de um sprite que ainda não existe, sinalize no canal do projeto.
 
 ## Antes do PR
 
-Veja o checklist em [`.github/PULL_REQUEST_TEMPLATE.md`](../../../.github/PULL_REQUEST_TEMPLATE.md) — aparece automaticamente quando o PR é aberto.
+Veja o checklist em [`.github/PULL_REQUEST_TEMPLATE.md`](../../../../.github/PULL_REQUEST_TEMPLATE.md): aparece automaticamente quando o PR é aberto.
