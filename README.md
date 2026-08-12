@@ -98,4 +98,4 @@ Tudo em [`docs/`](./docs/), com um índice explicando para quem serve cada peça
 
 ## Licença e parceria
 
-[MIT](./LICENSE) com atribuição UNAERP. Créditos completos e parceria institucional em [`NOTICE.md`](./NOTICE.md).
+[MIT](./LICENSE). O aviso de copyright nomeia os cinco autores e a UNAERP, e acompanha qualquer redistribuição. Créditos completos e parceria institucional em [`NOTICE.md`](./NOTICE.md).

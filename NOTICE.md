@@ -21,4 +21,6 @@ Estatísticas e fatos ambientais foram revisados em fontes oficiais (UNEP, IBGE,
 
 ## Forks
 
-Forks de uso acadêmico (turmas, pesquisa, escolas) devem manter este `NOTICE.md` e o crédito à UNAERP. Para contribuir com o repositório oficial, ver [`docs/contribuindo.md`](./docs/contribuindo.md).
+A licença [MIT](./LICENSE) deixa qualquer pessoa usar, modificar e redistribuir o Ecoverse, inclusive comercialmente. A única obrigação que ela impõe é levar junto o aviso de copyright e o texto da licença, o que já garante o crédito aos cinco autores e à UNAERP.
+
+Manter este `NOTICE.md` no fork é um pedido, não uma exigência da licença: é aqui que ficam registradas a origem acadêmica do projeto e a parceria com a Universidade. Para contribuir com o repositório oficial, ver [`docs/contribuindo.md`](./docs/contribuindo.md).
