@@ -39,6 +39,14 @@ Thumbs.db
 .vite/
 .cache/
 
+# Pacote e hash do registro no INPI. O .zip é o objeto que o titular
+# guarda como prova e não deve ser versionado nem alterado depois do
+# depósito: um byte diferente invalida o resumo hash do certificado.
+# Os certificados emitidos são a exceção: são leves, são a prova pública
+# do registro e vale mantê-los junto do projeto.
+registro-inpi/*
+!registro-inpi/certificados/
+
 # Documentos de trabalho que não fazem parte da entrega.
 # O dossiê do INPI é processo interno de registro, não documentação do produto.
 Questões para elaboração de dossiê INPI.docx

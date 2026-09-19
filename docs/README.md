@@ -1,6 +1,6 @@
 # Documentação
 
-Seis documentos, cada um com um leitor em mente.
+Sete documentos, cada um com um leitor em mente.
 
 ## Para quem vai assumir o projeto
 
@@ -15,6 +15,10 @@ Roteiro de 27 testes para confirmar que a plataforma está funcionando por intei
 **[Ecoverse - Anexo de diagramas.docx](./Ecoverse%20-%20Anexo%20de%20diagramas.docx)**
 
 As seis figuras do sistema em formato pronto para anexar, cada uma numerada, com título e fonte. Gerado a partir de [diagramas.md](./diagramas.md), então regere quando algum diagrama mudar.
+
+**[fluxogramas.docx](./fluxogramas.docx)**
+
+Recorte do anexo com os dois fluxogramas de execução, inicialização e ciclo de missão, para quando o pedido for só essa parte. As figuras são as mesmas do anexo, renumeradas como 1 e 2. O PDF ao lado sai deste arquivo.
 
 ## Para quem vai mexer no código
 

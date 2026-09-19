@@ -94,6 +94,10 @@ Tudo em [`docs/`](./docs/), com um índice explicando para quem serve cada peça
 - [`docs/contribuindo.md`](./docs/contribuindo.md): setup, branches, commits.
 - **Transferência do projeto** e **Bateria de testes**, em `.docx`, para a entrega institucional.
 
+A marca fica em [`design/marca/`](./design/marca/): arquivos em SVG, exportações e regras de uso. O nome e o logotipo não entram na licença MIT, conforme a seção de marcas do [`LICENSE`](./LICENSE).
+
+O material do registro no INPI é processo interno e não fica versionado aqui.
+
 ---
 
 ## Licença e parceria
