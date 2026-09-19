@@ -365,12 +365,19 @@ const TIPS = [
   '🗺️ Arraste o globo para explorar os locais e iniciar uma missão.'
 ];
 
+// A textura do globo é o único ativo que o Three.js carrega, e ele pede
+// com crossOrigin. Uma imagem buscada com CORS e outra sem viram entradas
+// de cache separadas no navegador, então pré-carregar sem marcar o modo
+// fazia estes 1,4 MB descerem duas vezes: uma na tela de carregamento e
+// outra quando o globo monta. Por isso a entrada carrega o modo junto.
+const GLOBE_TEXTURE = 'assets/earth-texture.jpg';
+
 const ASSET_LIST = [
   'assets/logo.svg',
   'assets/icon-seed.svg','assets/icon-coin.svg',
   'assets/icon-impact.svg','assets/icon-menu.svg','assets/icon-donate.svg',
   'assets/icon-timer.svg','assets/icon-trophy.svg',
-  'assets/earth-texture.jpg'
+  { url: GLOBE_TEXTURE, crossOrigin: 'anonymous' }
 ];
 
 // Equipe que fez o projeto. As fotos vivem em `public/assets/team/`.
@@ -419,4 +426,4 @@ const TEAM = [
   }
 ];
 
-export { GAME_CONFIG, POMODORO_CONFIG, MISSIONS, ACHIEVEMENTS, QUIZ_ODS_DATA, TIPS, ASSET_LIST, TEAM };
+export { GAME_CONFIG, POMODORO_CONFIG, MISSIONS, ACHIEVEMENTS, QUIZ_ODS_DATA, TIPS, ASSET_LIST, GLOBE_TEXTURE, TEAM };

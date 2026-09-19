@@ -1,5 +1,5 @@
 import '../css/main.css';
-import { MISSIONS, TIPS, ASSET_LIST, POMODORO_CONFIG, TEAM } from './config/data.js';
+import { MISSIONS, TIPS, ASSET_LIST, GLOBE_TEXTURE, POMODORO_CONFIG, TEAM } from './config/data.js';
 import { state, saveState, loadState, applyCloudState, hasMeaningfulProgress } from './store/state.js';
 import { on, EVENTS } from './store/events.js';
 import { Pomodoro } from './modules/pomodoro.js';
@@ -322,7 +322,7 @@ async function initGlobe() {
   const { default: Globe } = await globePromise;
 
   globe = new Globe(globeWrapper)
-    .globeImageUrl('assets/earth-texture.jpg')
+    .globeImageUrl(GLOBE_TEXTURE)
     .showAtmosphere(true)
     .atmosphereColor('#4dd0e1')
     .atmosphereAltitude(0.18)
@@ -517,6 +517,7 @@ function openMissionCard(mission) {
 
   if (missionPhoto && mission.photo) {
     missionPhoto.src = mission.photo;
+    missionPhoto.alt = `Foto de ${mission.location}`;
     missionPhoto.style.display = '';
   }
 
@@ -752,9 +753,13 @@ async function loadAssets() {
   showTip(); tipInterval = setInterval(showTip, 2500);
   let loaded = 0; const total = ASSET_LIST.length;
   const tick = () => { loaded++; setProgress(Math.round((loaded / total) * 100)); };
-  // Pré-carga via Image(): entra no cache HTTP normal e os <img> reusam sem refetch.
-  const promises = ASSET_LIST.map((url) => new Promise((resolve) => {
+  // Pré-carga via Image(): entra no cache HTTP normal e os <img> reusam sem
+  // refetch. Entradas que vêm como objeto trazem o modo de CORS junto, para
+  // a chave de cache bater com a de quem vai consumir o arquivo depois.
+  const promises = ASSET_LIST.map((item) => new Promise((resolve) => {
+    const { url, crossOrigin } = typeof item === 'string' ? { url: item } : item;
     const img = new Image();
+    if (crossOrigin) img.crossOrigin = crossOrigin;
     img.onload = img.onerror = () => { tick(); resolve(); };
     img.src = url;
   }));

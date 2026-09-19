@@ -24,5 +24,5 @@ Aplicação web criada por Pedro Furtado Cunha e equipe da Universidade de Ribei
 ## Repositório
 
 - GitHub: https://github.com/PedroFurtadoC/Ecoverse
-- Deploy: https://ecoverse-bice.vercel.app
+- Deploy: https://ecoverse.dev
 - Licença: MIT (com atribuição UNAERP)

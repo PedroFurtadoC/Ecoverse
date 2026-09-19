@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- O Ecoverse é uma aplicação de página única: existe uma URL só, e é ela
+     que o robots.txt aponta. O arquivo existe porque o robots o referencia,
+     e um Sitemap apontando para 404 conta como erro de indexação. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ecoverse.dev/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

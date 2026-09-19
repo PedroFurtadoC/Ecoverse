@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ecoverse-bice.vercel.app/sitemap.xml
+Sitemap: https://ecoverse.dev/sitemap.xml
