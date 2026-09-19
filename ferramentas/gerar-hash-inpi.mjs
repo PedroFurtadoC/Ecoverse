@@ -11,10 +11,13 @@
  * aqui não pode ser alterado nem regerado depois do depósito: um único
  * byte diferente muda o hash inteiro e a prova deixa de valer.
  *
- * O conteúdo sai do índice do git, não de uma varredura de diretório.
- * Isso importa por dois motivos: o .gitignore é respeitado, então .env,
- * .env.local e qualquer segredo ficam de fora por construção; e o
- * resultado é sempre o mesmo para o mesmo estado da árvore.
+ * O conteúdo sai do git, não de uma varredura de diretório. Isso faz o
+ * .gitignore ser respeitado, então .env, .env.local e qualquer segredo
+ * ficam de fora por construção, sem depender de ninguém lembrar.
+ *
+ * Com a árvore limpa o pacote é reproduzível: regerar a partir do mesmo
+ * commit devolve os mesmos bytes e o mesmo hash. Com alterações pendentes
+ * não é, e o relatório avisa. Gere sempre depois de commitar.
  */
 import { execFileSync } from 'node:child_process';
 import crypto from 'node:crypto';
@@ -66,12 +69,22 @@ fs.mkdirSync(SAIDA, { recursive: true });
 const commit = git('rev-parse', 'HEAD');
 const dataCommit = git('show', '-s', '--format=%cI', 'HEAD');
 const limpa = git('status', '--porcelain') === '';
-const arvore = arvoreDaCopiaDeTrabalho();
 
-// git archive gera o zip a partir do objeto tree, com carimbo de tempo
-// fixo: o mesmo estado da árvore produz sempre os mesmos bytes.
+// Com a árvore limpa o pacote sai do commit; suja, sai de um objeto tree
+// montado na hora com as alterações pendentes.
+//
+// A diferença não é de gosto. git archive carimba cada entrada do zip com
+// a data do commit quando recebe um commit, e o resultado é byte a byte
+// igual em qualquer execução. Sobre um objeto tree não existe data de
+// commit para usar, então ele cai na hora atual e cada execução produz um
+// arquivo diferente, com hash diferente. Só o primeiro caso é reproduzível,
+// e reprodutibilidade é o que permite conferir o pacote sem ter o arquivo
+// original em mãos: basta ter o repositório naquele commit.
+const origem = limpa ? 'HEAD' : arvoreDaCopiaDeTrabalho();
+const arvore = git('rev-parse', `${origem}^{tree}`);
+
 fs.writeFileSync(ZIP, execFileSync(
-  'git', ['archive', '--format=zip', '-9', arvore, ...(excluir.length ? ['--', ...excluir] : [])],
+  'git', ['archive', '--format=zip', '-9', origem, ...(excluir.length ? ['--', ...excluir] : [])],
   { cwd: RAIZ, maxBuffer: 512 * 1024 * 1024 },
 ));
 
@@ -122,6 +135,9 @@ const relatorio = [
   'Cópia de trabalho:  ' + (limpa
     ? 'limpa, o pacote corresponde exatamente ao commit acima'
     : 'COM ALTERAÇÕES NÃO COMMITADAS, o pacote inclui mudanças que não estão no commit'),
+  'Reproduzível:       ' + (limpa
+    ? 'sim, regerar a partir deste commit devolve os mesmos bytes'
+    : 'NÃO, com árvore suja cada execução produz um arquivo diferente'),
   '',
   'Segredos no pacote: ' + (suspeitos.length ? 'ATENÇÃO - ' + suspeitos.join(', ') : 'nenhum'),
   '',
