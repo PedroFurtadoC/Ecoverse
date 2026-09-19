@@ -149,7 +149,10 @@
 }
 
 .loading-logo {
-  width: clamp(140px, 38vw, 200px);
+  /* A assinatura é deitada, perto de 4,5:1, então a largura precisa ser
+     maior que a altura desejada. Estes valores dão cerca de 58px de altura
+     no desktop, que é o peso que a marca pede ao lado do anel de progresso. */
+  width: clamp(190px, 48vw, 265px);
   height: auto;
   filter: drop-shadow(0 4px 28px rgba(46, 204, 113, 0.4));
   animation: logoBreath 3.6s ease-in-out infinite;

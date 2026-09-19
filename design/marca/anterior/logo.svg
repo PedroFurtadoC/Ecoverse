@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" width="420" height="120">
+  <defs>
+    <linearGradient id="leafG1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2ECC71"/>
+      <stop offset="100%" stop-color="#1E8449"/>
+    </linearGradient>
+    <linearGradient id="leafG2" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#58D68D"/>
+      <stop offset="100%" stop-color="#27AE60"/>
+    </linearGradient>
+    <linearGradient id="txtG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#C8EBD6"/>
+    </linearGradient>
+    <linearGradient id="subG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7DCEA0"/>
+      <stop offset="100%" stop-color="#A3E4BC"/>
+    </linearGradient>
+    <filter id="glow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softshadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- === LEAF ICON (left side) === -->
+  <g transform="translate(28, 14)" filter="url(#glow)">
+    <!-- Back leaf -->
+    <path d="M28,88 Q8,52 22,18 Q28,4 34,22 Q40,48 30,68 Q29,76 28,88Z" fill="url(#leafG2)" opacity="0.65"/>
+    <!-- Main leaf -->
+    <path d="M35,88 Q35,38 68,12 Q88,0 82,28 Q76,52 55,64 Q42,72 35,88Z" fill="url(#leafG1)"/>
+    <!-- Leaf vein (center) -->
+    <path d="M35,85 Q40,58 62,38" stroke="#FFFFFF" stroke-width="1.8" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <!-- Leaf vein (side) -->
+    <path d="M42,68 Q50,56 62,46" stroke="#FFFFFF" stroke-width="1" fill="none" opacity="0.25" stroke-linecap="round"/>
+    <!-- Small sparkle -->
+    <circle cx="60" cy="22" r="2.5" fill="#FFFFFF" opacity="0.35"/>
+    <circle cx="65" cy="28" r="1.5" fill="#FFFFFF" opacity="0.2"/>
+  </g>
+
+  <!-- === "ECOVERSE" LETTERS (paths, no fonts) === -->
+  <g transform="translate(118, 24)" fill="url(#txtG)" filter="url(#softshadow)">
+    <!-- E -->
+    <path d="M0,0 L18,0 L18,5 L6,5 L6,17 L16,17 L16,22 L6,22 L6,35 L18,35 L18,40 L0,40Z"/>
+    <!-- C -->
+    <path d="M28,12 Q28,0 40,0 L48,0 L48,5 L40,5 Q34,5 34,12 L34,28 Q34,35 40,35 L48,35 L48,40 L40,40 Q28,40 28,28Z"/>
+    <!-- O -->
+    <path d="M58,12 Q58,0 70,0 L72,0 Q84,0 84,12 L84,28 Q84,40 72,40 L70,40 Q58,40 58,28Z M64,12 L64,28 Q64,35 70,35 L72,35 Q78,35 78,28 L78,12 Q78,5 72,5 L70,5 Q64,5 64,12Z" fill-rule="evenodd"/>
+    <!-- V -->
+    <path d="M94,0 L100,0 L108,30 L116,0 L122,0 L112,40 L104,40Z"/>
+    <!-- E -->
+    <path d="M130,0 L148,0 L148,5 L136,5 L136,17 L146,17 L146,22 L136,22 L136,35 L148,35 L148,40 L130,40Z"/>
+    <!-- R -->
+    <path d="M158,0 L174,0 Q182,0 182,10 L182,14 Q182,22 176,23 L183,40 L177,40 L170,24 L164,24 L164,40 L158,40Z M164,5 L164,19 L174,19 Q176,19 176,14 L176,10 Q176,5 174,5Z"/>
+    <!-- S -->
+    <path d="M192,12 Q192,0 204,0 L212,0 L212,5 L204,5 Q198,5 198,12 L198,15 Q198,20 204,20 L206,20 Q218,20 218,28 L218,28 Q218,40 206,40 L196,40 L196,35 L206,35 Q212,35 212,28 L212,26 Q212,25 206,25 L204,25 Q192,25 192,15Z"/>
+    <!-- E -->
+    <path d="M228,0 L246,0 L246,5 L234,5 L234,17 L244,17 L244,22 L234,22 L234,35 L246,35 L246,40 L228,40Z"/>
+  </g>
+
+  <!-- === "FUTURE FOREST" subtitle (paths) === -->
+  <g transform="translate(120, 74)" fill="url(#subG)" opacity="0.75">
+    <!-- F -->
+    <path d="M0,0 L10,0 L10,2.5 L3.5,2.5 L3.5,7 L9,7 L9,9.5 L3.5,9.5 L3.5,18 L0,18Z"/>
+    <!-- U -->
+    <path d="M14,0 L17.5,0 L17.5,13 Q17.5,15.5 20,15.5 L21,15.5 Q23.5,15.5 23.5,13 L23.5,0 L27,0 L27,13 Q27,18 21,18 L20,18 Q14,18 14,13Z"/>
+    <!-- T -->
+    <path d="M31,0 L43,0 L43,2.5 L38.5,2.5 L38.5,18 L35.5,18 L35.5,2.5 L31,2.5Z"/>
+    <!-- U -->
+    <path d="M47,0 L50.5,0 L50.5,13 Q50.5,15.5 53,15.5 L54,15.5 Q56.5,15.5 56.5,13 L56.5,0 L60,0 L60,13 Q60,18 54,18 L53,18 Q47,18 47,13Z"/>
+    <!-- R -->
+    <path d="M64,0 L73,0 Q77,0 77,5 L77,6.5 Q77,10 74,10.5 L78,18 L74.5,18 L71,11 L67.5,11 L67.5,18 L64,18Z M67.5,2.5 L67.5,8.5 L73,8.5 Q73.5,8.5 73.5,6.5 L73.5,5 Q73.5,2.5 73,2.5Z"/>
+    <!-- E -->
+    <path d="M82,0 L92,0 L92,2.5 L85.5,2.5 L85.5,7.5 L91,7.5 L91,10 L85.5,10 L85.5,15.5 L92,15.5 L92,18 L82,18Z"/>
+    <!-- gap -->
+    <!-- F -->
+    <path d="M108,0 L118,0 L118,2.5 L111.5,2.5 L111.5,7 L117,7 L117,9.5 L111.5,9.5 L111.5,18 L108,18Z"/>
+    <!-- O -->
+    <path d="M122,5 Q122,0 127,0 L128,0 Q133,0 133,5 L133,13 Q133,18 128,18 L127,18 Q122,18 122,13Z M125.5,5 L125.5,13 Q125.5,15.5 127,15.5 L128,15.5 Q129.5,15.5 129.5,13 L129.5,5 Q129.5,2.5 128,2.5 L127,2.5 Q125.5,2.5 125.5,5Z" fill-rule="evenodd"/>
+    <!-- R -->
+    <path d="M137,0 L146,0 Q150,0 150,5 L150,6.5 Q150,10 147,10.5 L151,18 L147.5,18 L144,11 L140.5,11 L140.5,18 L137,18Z M140.5,2.5 L140.5,8.5 L146,8.5 Q146.5,8.5 146.5,6.5 L146.5,5 Q146.5,2.5 146,2.5Z"/>
+    <!-- E -->
+    <path d="M155,0 L165,0 L165,2.5 L158.5,2.5 L158.5,7.5 L164,7.5 L164,10 L158.5,10 L158.5,15.5 L165,15.5 L165,18 L155,18Z"/>
+    <!-- S -->
+    <path d="M169,5 Q169,0 174,0 L179,0 L179,2.5 L174,2.5 Q172.5,2.5 172.5,5 L172.5,6 Q172.5,8 174,8 L175,8 Q180,8 180,13 L180,13 Q180,18 175,18 L170,18 L170,15.5 L175,15.5 Q176.5,15.5 176.5,13 L176.5,12.5 Q176.5,10.5 175,10.5 L174,10.5 Q169,10.5 169,6Z"/>
+    <!-- T -->
+    <path d="M184,0 L196,0 L196,2.5 L191.5,2.5 L191.5,18 L188.5,18 L188.5,2.5 L184,2.5Z"/>
+  </g>
+
+  <!-- === Decorative dots/sparkles === -->
+  <circle cx="108" cy="30" r="1.5" fill="#2ECC71" opacity="0.4"/>
+  <circle cx="380" cy="45" r="2" fill="#F1C40F" opacity="0.3"/>
+  <circle cx="370" cy="82" r="1.5" fill="#26C6DA" opacity="0.25"/>
+</svg>

@@ -21,3 +21,28 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---------------------------------------------------------------------------
+
+MARCAS / TRADEMARKS
+
+A licença MIT acima trata de direito autoral sobre o código. Ela não
+concede direito de uso sobre marcas.
+
+O nome "Ecoverse", o logotipo e o símbolo da folha, incluindo os arquivos
+em design/marca/, public/assets/logo.svg, public/favicon.svg e
+public/favicon.png, não estão cobertos pela licença acima e permanecem de
+titularidade dos autores e da Universidade de Ribeirão Preto (UNAERP).
+
+Quem derivar ou redistribuir este software deve substituir esses
+elementos pela própria identidade. É permitido citar o nome Ecoverse para
+referir-se ao projeto original, o chamado uso nominativo. Não é permitido
+usá-lo de modo que sugira endosso, vínculo ou origem comum.
+
+The MIT license above is a copyright license covering the source code. It
+grants no trademark rights. The "Ecoverse" name, the wordmark and the leaf
+symbol, including the files listed above, are excluded from that license
+and remain the property of the authors and of Universidade de Ribeirão
+Preto (UNAERP). Forks and redistributions must replace them with their own
+branding. Nominative use to refer to the original project is permitted;
+use that suggests endorsement or common origin is not.

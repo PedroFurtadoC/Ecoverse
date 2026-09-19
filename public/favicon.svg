@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 105.89 105.89" width="512" height="512" role="img" aria-label="Ecoverse">
+  <defs><linearGradient id="f" gradientUnits="userSpaceOnUse" x1="24" y1="84" x2="76" y2="12"><stop offset="0" stop-color="#1A5632"/><stop offset="1" stop-color="#2ECC71"/></linearGradient></defs>
+  <rect width="105.89" height="105.89" rx="14" fill="#FFFFFF"/>
+  <g transform="translate(-11.97 -3.47)">
+    <g transform="rotate(20 50 92)">
+      <path d="M50,80 L48.5,97" fill="none" stroke="url(#f)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M50,86 C20,70 17,31 50,8 C83,31 80,70 50,86 Z" fill="url(#f)"/>
+      <g fill="none" stroke="#A8D5BA" stroke-linecap="round" opacity="0.48">
+        <path d="M50,78 L50,22" stroke-width="3.8"/>
+        <path d="M50,62 Q41,57 35,48" stroke-width="3"/>
+        <path d="M50,62 Q59,57 65,48" stroke-width="3"/>
+        <path d="M50,46 Q44,41 40,33" stroke-width="2.6"/>
+        <path d="M50,46 Q56,41 60,33" stroke-width="2.6"/>
+      </g>
+    </g>
+  </g>
+</svg>
