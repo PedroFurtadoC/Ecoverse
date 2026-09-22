@@ -6,7 +6,7 @@ const CACHE_VERSION = 'ecoverse-v1';
 const STATIC_PATTERNS = [
   /\/assets\/.*-[A-Za-z0-9]+\.(js|css|woff2?)$/,
   /\/assets\/.*\.(svg|png|jpg|jpeg|webp)$/,
-  /\/favicon\.(png|svg)$/,
+  /\/(favicon|apple-touch-icon|icon-maskable)\.(png|svg)$/,
   /\/manifest\.webmanifest$/
 ];
 
