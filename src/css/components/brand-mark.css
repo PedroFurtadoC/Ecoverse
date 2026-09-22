@@ -1,0 +1,55 @@
+/* Marca do Ecoverse sobre a tela do globo.
+ *
+ * Fica no canto inferior direito no desktop, que é o único canto livre:
+ * o topo tem os indicadores à esquerda e os botões à direita, e o inferior
+ * esquerdo é do botão de doação.
+ *
+ * No celular os botões de ação descem para uma barra fixa no rodapé, o que
+ * libera o topo à direita. A marca sobe para lá, porque o rodapé passa a
+ * ser ocupado e porque no topo ela fica sobre o gradiente do HUD, com
+ * contraste garantido.
+ *
+ * Usa o mesmo arquivo da tela de carregamento, que já está na lista de
+ * pré-carga: nenhuma requisição nova. */
+
+.brand-mark {
+  position: fixed;
+  right: calc(env(safe-area-inset-right, 0px) + var(--space-5));
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-5));
+  z-index: var(--z-hud);
+  width: clamp(112px, 13vw, 140px);
+  height: auto;
+  opacity: 0.9;
+  /* O globo passa por trás em qualquer posição, então a sombra garante
+     a leitura tanto sobre o oceano escuro quanto sobre o continente. */
+  filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.65));
+  /* Decorativa: não deve roubar o arrasto do globo. */
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .brand-mark {
+    top: calc(env(safe-area-inset-top, 0px) + 9px);
+    bottom: auto;
+    right: calc(env(safe-area-inset-right, 0px) + 12px);
+    width: 104px;
+    opacity: 0.85;
+  }
+}
+
+/* Entre 380 e 420px o contador de missões reaparece (responsive.css o
+   esconde abaixo de 380), e os indicadores passam a ocupar quase toda a
+   barra. Medido a 381px: com 104px a marca ficava a 6px das estatísticas.
+   Com 88px a folga volta para 22px. */
+@media (max-width: 420px) {
+  .brand-mark {
+    width: 88px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .brand-mark {
+    transition: opacity var(--transition);
+  }
+}
