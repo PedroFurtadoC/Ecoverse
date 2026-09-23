@@ -28,7 +28,22 @@ Os `.svg` são os originais. Tudo o mais nesta pasta sai deles.
 | `ecoverse-simbolo.svg` | Só a folha, quando o nome já aparece do lado |
 | `ecoverse-simbolo-mono.svg` | Só a folha, em uma cor só |
 
-Em `png/` ficam as mesmas versões rasterizadas, para onde SVG não entra.
+Em `png/` ficam os sete rasterizados a 2000 px de largura, com fundo
+transparente, para onde SVG não entra: slide, documento de texto, rede
+social.
+
+O material entregue à universidade usa nome descritivo em vez do nome de
+arquivo daqui. São os mesmos desenhos, byte a byte:
+
+| Aqui | Na entrega |
+| --- | --- |
+| `ecoverse-logo.svg` | `deitada-fundo-claro.svg` |
+| `ecoverse-logo-escuro.svg` | `deitada-fundo-escuro.svg` |
+| `ecoverse-logo-mono.svg` | `deitada-monocromatica.svg` |
+| `ecoverse-vertical.svg` | `empilhada-fundo-claro.svg` |
+| `ecoverse-vertical-mono.svg` | `empilhada-monocromatica.svg` |
+| `ecoverse-simbolo.svg` | `simbolo.svg` |
+| `ecoverse-simbolo-mono.svg` | `simbolo-monocromatico.svg` |
 
 ## Depósito no INPI
 
@@ -36,11 +51,13 @@ Os arquivos prontos para o formulário e-Marcas não ficam nesta pasta. O
 material de registro é processo interno e vive fora do repositório, em
 `registro-inpi/marca/`, junto do resto da documentação do depósito.
 
-São dois JPG de 945 × 945 px a 300 dpi, RGB, dentro da moldura de 8 cm ×
-8 cm que o INPI exige: um colorido e um em preto e branco. A escolha
-entre eles não é estética, porque **depositar a versão colorida equivale
-a reivindicar as cores**, e o verde passa a integrar o registro. O
-critério completo está no `README.md` daquela pasta.
+São quatro JPG, todos RGB e dentro da moldura de 8 cm × 8 cm que o INPI
+exige: um colorido e um em preto e branco a 945 × 945 px e 300 dpi, mais
+os mesmos dois a 1890 × 1890 px e 600 dpi. Os de 600 dpi existem porque
+os valores do formulário são mínimos, não máximos. A escolha entre cor e
+preto e branco não é estética, porque **depositar a versão colorida
+equivale a reivindicar as cores**, e o verde passa a integrar o registro.
+O critério completo está no `README.md` daquela pasta.
 
 O nome e o logotipo **não** entram na licença MIT do projeto. A ressalva
 está no [`LICENSE`](../../LICENSE), na seção de marcas.
@@ -58,8 +75,8 @@ caixa ou moldura, e não recompor o nome em outra fonte.
 
 A folha aparece nos sete SVG, e o nome em cinco deles. Mexeu num, mexa
 nos outros, senão a marca passa a existir em duas versões ao mesmo tempo.
-Depois refaça as exportações de `png/` e de `inpi/` a partir dos SVG
-atualizados, e troque também os três arquivos que a aplicação carrega:
+Depois refaça as exportações de `png/` e as de `registro-inpi/marca/` a
+partir dos SVG atualizados, e troque também os três arquivos que a aplicação carrega:
 `public/assets/logo.svg`, `public/favicon.svg` e `public/favicon.png`.
 
 O `favicon.png` leva quadrado branco por baixo de propósito: além de
