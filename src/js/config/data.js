@@ -427,8 +427,7 @@ const TEAM = [
   {
     name: 'Igor Polegato',
     role: 'Otimização e padronização do código',
-    // Sem foto no projeto: o card mostra as iniciais no lugar.
-    photo: null,
+    photo: 'assets/team/igor.png',
     github: 'https://github.com/igorpolegato',
     linkedin: null,
     portfolio: null
