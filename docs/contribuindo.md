@@ -36,6 +36,17 @@ docs(readme): adiciona seção de parceria UNAERP
 
 Tipos comuns: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`.
 
+## Padrão de código
+
+- **Formatação**: 2 espaços, LF, UTF-8, newline no fim do arquivo. Está no `.editorconfig` da raiz; no VS Code, instale a extensão EditorConfig (o próprio projeto recomenda) e o editor aplica sozinho. O `.gitattributes` força LF no repositório mesmo em quem usa Windows.
+- **Aspas simples** em JS; aspas duplas só dentro de HTML em template string.
+- **ESM** com extensão `.js` nos imports.
+- **Nomes**: português para domínio (`plantTree`, `flyToMission`), inglês para o técnico-genérico (`init`, `update`, `destroy`). Ver [`arquitetura.md`](./arquitetura.md).
+- **Utilitários compartilhados** ficam em `src/js/utils/` (ex.: `escapeHtml`). Antes de escrever um helper, veja se já existe lá; se for usar em dois lugares, mova para lá.
+- **Timers e listeners globais sempre têm dono**: quem cria é quem limpa. Nos minigames isso é feito pela base (`_setTimeout`, `_own`, `_listen`, ver [`src/js/modules/minigames/README.md`](../src/js/modules/minigames/README.md)).
+- **Laços de animação só rodam enquanto há o que animar.** Um `requestAnimationFrame` que se reagenda para sempre custa bateria mesmo com a tela parada.
+- **Sem código de debug em produção**: contador de FPS, `console.log` de teste, medições de tempo por frame.
+
 ## Antes de abrir PR
 
 Use o checklist do `.github/PULL_REQUEST_TEMPLATE.md` que aparece automaticamente quando você cria o PR.

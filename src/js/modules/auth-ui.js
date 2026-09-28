@@ -11,6 +11,7 @@
 import * as Auth from '../services/auth.js';
 import * as Sync from '../services/sync.js';
 import { isConfigured } from '../services/supabase.js';
+import { escapeHtml } from '../utils/html.js';
 
 let deps = {
   showToast: () => {},
@@ -307,10 +308,4 @@ async function renderLeaderboard() {
     body.innerHTML = '<p class="lb-msg">Não consegui carregar o ranking. Tente daqui a pouco.</p>';
     console.warn('[auth-ui] leaderboard falhou:', err);
   }
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  }[c]));
 }

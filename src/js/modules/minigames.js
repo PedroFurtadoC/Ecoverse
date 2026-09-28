@@ -32,13 +32,7 @@ function getDom() {
   dom = {
     container: document.getElementById('minigame-container'),
     title:     document.getElementById('mg-title'),
-    desc:      document.getElementById('mg-desc'),
-    timer:     document.getElementById('mg-timer'),
-    score:     document.getElementById('mg-score'),
-    target:    document.getElementById('mg-target'),
     grid:      document.getElementById('mg-grid'),
-    canvas:    document.getElementById('minigame-canvas'),
-    result:    document.getElementById('mg-result'),
     exit:      document.getElementById('mg-exit-btn')
   };
   return dom;
@@ -64,14 +58,11 @@ function bindShellControls() {
 }
 
 // Reseta o shell genérico do container do minigame antes de instanciar o jogo:
-// limpa título, score, descrição e o grid, e marca o container como ativo.
+// põe o título, limpa o grid e marca o container como ativo. Placar, tempo e
+// resultado ficam no HUD de cada jogo.
 function setupShell(route) {
   const d = getDom();
   d.title.textContent = route.label;
-  d.desc.textContent = '';
-  d.score.textContent = '0';
-  d.result.style.display = 'none';
-  d.canvas.style.display = 'none';
   d.grid.innerHTML = '';
   d.grid.className = 'mg-grid';
   d.grid.style.display = 'block';

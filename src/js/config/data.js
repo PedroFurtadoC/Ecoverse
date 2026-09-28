@@ -423,6 +423,15 @@ const TEAM = [
     github: 'https://github.com/thiagosiena',
     linkedin: null,
     portfolio: null
+  },
+  {
+    name: 'Igor Polegato',
+    role: 'Otimização e padronização do código',
+    // Sem foto no projeto: o card mostra as iniciais no lugar.
+    photo: null,
+    github: 'https://github.com/igorpolegato',
+    linkedin: null,
+    portfolio: null
   }
 ];
 

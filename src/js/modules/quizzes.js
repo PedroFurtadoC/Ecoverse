@@ -1,8 +1,22 @@
 import { QUIZ_ODS_DATA } from '../config/data.js';
-import { state, saveState } from '../store/state.js';
+import { state } from '../store/state.js';
 import { emit, EVENTS } from '../store/events.js';
 
 let container, gallery, headerCount, headerPhase, closeBtn, playerEl;
+
+// Timers do quiz em andamento. Ficam no módulo, e não dentro de startQuiz,
+// para que Voltar, fechar a galeria ou abrir outro quiz consigam parar tudo.
+// Antes, o avanço agendado depois de uma resposta sobrevivia ao Voltar e o
+// quiz seguia rodando escondido até creditar o resultado.
+let questionTimer = null;
+let advanceTimer = null;
+
+function stopQuizTimers() {
+  clearInterval(questionTimer);
+  clearTimeout(advanceTimer);
+  questionTimer = null;
+  advanceTimer = null;
+}
 
 // Callback opcional injetado pelo main.js: quando o usuario conclui um quiz
 // e mexemos em state.quizzes, queremos disparar tambem o sync na nuvem.
@@ -22,12 +36,8 @@ function initDOM() {
   if (closeBtn) closeBtn.addEventListener('click', closeQuizGallery);
 }
 
-function getCompletedMissions() {
-  return state.completed.length;
-}
-
 function getCurrentPhase() {
-  const missions = getCompletedMissions();
+  const missions = state.completed.length;
   if (missions >= 5) return 3;
   if (missions >= 3) return 2;
   if (missions >= 1) return 1;
@@ -58,6 +68,7 @@ export function openQuizGallery() {
 }
 
 export function closeQuizGallery() {
+  stopQuizTimers();
   if (container) container.classList.remove('active');
   if (playerEl) playerEl.classList.remove('active');
   document.body.style.overflow = '';
@@ -105,8 +116,7 @@ export function renderGallery() {
     ph.ids.forEach(odsId => {
       const ods = QUIZ_ODS_DATA.find(o => o.id === odsId);
       if (!ods) return;
-      const state = getOdsState(ods);
-      const card = createOdsCard(ods, state);
+      const card = createOdsCard(ods, getOdsState(ods));
       gridEl.appendChild(card);
     });
 
@@ -166,6 +176,7 @@ function getStarsHtml(ods) {
 
 function startQuiz(ods) {
   if (!playerEl) return;
+  stopQuizTimers();
   playerEl.classList.add('active');
 
   const questions = [...ods.questions];
@@ -174,7 +185,7 @@ function startQuiz(ods) {
   let currentIdx = 0;
   let correctCount = 0;
   let timeLeft = 15;
-  let questionTimer = null;
+  let answered = false;
 
   playerEl.innerHTML = `
     <div class="qop-container" style="--ods-color: ${ods.color}">
@@ -226,7 +237,7 @@ function startQuiz(ods) {
   const resultBtn    = playerEl.querySelector('#qop-result-btn');
 
   backBtn.addEventListener('click', () => {
-    if (questionTimer) clearInterval(questionTimer);
+    stopQuizTimers();
     playerEl.classList.remove('active');
   });
 
@@ -244,6 +255,7 @@ function startQuiz(ods) {
     }
 
     const q = questions[currentIdx];
+    answered = false;
     questionEl.textContent = q.q;
     qnumEl.textContent = `Pergunta ${currentIdx + 1} de ${questions.length}`;
     optionsEl.innerHTML = '';
@@ -261,7 +273,7 @@ function startQuiz(ods) {
       optionsEl.appendChild(btn);
     });
 
-    if (questionTimer) clearInterval(questionTimer);
+    clearInterval(questionTimer);
     questionTimer = setInterval(() => {
       timeLeft--;
       timerText.textContent = `${timeLeft}s`;
@@ -269,18 +281,27 @@ function startQuiz(ods) {
       if (timeLeft <= 5) timerFill.style.background = '#EF5350';
       if (timeLeft <= 0) {
         clearInterval(questionTimer);
+        answered = true;
         const btns = optionsEl.querySelectorAll('.qop-option');
         btns.forEach(b => b.classList.add('disabled'));
         btns[q.correct].classList.add('correct');
         dotsEl.children[currentIdx].classList.remove('current');
         dotsEl.children[currentIdx].classList.add('wrong');
-        setTimeout(() => { currentIdx++; advanceDot(); showQuestion(); }, 1200);
+        scheduleNext();
       }
     }, 1000);
   }
 
+  function scheduleNext() {
+    advanceTimer = setTimeout(() => { currentIdx++; advanceDot(); showQuestion(); }, 1200);
+  }
+
   function onAnswer(idx, btn, q) {
-    if (questionTimer) clearInterval(questionTimer);
+    // pointer-events: none no .disabled só barra o mouse; Enter/Espaço num
+    // botão focado ainda disparariam uma segunda resposta.
+    if (answered) return;
+    answered = true;
+    clearInterval(questionTimer);
     const btns = optionsEl.querySelectorAll('.qop-option');
     btns.forEach(b => b.classList.add('disabled'));
 
@@ -296,7 +317,7 @@ function startQuiz(ods) {
       dotsEl.children[currentIdx].classList.add('wrong');
     }
 
-    setTimeout(() => { currentIdx++; advanceDot(); showQuestion(); }, 1200);
+    scheduleNext();
   }
 
   function advanceDot() {
@@ -306,7 +327,7 @@ function startQuiz(ods) {
   }
 
   function showQuizResult(ods, score) {
-    if (questionTimer) clearInterval(questionTimer);
+    stopQuizTimers();
     progressFill.style.width = '100%';
 
     const perfect = score === 5;

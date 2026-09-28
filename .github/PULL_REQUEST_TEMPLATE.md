@@ -18,7 +18,8 @@
 - [ ] Testei em DevTools mobile (iPhone SE 320px e Galaxy S20)
 - [ ] Funciona com teclado (Tab + Enter/Space)
 - [ ] Sem `console.error` durante uso normal
-- [ ] CSS escopado com prefixo do dev (se for minigame)
+- [ ] Sair no meio (Esc ou Voltar) não deixa timer, laço ou listener rodando (se for minigame)
+- [ ] CSS em `src/css/components/minigame-<pasta>-<n>.css`, com prefixo único (se for minigame)
 - [ ] Estatísticas citadas têm fonte oficial em comentário
 - [ ] Sem segredos commitados (`.env` não foi versionado)
 - [ ] Mensagem de commit segue Conventional Commits

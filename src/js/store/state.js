@@ -57,6 +57,24 @@ export function loadState() {
   } catch (e) { /* start fresh */ }
 }
 
+// Formato do progresso na tabela `progress` do Supabase (snake_case). É o que
+// o sync envia e o que entra no pacote de exportação LGPD, então os dois
+// saem daqui para não divergirem.
+export function toCloudSnapshot() {
+  return {
+    energy: state.energy,
+    coins: state.coins,
+    impact: state.impact,
+    completed: state.completed,
+    achievements: state.achievements,
+    planted_trees: state.plantedTrees,
+    pomodoros_completed: state.pomodorosCompleted,
+    best_streak: state.bestStreak,
+    perfect_minigames: state.perfectMinigames,
+    quizzes: state.quizzes ?? {}
+  };
+}
+
 // Score determinístico e monotonicamente crescente, uma vez que o
 // jogador avança numa dimensão, ela nunca regride. Usado como tie-breaker
 // pra decidir qual save é o "mais avançado" sem depender de timestamp

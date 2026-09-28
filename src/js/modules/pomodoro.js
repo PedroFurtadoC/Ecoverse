@@ -157,9 +157,14 @@ function startWorkPhase() {
   updateDisplay();
 }
 
+// Um único AudioContext para a sessão inteira. Criar um por bipe sem fechar
+// acumula contextos, e o navegador limita quantos podem existir ao mesmo tempo.
+let audioCtx = null;
+
 function playBeep() {
   try {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioCtx ??= new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     const frequencies = [523.25, 659.25, 783.99];
     frequencies.forEach((freq, i) => {
       const osc = audioCtx.createOscillator();

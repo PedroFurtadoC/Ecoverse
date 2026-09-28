@@ -1,0 +1,40 @@
+/* Missão 1: Amazônia (andre/modulo1.js). Classes com prefixo .m1- */
+
+.m1-wrap {
+  position: relative; width: 100%;
+  display: flex; flex-direction: column; align-items: center;
+  background: #0a1e30; border-radius: 12px;
+  overflow: hidden; user-select: none; font-family: sans-serif;
+}
+.m1-hud {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; padding: 0.45rem 1.2rem; box-sizing: border-box;
+  background: rgba(0,0,0,0.55); color: #d0eeff;
+  font-size: 0.88rem; gap: 0.4rem; flex-wrap: wrap;
+}
+.m1-hud strong  { color: #7df0c8; }
+.m1-hud-item    { display: flex; align-items: center; gap: 0.3rem; }
+.m1-combo {
+  font-size: 0.95rem; font-weight: 900; color: #ffd600;
+  min-width: 64px; text-align: center; transition: transform 0.1s;
+}
+.m1-combo.bump  { transform: scale(1.45); }
+.m1-mission-bar {
+  width: 100%; padding: 0.22rem 1.2rem; box-sizing: border-box;
+  background: rgba(0,0,0,0.35); display: flex; align-items: center;
+  gap: 0.55rem; font-size: 0.76rem; color: #9dd8f5;
+}
+.m1-mission-track {
+  flex: 1; height: 5px; background: rgba(255,255,255,0.10);
+  border-radius: 3px; overflow: hidden;
+}
+.m1-mission-fill {
+  height: 100%; background: #ffd600;
+  border-radius: 3px; transition: width 0.3s;
+}
+#m1-canvas { cursor: crosshair; display: block; max-width: 100%; }
+.m1-tip {
+  color: #4a7fa0; font-size: 0.76rem;
+  padding: 0.28rem 0.8rem; text-align: center;
+}
+.m1-tip strong { color: #8ac8e8; }

@@ -1,6 +1,6 @@
 import '../css/main.css';
 import { MISSIONS, TIPS, ASSET_LIST, GLOBE_TEXTURE, POMODORO_CONFIG, TEAM } from './config/data.js';
-import { state, saveState, loadState, applyCloudState, hasMeaningfulProgress } from './store/state.js';
+import { state, saveState, loadState, applyCloudState, hasMeaningfulProgress, toCloudSnapshot } from './store/state.js';
 import { on, EVENTS } from './store/events.js';
 import { Pomodoro } from './modules/pomodoro.js';
 import { MiniGames } from './modules/minigames.js';
@@ -9,6 +9,7 @@ import { AchievementSystem } from './modules/achievements.js';
 import * as Auth from './services/auth.js';
 import * as Sync from './services/sync.js';
 import * as AuthUI from './modules/auth-ui.js';
+import { escapeHtml } from './utils/html.js';
 
 // Modo de teste: `?dev=free` na URL destrava tudo pra revisar o jogo:
 // todas as missões liberadas, sem custo de energia, sem persistir progresso
@@ -16,6 +17,8 @@ import * as AuthUI from './modules/auth-ui.js';
 // Ex.: http://localhost:3000/?dev=free
 const DEV_FREE = new URLSearchParams(location.search).get('dev') === 'free';
 if (DEV_FREE) console.info('[ecoverse] modo dev: tudo liberado, progresso não é salvo');
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 // Refs do DOM
 const $ = (sel) => document.querySelector(sel);
@@ -253,15 +256,7 @@ AuthUI.init({
   openModal,
   closeModal,
   buildExportPayload: () => ({
-    energy: state.energy,
-    coins: state.coins,
-    impact: state.impact,
-    completed: state.completed,
-    achievements: state.achievements,
-    planted_trees: state.plantedTrees,
-    pomodoros_completed: state.pomodorosCompleted,
-    best_streak: state.bestStreak,
-    perfect_minigames: state.perfectMinigames,
+    ...toCloudSnapshot(),
     last_saved_at: state.lastSavedAt ?? null
   })
 });
@@ -272,7 +267,7 @@ AuthUI.init({
 function renderTeam() {
   const grid = $('#about-team-grid');
   if (!grid) return;
-  const safe = (s) => String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const safe = escapeHtml;
   const ICON = {
     github: '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.05c-3.2.7-3.87-1.37-3.87-1.37-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.74-1.55-2.56-.29-5.25-1.28-5.25-5.71 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.78 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.44-2.7 5.41-5.27 5.7.41.35.78 1.05.78 2.11v3.13c0 .31.21.67.79.55C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>',
     linkedin: '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .78 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>',
@@ -283,9 +278,17 @@ function renderTeam() {
     ? `<a class="team-card__link" href="${safe(url)}" target="_blank" rel="noopener" aria-label="${label}">${ICON[kind]}</a>`
     : '';
 
+  // Sem foto cadastrada, o avatar vira as iniciais (primeiro e último nome).
+  const avatar = (m) => {
+    if (m.photo) return `<img class="team-card__avatar" src="${safe(m.photo)}" alt="Foto de ${safe(m.name)}" loading="lazy" />`;
+    const parts = m.name.trim().split(/\s+/);
+    const initials = (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+    return `<span class="team-card__avatar team-card__avatar--initials" aria-hidden="true">${safe(initials)}</span>`;
+  };
+
   grid.innerHTML = TEAM.map((m, i) => `
     <article class="team-card${i === 0 ? ' team-card--lead' : ''}">
-      <img class="team-card__avatar" src="${safe(m.photo)}" alt="Foto de ${safe(m.name)}" loading="lazy" />
+      ${avatar(m)}
       <div class="team-card__info">
         <h4 class="team-card__name">${safe(m.name)}</h4>
         <p class="team-card__role">${safe(m.role)}</p>
@@ -345,35 +348,23 @@ async function initGlobe() {
         <div class="gm-location">${d.mission.location}</div>
       `;
 
-      if (st === 'available') {
-        el.classList.add('gm-pulse');
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          flyToMission(d.mission);
-          setTimeout(() => openMissionCard(d.mission), 1200);
-        });
-        el.style.cursor = 'pointer';
-      } else if (st === 'locked') {
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
+      if (st === 'available') el.classList.add('gm-pulse');
+      el.style.cursor = st === 'locked' ? 'not-allowed' : 'pointer';
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (st === 'locked') {
           showToast('Complete a missão anterior para desbloquear!', 'info');
-        });
-        el.style.cursor = 'not-allowed';
-      } else {
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          flyToMission(d.mission);
-          setTimeout(() => openMissionCard(d.mission), 1200);
-        });
-        el.style.cursor = 'pointer';
-      }
+          return;
+        }
+        flyToMission(d.mission);
+        setTimeout(() => openMissionCard(d.mission), 1200);
+      });
 
       return el;
     });
 
   // Auto-rotate respeitando preferência de movimento reduzido.
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  globe.controls().autoRotate = !prefersReducedMotion;
+  globe.controls().autoRotate = !prefersReducedMotion.matches;
   globe.controls().autoRotateSpeed = 0.5;
   globe.controls().enableDamping = true;
   globe.controls().dampingFactor = 0.1;
@@ -392,30 +383,13 @@ async function initGlobe() {
     globe.pointOfView({ lat: -3.4653, lng: -62.2159, altitude: 2.2 }, 0);
   }
 
-  // Arcs between sequential missions (connections)
-  const arcData = [];
-  for (let i = 1; i < MISSIONS.length; i++) {
-    const from = MISSIONS[i - 1];
-    const to = MISSIONS[i];
-    const bothDone = state.completed.includes(from.id) && state.completed.includes(to.id);
-    const nextAvail = state.completed.includes(from.id) && !state.completed.includes(to.id);
-    arcData.push({
-      startLat: from.lat, startLng: from.lng,
-      endLat: to.lat, endLng: to.lng,
-      color: bothDone ? ['#F1C40F', '#2ECC71'] : nextAvail ? ['#2ECC71', '#26C6DA'] : ['rgba(255,255,255,0.15)', 'rgba(255,255,255,0.05)'],
-      stroke: bothDone ? 1.2 : nextAvail ? 0.8 : 0.4,
-      dashGap: bothDone ? 0 : 2,
-      dashLen: bothDone ? 0 : 4
-    });
-  }
-
   globe
-    .arcsData(arcData)
+    .arcsData(buildArcData())
     .arcColor('color')
     .arcStroke('stroke')
     .arcDashLength('dashLen')
     .arcDashGap('dashGap')
-    .arcDashAnimateTime(prefersReducedMotion ? 0 : 3000);
+    .arcDashAnimateTime(prefersReducedMotion.matches ? 0 : 3000);
 
   // Plota as árvores já plantadas como pontos no globo
   renderPlantedTreesOnGlobe();
@@ -434,10 +408,9 @@ function getMissionMarkers() {
   }));
 }
 
-function refreshGlobeMarkers() {
-  if (!globe) return;
-  globe.htmlElementsData(getMissionMarkers());
-  // Reconstrói os arcos entre missões adjacentes
+// Arcos entre missões consecutivas: dourado quando as duas estão feitas,
+// verde para a próxima disponível, apagado para o resto.
+function buildArcData() {
   const arcData = [];
   for (let i = 1; i < MISSIONS.length; i++) {
     const from = MISSIONS[i - 1];
@@ -453,15 +426,29 @@ function refreshGlobeMarkers() {
       dashLen: bothDone ? 0 : 4
     });
   }
-  globe.arcsData(arcData);
+  return arcData;
+}
+
+function refreshGlobeMarkers() {
+  if (!globe) return;
+  globe.htmlElementsData(getMissionMarkers());
+  globe.arcsData(buildArcData());
   renderPlantedTreesOnGlobe();
 }
 
+// Um único timer de retomada: cliques seguidos em marcadores não empilham
+// retomadas, e quem pediu movimento reduzido não tem a rotação religada.
+let resumeRotateTimer = null;
 function flyToMission(mission) {
   if (!globe) return;
   globe.controls().autoRotate = false;
   globe.pointOfView({ lat: mission.lat, lng: mission.lng, altitude: 1.8 }, 1000);
-  setTimeout(() => { globe.controls().autoRotate = true; globe.controls().autoRotateSpeed = 0.15; }, 5000);
+  clearTimeout(resumeRotateTimer);
+  if (prefersReducedMotion.matches) return;
+  resumeRotateTimer = setTimeout(() => {
+    globe.controls().autoRotate = true;
+    globe.controls().autoRotateSpeed = 0.15;
+  }, 5000);
 }
 
 // Árvores plantadas no globo (pontos verdes acumulados a cada missão)
@@ -685,12 +672,11 @@ function checkAchievements() {
   if (newUnlocks.length > 0) persist();
 }
 
-on(EVENTS.REWARD, ({ energy = 0, coins = 0 }) => { addReward(energy, coins); Sync.scheduleSync(); });
+on(EVENTS.REWARD, ({ energy = 0, coins = 0 }) => addReward(energy, coins));
 on(EVENTS.TOAST, ({ message, type = 'info' }) => showToast(message, type));
 on(EVENTS.POMODORO_COMPLETE, ({ streak, taskName }) => {
   onPomodoroComplete(streak);
   Sync.recordPomodoro({ durationSeconds: POMODORO_CONFIG.workDuration, taskName });
-  Sync.scheduleSync();
 });
 on(EVENTS.ACHIEVEMENT_CHECK, () => checkAchievements());
 
@@ -700,7 +686,7 @@ function celebrate() {
   if (!celebOverlay) return;
   celebOverlay.classList.add('active');
   setTimeout(() => celebOverlay.classList.remove('active'), 800);
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (prefersReducedMotion.matches) return;
   for (let i = 0; i < 24; i++) {
     celebParticles.push({
       x: window.innerWidth / 2 + (Math.random() - 0.5) * 250,
@@ -711,16 +697,29 @@ function celebrate() {
       life: 1.0, decay: 0.01 + Math.random() * 0.008
     });
   }
+  startParticleLoop();
 }
 
-// Sistema de partículas (fundo decorativo do globo)
+// Canvas do confete, por cima do globo
 function resizeCanvas() {
   if (!particleCanvas || !ctx) return;
   particleCanvas.width = window.innerWidth;
   particleCanvas.height = window.innerHeight;
 }
 
-let running = false;
+// O laço só existe enquanto há confete na tela. Antes ele rodava a 60 fps
+// desde o boot, limpando o canvas em tela cheia a cada frame mesmo vazio.
+let particleFrame = null;
+function startParticleLoop() {
+  if (!ctx || particleFrame !== null) return;
+  particleFrame = requestAnimationFrame(particleLoop);
+}
+
+function particleLoop() {
+  renderParticles();
+  particleFrame = celebParticles.length > 0 ? requestAnimationFrame(particleLoop) : null;
+}
+
 function renderParticles() {
   if (!ctx) return;
   ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
@@ -732,12 +731,6 @@ function renderParticles() {
     ctx.beginPath(); ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
     ctx.fill(); ctx.restore();
   }
-}
-
-function gameLoop() {
-  if (!running) return;
-  renderParticles();
-  requestAnimationFrame(gameLoop);
 }
 
 // Tela de loading (anel SVG + tip educativa)
@@ -772,8 +765,8 @@ async function loadAssets() {
     completeEl.className = 'loading-complete-text'; completeEl.textContent = 'Pronto';
     tipEl.parentElement.appendChild(completeEl);
   }
-  await delay(1200); 
-  if (loadScreen) loadScreen.classList.add('fade-out'); 
+  await delay(1200);
+  if (loadScreen) loadScreen.classList.add('fade-out');
   if (gameContainer) gameContainer.classList.add('visible');
   await delay(900);
   if (loadScreen) loadScreen.style.display = 'none';
@@ -857,8 +850,6 @@ async function startGame() {
   bootSyncReady = true;
 
   await initGlobe();
-  running = true;
-  requestAnimationFrame(gameLoop);
 }
 
 // Handler de push do Realtime. Aplica direto via applyCloudState e

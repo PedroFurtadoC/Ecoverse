@@ -1,0 +1,51 @@
+/* Missão 4: Bornéu (felipe/modulo4.js). Classes com prefixo .m4- */
+
+.m4-wrap {
+  position:relative; width:100%; display:flex; flex-direction:column;
+  align-items:center; background:#0a1a0a; border-radius:12px;
+  overflow:hidden; user-select:none; font-family:sans-serif;
+}
+.m4-hud {
+  display:flex; justify-content:space-between; align-items:center;
+  width:100%; padding:0.45rem 1rem; box-sizing:border-box;
+  background:rgba(0,0,0,0.55); color:#e0f4e0; font-size:0.85rem;
+  flex-wrap:wrap; gap:0.4rem;
+}
+.m4-hud strong { color:#7df0c8; }
+.m4-hud-group  { display:flex; align-items:center; gap:0.4rem; }
+.m4-toolbar {
+  width:100%; display:flex; gap:0.4rem; padding:0.3rem 1rem;
+  box-sizing:border-box; background:rgba(0,0,0,0.4);
+  align-items:center; flex-wrap:wrap;
+}
+.m4-tool-btn {
+  padding:3px 10px; border:2px solid rgba(255,255,255,0.2);
+  border-radius:6px; background:rgba(255,255,255,0.05);
+  color:#e0f4e0; font-size:0.78rem; cursor:pointer;
+  transition:all 0.15s; white-space:nowrap;
+}
+.m4-tool-btn.active {
+  border-color:#7df0c8; background:rgba(125,240,200,0.15);
+  color:#7df0c8; font-weight:700;
+}
+.m4-tool-btn.disabled { opacity:0.35; cursor:not-allowed; }
+.m4-mission-bar {
+  width:100%; padding:0.2rem 1rem; box-sizing:border-box;
+  background:rgba(0,0,0,0.3); display:flex; align-items:center;
+  gap:0.5rem; font-size:0.75rem; color:#aee0d0;
+}
+.m4-mission-track {
+  flex:1; height:5px; background:rgba(255,255,255,0.1);
+  border-radius:3px; overflow:hidden;
+}
+.m4-mission-fill {
+  height:100%; background:#7df0c8; border-radius:3px; transition:width 0.3s;
+}
+#m4-canvas { cursor:crosshair; display:block; max-width:100%; }
+#m4-bucket-cursor {
+  position:absolute; pointer-events:none; font-size:26px;
+  transform:translate(-4px,-24px); display:none; z-index:10;
+  filter:drop-shadow(0 0 4px #4dd0e1);
+}
+.m4-tip { color:#4a7a5a; font-size:0.73rem; padding:0.25rem; text-align:center; }
+.m4-tip strong { color:#7df0c8; }

@@ -1,0 +1,13 @@
+# Fim de linha LF no repositório para todo arquivo de texto, independente do
+# sistema de quem commita. Sem isso, parte dos minigames entrou com CRLF e o
+# diff de qualquer ajuste neles aparecia como o arquivo inteiro trocado.
+* text=auto eol=lf
+
+# Binários: nunca converter.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.ico  binary
+*.pdf  binary
+*.docx binary
+*.zip  binary

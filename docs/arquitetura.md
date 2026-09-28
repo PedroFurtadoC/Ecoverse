@@ -6,6 +6,8 @@ Aplicação single-page sem framework. Vite empacota em ESM. O código é dividi
 2. **Módulos de domínio** (`src/js/modules/`): Pomodoro, conquistas, quizzes ODS, roteador de minigames. Cada um expõe um objeto público (ex.: `Pomodoro.init()`, `MiniGames.open(...)`).
 3. **Apresentação** (`src/js/main.js` + `src/css/`): orquestra DOM, anima HUD, controla o globo, encadeia ações entre módulos via event bus.
 
+Apoio: `src/js/services/` fala com o Supabase (auth, sync) e `src/js/utils/` guarda helpers puros usados por mais de um módulo.
+
 ## Fluxo principal
 
 ```
@@ -34,6 +36,8 @@ Em paralelo, o Pomodoro emite `EVENTS.REWARD` e `EVENTS.POMODORO_COMPLETE`: `mai
 - **Português** para domínio (`plantTree`, `flyToMission`); **inglês** para técnico-genérico (`init`, `update`, `open`).
 - **Event bus** para acoplamento de "notificação" (módulo A avisa, módulo B reage). Imports diretos só para contratos síncronos (`MiniGames.open()` chamado direto).
 - **localStorage** é a fonte primária (chave `ecoverse_save_v6`). O progresso dos quizzes ODS vive dentro desse mesmo save, e não em chave separada, pra subir junto na sincronização. Quando o Supabase está configurado, `services/sync.js` faz upsert com debounce de 2s sem alterar o localStorage.
+- **`persist()`** em `main.js` é o único caminho para gravar: salva local e agenda o sync. Não chame `Sync.scheduleSync()` de novo depois dele.
+- **Formato na nuvem**: `toCloudSnapshot()` em `store/state.js` é a única definição do progresso em snake_case. O sync e a exportação LGPD usam a mesma função.
 
 ## Build
 

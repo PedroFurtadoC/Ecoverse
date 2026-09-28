@@ -1,6 +1,6 @@
 import { getSupabase } from './supabase.js';
 import { getUser } from './auth.js';
-import { state } from '../store/state.js';
+import { toCloudSnapshot } from '../store/state.js';
 
 const DEBOUNCE_MS = 2000;
 let pendingTimer = null;
@@ -36,24 +36,6 @@ export function onStatusChange(fn) {
   return () => statusListeners.delete(fn);
 }
 
-// =============================================================
-// Snapshot: formato que sobe pra tabela progress.
-// =============================================================
-function snapshot() {
-  return {
-    energy: state.energy,
-    coins: state.coins,
-    impact: state.impact,
-    completed: state.completed,
-    achievements: state.achievements,
-    planted_trees: state.plantedTrees,
-    pomodoros_completed: state.pomodorosCompleted,
-    best_streak: state.bestStreak,
-    perfect_minigames: state.perfectMinigames,
-    quizzes: state.quizzes ?? {}
-  };
-}
-
 async function flush() {
   pendingTimer = null;
   const user = getUser();
@@ -64,7 +46,7 @@ async function flush() {
   if (!supa) { setStatus('offline'); return; }
 
   try {
-    const payload = { user_id: user.id, ...snapshot() };
+    const payload = { user_id: user.id, ...toCloudSnapshot() };
     const { error } = await supa.from('progress').upsert(payload, { onConflict: 'user_id' });
     if (error) {
       setStatus('error');

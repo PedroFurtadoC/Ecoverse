@@ -73,6 +73,17 @@
   flex-shrink: 0;
 }
 
+.team-card__avatar--initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-text);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
 .team-card__name {
   margin: 0;
   font-size: 13px;

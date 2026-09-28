@@ -39,16 +39,16 @@ export class Modulo7 {
     this.score = 0; this.health = 100; this.combo = 0; this.multiplier = 1;
     this.items = []; this.startTime = performance.now();
 
-this.container.innerHTML = `
+    this.container.innerHTML = `
       <button id="t7-exit-btn" class="thiago-7-btn--exit">Sair da Missão</button>
-      
+
       <div class="thiago-7-container">
         <div class="thiago-7-god-rays"></div>
         <div class="thiago-7-banner"></div>
         <div id="t7-marine-snow-container" style="position: absolute; inset: 0; pointer-events: none; z-index: 2;"></div>
         <div id="t7-bubbles-container" style="position: absolute; inset: 0; pointer-events: none; z-index: 100;"></div>
         <div id="t7-damage-flash" class="thiago-7-damage-flash"></div>
-        
+
         <div class="thiago-7-hud">
           <div class="thiago-7-stat">SCORE: <span id="t7-score">0</span><div id="t7-combo" class="thiago-7-combo" style="display: none;">x1 Combo</div></div>
           <div class="thiago-7-stat">CORAL HEALTH<div id="t7-health-bar" class="thiago-7-health-bar"><div id="t7-health" class="thiago-7-health-fill" style="width: 100%"></div></div></div>
@@ -66,7 +66,7 @@ this.container.innerHTML = `
         <div id="t7-overlay" class="thiago-7-overlay" style="display: none;"></div>
       </div>
     `;
-    
+
     this.container.querySelector('#t7-exit-btn').onclick = () => {
       this.gameActive = false;
       this.onGameEnd({ success: false, finalScore: this.score, quit: true });
@@ -139,11 +139,11 @@ this.container.innerHTML = `
     else if (rand < 0.8) type = 'bag';
     else if (rand < 0.9) type = 'jug';
     else type = 'straw';
-    
+
     const el = document.createElement('div');
     el.className = `thiago-7-item thiago-7-${type}`;
     if (asset) el.style.backgroundImage = `url('/assets/generated/cutouts/${asset}')`;
-    if (type === 'fish') { el.classList.add('is-plastic'); el.style.setProperty('--plastic-mix', this.plasticFactor); }
+    if (type === 'fish') el.classList.add('is-plastic');
 
     const areaH = this.gameArea.clientHeight || 500;
     el.style.top = (Math.random() * (areaH - 180) + 120) + 'px';
@@ -165,16 +165,20 @@ this.container.innerHTML = `
 
   updateItems(dt, now) {
     const areaW = this.gameArea?.clientWidth || 900;
-    
+
+    // A contaminação é a mesma para todos os peixes, então vai uma vez só na
+    // área de jogo e os peixes herdam a variável, em vez de uma escrita de
+    // estilo por peixe a cada frame.
+    this.gameArea?.style.setProperty('--plastic-mix', this.plasticFactor);
+
     for (let i = this.items.length - 1; i >= 0; i--) {
       const item = this.items[i];
       if (item.collected) continue;
 
       item.x += item.speed * (dt / 16.67);
-      
+
       if (item.type === 'fish') {
         item.el.style.transform = `translate3d(${item.x}px, 0px, 0px)`;
-        item.el.style.setProperty('--plastic-mix', this.plasticFactor);
       } else {
         item.rotation += item.rotSpeed * (dt / 16.67);
         item.el.style.transform = `translate3d(${item.x}px, 0px, 0px) rotate(${item.rotation}deg)`;
@@ -204,10 +208,10 @@ this.container.innerHTML = `
   collect(el, type, clickX, clickY) {
     const idx = this.items.findIndex(it => it.el === el);
     if (idx === -1) return;
-    
+
     const item = this.items[idx];
     if (item.collected) return;
-    
+
     item.collected = true;
     el.style.pointerEvents = 'none';
 
@@ -223,7 +227,7 @@ this.container.innerHTML = `
     }
 
     if (this.scoreEl) this.scoreEl.textContent = this.score;
-    
+
     setTimeout(() => {
       const currentIdx = this.items.indexOf(item);
       if (currentIdx !== -1) {
@@ -246,14 +250,14 @@ this.container.innerHTML = `
   updateComboUI() {
     if (!this.comboEl) return;
     if (this.combo >= 3) {
-      this.comboEl.style.display = 'block'; 
+      this.comboEl.style.display = 'block';
       this.comboEl.textContent = `${this.combo} Combo (x${this.multiplier.toFixed(1)})`;
-      this.comboEl.classList.remove('bump'); 
+      this.comboEl.classList.remove('bump');
       requestAnimationFrame(() => {
         if (this.comboEl) this.comboEl.classList.add('bump');
       });
-    } else { 
-      this.comboEl.style.display = 'none'; 
+    } else {
+      this.comboEl.style.display = 'none';
     }
   }
 

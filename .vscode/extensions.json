@@ -1,0 +1,4 @@
+{
+  // Aplica o .editorconfig da raiz (2 espaços, LF, UTF-8) ao salvar.
+  "recommendations": ["editorconfig.editorconfig"]
+}

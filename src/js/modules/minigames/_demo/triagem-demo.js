@@ -122,14 +122,18 @@ export class TriagemEasterEgg {
   }
 
   escolher(categoria) {
-    if (!this.itemAtual) return;
-    const correto = categoria === this.itemAtual.categoria;
+    if (!this.itemAtual || this.encerrado) return;
+    const item = this.itemAtual;
+    // Solta o item já na primeira escolha: sem isso, cliques repetidos durante
+    // os 700 ms até a próxima rodada contavam o mesmo item várias vezes.
+    this.itemAtual = null;
+    const correto = categoria === item.categoria;
     if (correto) {
       this.acertos++;
       this.feedback('Correto!', 'sucesso');
     } else {
       this.erros++;
-      const certo = CATEGORIAS[this.itemAtual.categoria].nome;
+      const certo = CATEGORIAS[item.categoria].nome;
       this.feedback(`Vai pro ${certo}`, 'erro');
     }
     this.atualizarScore();

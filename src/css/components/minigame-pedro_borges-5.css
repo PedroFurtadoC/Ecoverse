@@ -1,0 +1,22 @@
+/* Missão 5: Madagascar (pedro_borges/modulo5.js). Classes com prefixo .m5- */
+
+.m5-wrap {
+  position:relative; width:100%; display:flex;
+  flex-direction:column; align-items:center;
+  background:#061c2e; border-radius:12px;
+  overflow:hidden; user-select:none; font-family:sans-serif;
+}
+.m5-hud {
+  display:flex; justify-content:space-between; align-items:center;
+  width:100%; padding:0.42rem 1rem; box-sizing:border-box;
+  background:rgba(0,0,0,0.60); color:#e0f4ff;
+  font-size:0.82rem; gap:0.4rem; flex-wrap:wrap;
+}
+.m5-hud strong { color:#38bdf8; }
+.m5-hud-g      { display:flex; align-items:center; gap:0.3rem; }
+#m5-canvas     { display:block; max-width:100%; cursor:default; }
+.m5-tip {
+  color:#1e4d6b; font-size:0.70rem; padding:0.22rem 0;
+  text-align:center; margin:0;
+}
+.m5-tip strong { color:#38bdf8; }

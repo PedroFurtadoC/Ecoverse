@@ -1,0 +1,45 @@
+/* Missão 3: Mata Atlântica (felipe/modulo3.js). Classes com prefixo .m3- */
+
+.m3-wrapper {
+  position: relative; width: 100%; display: flex;
+  flex-direction: column; align-items: center;
+  background: #0d1f2d; border-radius: 12px;
+  overflow: hidden; user-select: none; font-family: sans-serif;
+}
+.m3-hud {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; padding: 0.5rem 1.2rem; box-sizing: border-box;
+  background: rgba(0,0,0,0.5); color: #e0f4ff;
+  font-size: 0.9rem; gap: 0.5rem; flex-wrap: wrap;
+}
+.m3-hud strong { color: #7df0c8; }
+.m3-hud-item  { display: flex; align-items: center; gap: 0.35rem; }
+.m3-combo {
+  font-size: 1rem; font-weight: 900; color: #ffd600;
+  transition: transform 0.1s; min-width: 60px; text-align: center;
+}
+.m3-combo.bump { transform: scale(1.4); }
+.m3-mission-bar {
+  width: 100%; padding: 0.25rem 1.2rem; box-sizing: border-box;
+  background: rgba(0,0,0,0.35); display: flex;
+  align-items: center; gap: 0.6rem; font-size: 0.78rem; color: #aee0f5;
+}
+.m3-mission-track {
+  flex: 1; height: 6px; background: rgba(255,255,255,0.12);
+  border-radius: 3px; overflow: hidden;
+}
+.m3-mission-fill {
+  height: 100%; background: #ffd600; border-radius: 3px;
+  transition: width 0.3s;
+}
+.m3-powerup-row {
+  width: 100%; min-height: 22px; padding: 0.1rem 1.2rem;
+  box-sizing: border-box; display: flex; gap: 0.5rem;
+  font-size: 0.82rem; color: #e0f4ff;
+}
+#m3-canvas { cursor: none; display: block; max-width: 100%; }
+.m3-tip {
+  color: #6a9fb5; font-size: 0.78rem;
+  padding: 0.3rem 0.8rem; text-align: center;
+}
+.m3-tip strong { color: #aee0f5; }

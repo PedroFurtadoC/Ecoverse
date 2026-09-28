@@ -13,6 +13,8 @@ Cada missão do globo dispara um minigame temático sobre o problema de resíduo
 
 Contexto e sprites disponíveis de cada missão estão no `README.md` dentro da pasta correspondente.
 
+A infraestrutura compartilhada (`MinigameBase`, `CanvasMinigame`, sistemas de vidas, pontuação, partículas etc.) fica em `gamekit.js`, na raiz desta pasta, e não na pasta de nenhum dev: é usada pelos módulos 1 a 6. Importe com `from '../gamekit.js'`.
+
 ## Contrato técnico
 
 Toda classe `ModuloN` recebe um `container` (DIV vazia) e um `onGameEnd` (callback). Implementa `start()` e `destroy()`, e chama `onGameEnd({ success, finalScore, perfect })` quando o jogo termina.
@@ -44,11 +46,25 @@ As missões 7 e 8 são de sobrevivência: só terminam quando a barra de vida ze
 
 Se um minigame chamar `onGameEnd` direto, sem passar pelo gamekit, aí sim precisa mandar o campo por conta própria.
 
+### Resultado depois de "Jogar novamente"
+
+O `success` enviado é sempre o da partida que acabou de terminar, mesmo que o jogador tenha usado o "Jogar novamente" antes. Perdeu a revanche: `success: false` e a energia volta. Ganhou a revanche: `success: true` e a missão conclui. Use `GameOverlay.continueButton(id, success, onClick)`: o rótulo ("Continuar" ou "Voltar ao Mapa") sai do resultado, então fica igual em todos os jogos.
+
 ## Sair no meio da partida
 
 O jogador pode fechar o minigame a qualquer momento pelo botão Voltar ou pelo Esc. Esse caminho não passa pelo fim de partida do jogo, então o shell chama `destroy()` antes de esconder a tela. Sem isso, o laço de animação continuaria rodando sobre um DOM já descartado e um resultado atrasado poderia encerrar por engano a missão aberta em seguida.
 
-Quem estende `MinigameBase` já herda um `destroy()` que derruba a flag e limpa os timers rastreados por `_setTimeout` e `_setInterval`. Quem monta o jogo por fora do gamekit precisa escrever o seu, nem que seja só para desligar a flag que o laço consulta.
+Quem estende `MinigameBase` já herda um `destroy()` que derruba a flag e libera tudo que foi registrado na base. Para isso, registre cada recurso com ciclo de vida pelo caminho da base, nunca direto:
+
+| Recurso | Como criar |
+|---|---|
+| `setTimeout` / `setInterval` | `this._setTimeout(...)` / `this._setInterval(...)` |
+| `GameTimer`, `WaveSystem`, `EventScheduler`, `InputController` | `this.timer = this._own(new GameTimer(...))` |
+| Listener em `window` ou `document` | `this._listen(window, 'keydown', handler)` |
+
+Listeners em elementos dentro do `container` não precisam disso: somem junto com o DOM do jogo.
+
+Quem monta o jogo por fora do gamekit precisa escrever o seu `destroy()`, nem que seja só para desligar a flag que o laço consulta.
 
 ## Padrão visual
 
@@ -60,8 +76,8 @@ Pra que os 8 minigames tenham coerência entre si:
 
 ## Boas práticas
 
-- CSS em arquivo próprio: `src/css/components/minigame-<pasta>-<n>.css`. Importe em `src/css/main.css`.
-- Classes com prefixo da pasta: `.andre-1-canvas`, `.felipe-3-bin`: evita colisão entre módulos.
+- CSS em arquivo próprio: `src/css/components/minigame-<pasta>-<n>.css`, importado em `src/css/main.css`. Nada de `<style>` dentro do `innerHTML`: ele é reinserido e reprocessado a cada partida.
+- Classes e ids com um prefixo único do módulo, para não colidir entre jogos. Os módulos atuais usam `.m1-` a `.m6-`, `.thiago-7-`/`.thiago-8-` e `.demo-tri__`.
 - Sem `window.<algo>` global. Use propriedades da classe ou `let`/`const` locais.
 - Pointer events (`pointerdown`/`move`/`up`) cobrem mouse e touch, então não use `mouse*`/`touch*` separados.
 - Touch targets ≥ 44×44 px.
