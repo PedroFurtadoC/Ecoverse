@@ -1,4 +1,4 @@
-/* Minigame 7 — Grande Barreira de Coral | Visual Overhaul v2 */
+/* Missão 7: Grande Barreira de Coral (thiago/modulo7.js). Classes com prefixo .thiago-7- */
 
 /* Isolamento do layout e Área Jogável Ampliada (Ainda maior) */
 .minigame-container.active:has(.thiago-7-container) .mg-grid {

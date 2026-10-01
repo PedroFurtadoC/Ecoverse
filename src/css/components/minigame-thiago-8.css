@@ -1,4 +1,4 @@
-/* Minigame 8 — Cordilheira dos Andes | Endurance & Precision Update */
+/* Missão 8: Cordilheira dos Andes (thiago/modulo8.js). Classes com prefixo .t8- */
 .minigame-container.active:has(.thiago-8-wrapper) .mg-grid,
 .minigame-container.active:has(.thiago-8-container) .mg-grid {
   display: block !important;
