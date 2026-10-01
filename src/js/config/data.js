@@ -427,7 +427,7 @@ const TEAM = [
   {
     name: 'Igor Polegato',
     role: 'Otimização e padronização do código',
-    photo: 'assets/team/igor.png',
+    photo: 'assets/team/igor.jpg',
     github: 'https://github.com/igorpolegato',
     linkedin: null,
     portfolio: null
