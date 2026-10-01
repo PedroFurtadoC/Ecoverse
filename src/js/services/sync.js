@@ -26,10 +26,6 @@ function setStatus(next) {
   }
 }
 
-export function getStatus() {
-  return { status: currentStatus, syncedAt: lastSyncedAt };
-}
-
 export function onStatusChange(fn) {
   statusListeners.add(fn);
   try { fn(currentStatus, lastSyncedAt); } catch (e) { /* ignore */ }

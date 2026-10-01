@@ -160,10 +160,6 @@ function bindAuthForm() {
   });
 }
 
-export function openAuth() {
-  deps.openModal('modal-auth');
-}
-
 export async function signOut() {
   await Auth.signOut();
   deps.showToast('Você saiu. Seu progresso continua salvo neste dispositivo.', 'info');

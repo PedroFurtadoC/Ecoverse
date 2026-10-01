@@ -52,10 +52,6 @@ export function getProfile() {
   return currentProfile;
 }
 
-export function isSignedIn() {
-  return !!currentUser;
-}
-
 export function onAuthChange(handler) {
   listeners.add(handler);
   return () => listeners.delete(handler);
@@ -75,16 +71,6 @@ export async function signInWithMagicLink(email, displayName) {
       emailRedirectTo: window.location.origin,
       data: cleaned ? { display_name: cleaned } : undefined
     }
-  });
-  if (error) throw error;
-}
-
-export async function signInWithGoogle() {
-  const supa = await getSupabase();
-  if (!supa) throw new Error('Supabase não configurado');
-  const { error } = await supa.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.origin }
   });
   if (error) throw error;
 }
