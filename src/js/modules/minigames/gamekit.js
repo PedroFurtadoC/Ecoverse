@@ -1,5 +1,5 @@
 /**
- * gamekit.js — Infraestrutura compartilhada pelos minigames do Ecoverse.
+ * gamekit.js: Infraestrutura compartilhada pelos minigames do Ecoverse.
  *
  * Hierarquia de classes:
  *   EventEmitter
@@ -24,7 +24,7 @@
  */
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   emojiSprite — cache de OffscreenCanvas para renderização rápida de emoji.
+   emojiSprite: cache de OffscreenCanvas para renderização rápida de emoji.
    Usar ctx.drawImage(emojiSprite(glyph, size), x - size, y - size) em vez de
    ctx.fillText() poupa o parse do glyph Unicode a cada frame.
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -33,7 +33,7 @@ const _emojiSpriteCache = new Map();
 /**
  * Retorna um OffscreenCanvas (2× o tamanho do emoji) com o glyph pré-renderizado.
  * O canvas resultante tem dimensões (size*2) × (size*2); o emoji fica centralizado.
- * Cache por (glyph, size arredondado) — cada combinação é criada uma única vez.
+ * Cache por (glyph, size arredondado), cada combinação é criada uma única vez.
  *
  * @param {string} glyph  Emoji ou caractere Unicode
  * @param {number} size   Tamanho da fonte em px (será arredondado)
@@ -56,7 +56,7 @@ export function emojiSprite(glyph, size) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   EventEmitter — base de eventos para classes que emitem notificações
+   EventEmitter: base de eventos para classes que emitem notificações
    ═══════════════════════════════════════════════════════════════════════════ */
 export class EventEmitter {
   constructor() {
@@ -106,7 +106,7 @@ export class EventEmitter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   PersistenceStore — wrapper tipado para localStorage com namespace
+   PersistenceStore: wrapper tipado para localStorage com namespace
    ═══════════════════════════════════════════════════════════════════════════ */
 export class PersistenceStore {
   /**
@@ -166,7 +166,7 @@ export class PersistenceStore {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   HUDController — gerencia referências a elementos do DOM do HUD
+   HUDController: gerencia referências a elementos do DOM do HUD
    e expõe métodos de atualização com cache para evitar query repetida.
    ═══════════════════════════════════════════════════════════════════════════ */
 export class HUDController {
@@ -283,7 +283,7 @@ export class HUDController {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   LivesSystem — gerencia vidas/corações com eventos e sincronização com HUD
+   LivesSystem: gerencia vidas/corações com eventos e sincronização com HUD
    Eventos: 'changed'(lives, prev) | 'depleted'()
    ═══════════════════════════════════════════════════════════════════════════ */
 export class LivesSystem extends EventEmitter {
@@ -349,14 +349,14 @@ export class LivesSystem extends EventEmitter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ComboSystem — rastreia acertos consecutivos com multiplicador configurável
+   ComboSystem: rastreia acertos consecutivos com multiplicador configurável
    por limiares, decaimento por frames e eventos de mudança de tier.
    Eventos: 'increment'(combo, multiplier) | 'broken'(prevCombo) | 'tierChange'(newMult, prevMult)
    ═══════════════════════════════════════════════════════════════════════════ */
 export class ComboSystem extends EventEmitter {
   /**
    * @param {Array<{min: number, multiplier: number}>} tiers
-   *   Limiares para multiplicador — ordenados do maior para o menor.
+   *   Limiares para multiplicador, ordenados do maior para o menor.
    *   Padrão compatível com Modulo3: x1 base, x2 a partir de 3, x3 a partir de 6.
    * @param {number} [decayFrames=180]
    *   Frames até o combo ser zerado por inatividade (0 = sem decaimento).
@@ -378,7 +378,7 @@ export class ComboSystem extends EventEmitter {
   }
 
   /**
-   * Registra um acerto — incrementa o combo e reseta o timer de decaimento.
+   * Registra um acerto, incrementa o combo e reseta o timer de decaimento.
    * Emite 'increment' e, quando o multiplicador muda, 'tierChange'.
    */
   increment() {
@@ -434,7 +434,7 @@ export class ComboSystem extends EventEmitter {
     return this.comboTimer / this.decayFrames;
   }
 
-  /** Reset completo — usado no reinício do jogo. */
+  /** Reset completo, usado no reinício do jogo. */
   reset() {
     this.combo = 0;
     this.maxCombo = 0;
@@ -444,7 +444,7 @@ export class ComboSystem extends EventEmitter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ScoreSystem — pontuação com suporte a multiplicador de combo,
+   ScoreSystem: pontuação com suporte a multiplicador de combo,
    subtração com piso em 0 e persistência automática do recorde.
    Eventos: 'changed'(score, delta) | 'record'(score)
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -505,7 +505,7 @@ export class ScoreSystem extends EventEmitter {
     return true;
   }
 
-  /** Reset do score para reinício — não altera o recorde. */
+  /** Reset do score para reinício, não altera o recorde. */
   reset() {
     this.score = 0;
   }
@@ -513,7 +513,7 @@ export class ScoreSystem extends EventEmitter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ParticleSystem — gerencia partículas de efeito e textos flutuantes.
+   ParticleSystem: gerencia partículas de efeito e textos flutuantes.
    Suporta bursts radiais, bursts com gravidade e mensagens de pontuação.
    ═══════════════════════════════════════════════════════════════════════════ */
 export class ParticleSystem {
@@ -541,7 +541,7 @@ export class ParticleSystem {
   /* ── Alocação de slot no pool ────────────── */
 
   _alloc(x, y, vx, vy, color, r, gravity) {
-    if (this._freeList.length === 0) return; // pool cheio — descarta
+    if (this._freeList.length === 0) return; // pool cheio, descarta
     const i    = this._freeList.pop();
     const base = i * 7;
     this._pool[base]     = x;
@@ -715,7 +715,7 @@ export class ParticleSystem {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   GameTimer — contador regressivo com rampa de dificuldade e sync com HUD.
+   GameTimer: contador regressivo com rampa de dificuldade e sync com HUD.
    Eventos: 'tick'(timeLeft, difficulty) | 'expired'()
    ═══════════════════════════════════════════════════════════════════════════ */
 export class GameTimer extends EventEmitter {
@@ -803,7 +803,7 @@ export class GameTimer extends EventEmitter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   GameOverlay — construtor estático de overlays de fim de jogo.
+   GameOverlay: construtor estático de overlays de fim de jogo.
    Recebe configuração declarativa e gera o HTML/botões automaticamente.
    ═══════════════════════════════════════════════════════════════════════════ */
 export class GameOverlay {
@@ -931,7 +931,7 @@ export class GameOverlay {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   MinigameBase — classe BASE ABSTRATA para todos os minigames Ecoverse.
+   MinigameBase: classe BASE ABSTRATA para todos os minigames Ecoverse.
    Gerencia o ciclo de vida, timers controlados e o callback de resultado.
    ═══════════════════════════════════════════════════════════════════════════ */
 export class MinigameBase {
@@ -982,7 +982,7 @@ export class MinigameBase {
   /* ── Gerenciamento de timers ──────────────── */
 
   /**
-   * Cria um setInterval rastreado — limpo automaticamente por _clearAllTimers().
+   * Cria um setInterval rastreado, limpo automaticamente por _clearAllTimers().
    * @param {Function} fn
    * @param {number} delay
    * @returns {number}  ID do interval
@@ -1003,7 +1003,7 @@ export class MinigameBase {
   }
 
   /**
-   * Cria um setTimeout rastreado — limpo automaticamente por _clearAllTimers().
+   * Cria um setTimeout rastreado, limpo automaticamente por _clearAllTimers().
    * @param {Function} fn
    * @param {number} delay
    * @returns {number}  ID do timeout
@@ -1115,7 +1115,7 @@ export class MinigameBase {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   CanvasMinigame — ABSTRATA — estende MinigameBase com loop rAF, setup de
+   CanvasMinigame (ABSTRATA): estende MinigameBase com loop rAF, setup de
    canvas, utilitários de input/coordenadas e escurecimento de tela.
    ═══════════════════════════════════════════════════════════════════════════ */
 export class CanvasMinigame extends MinigameBase {
@@ -1135,14 +1135,14 @@ export class CanvasMinigame extends MinigameBase {
     this.ctx      = null;
     /** @type {number|null} */
     this.animFrame = null;
-    /** @private — timestamp do último frame processado (cap de 60 fps) */
+    /** @private timestamp do último frame processado (cap de 60 fps) */
     this._lastFrameTime = 0;
   }
 
   /* ── Interface abstrata ───────────────────── */
 
   /**
-   * Atualiza o estado do jogo (lógica, física, etc.) — chamado por frame.
+   * Atualiza o estado do jogo (lógica, física, etc.), chamado por frame.
    * @abstract
    */
   update() {
@@ -1150,7 +1150,7 @@ export class CanvasMinigame extends MinigameBase {
   }
 
   /**
-   * Renderiza o frame no canvas — chamado por frame.
+   * Renderiza o frame no canvas, chamado por frame.
    * @abstract
    */
   draw() {
@@ -1254,7 +1254,7 @@ export class CanvasMinigame extends MinigameBase {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   GridCanvasGame — ABSTRATA — estende CanvasMinigame para jogos baseados em
+   GridCanvasGame (ABSTRATA): estende CanvasMinigame para jogos baseados em
    grade 2D. Fornece inicialização de grid, iteração, contagem por estado,
    conversão de coordenadas e consulta de vizinhos.
    Usada como base para Modulo4 (floresta de células).
@@ -1417,7 +1417,7 @@ export class GridCanvasGame extends CanvasMinigame {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   MissionSystem — rastreia objetivos rotativos com recompensas.
+   MissionSystem: rastreia objetivos rotativos com recompensas.
    Suporta: captura consecutiva, sobrevivência por frames, combo, total coletado
    e ações genéricas (extinção, resgate, etc).
    Eventos: 'progress'(mission, current, target) | 'completed'(mission) | 'new'(mission)
@@ -1501,7 +1501,7 @@ export class MissionSystem extends EventEmitter {
   }
 
   /**
-   * Notifica perda de vida — reinicia missões de sobrevivência.
+   * Notifica perda de vida, reinicia missões de sobrevivência.
    */
   notifyLifeLost() {
     if (!this._current) return;
@@ -1554,7 +1554,7 @@ export class MissionSystem extends EventEmitter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   PowerUpSystem — gerencia buffs ativos com duração em frames.
+   PowerUpSystem: gerencia buffs ativos com duração em frames.
    Ativações empilham (estendem a duração). Chama tick() uma vez por frame.
    Eventos: 'activated'(id, frames) | 'expired'(id)
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -1604,7 +1604,7 @@ export class PowerUpSystem extends EventEmitter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   EcosystemMeter — medidor de saúde do ecossistema com renderização embutida.
+   EcosystemMeter: medidor de saúde do ecossistema com renderização embutida.
    Cor muda de verde → amarelo → vermelho conforme a saúde cai.
    ═══════════════════════════════════════════════════════════════════════════ */
 export class EcosystemMeter {
@@ -1677,7 +1677,7 @@ export class EcosystemMeter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   EventScheduler — agenda eventos aleatórios recorrentes (chuva, tempestade…).
+   EventScheduler: agenda eventos aleatórios recorrentes (chuva, tempestade…).
    Cada evento tem um delay aleatório, duração opcional e se reagenda sozinho.
    Eventos: 'start'(id) | 'end'(id)
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -1736,7 +1736,7 @@ export class EventScheduler extends EventEmitter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   WaveSystem — progressão por ondas com pausa entre elas.
+   WaveSystem: progressão por ondas com pausa entre elas.
    Cada onda tem duração fixa; ao fim, dispara uma pausa antes da próxima.
    Eventos: 'waveStart'(waveNumber, def) | 'breakStart'(waveNumber, nextDef)
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -1824,7 +1824,7 @@ export class WaveSystem extends EventEmitter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ToolSystem — gerencia múltiplas ferramentas com quantidade e teclas de atalho.
+   ToolSystem: gerencia múltiplas ferramentas com quantidade e teclas de atalho.
    Quantidade -1 = ilimitada. Reagenda cooldowns por frame se necessário.
    Eventos: 'changed'(tool) | 'used'(tool) | 'depleted'(id) | 'refilled'(tool)
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -1914,7 +1914,7 @@ export class ToolSystem extends EventEmitter {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   PhysicsBody — corpo 2D com AABB, velocidade e gravidade.
+   PhysicsBody: corpo 2D com AABB, velocidade e gravidade.
    Estrutura de dados pura (sem EventEmitter). Usado por PlatformMinigame.
    ═══════════════════════════════════════════════════════════════════════════ */
 export class PhysicsBody {
@@ -1948,7 +1948,7 @@ export class PhysicsBody {
     this.maxVY   = maxVY;
     this.maxVX   = maxVX;
     this.onGround = false;
-    /** @private — posição y antes do último applyVelocity, usada anti-tunneling */
+    /** @private posição y antes do último applyVelocity, usada anti-tunneling */
     this._prevY  = y;
   }
 
@@ -2005,7 +2005,7 @@ export class PhysicsBody {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   PlatformWorld — gerencia plataformas, resolve colisões AABB e controla câmera.
+   PlatformWorld: gerencia plataformas, resolve colisões AABB e controla câmera.
    Plataformas: type 'solid' | 'passthrough' | 'hazard'
    ═══════════════════════════════════════════════════════════════════════════ */
 export class PlatformWorld {
@@ -2081,7 +2081,7 @@ export class PlatformWorld {
         continue;
       }
 
-      // 'solid' — resolução por menor penetração
+      // 'solid', resolução por menor penetração
       const overlapLeft   = (body.x + body.w) - p.x;
       const overlapRight  = (p.x + p.w) - body.x;
       const overlapTop    = (body.y + body.h) - p.y;
@@ -2163,7 +2163,7 @@ export class PlatformWorld {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   InputController — captura teclado e touch e expõe estado por ação.
+   InputController: captura teclado e touch e expõe estado por ação.
    Pulo é oneshot: consumeJump() retorna true apenas uma vez por impulso.
    Chame dispose() ao destruir o jogo para remover os listeners.
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -2313,7 +2313,7 @@ export class InputController {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   PlatformMinigame — ABSTRATA — estende CanvasMinigame com loop completo de
+   PlatformMinigame (ABSTRATA): estende CanvasMinigame com loop completo de
    plataforma: física, input, câmera, snap de colisão e detecção de queda.
    A subclasse implementa: spawnPlatforms(), onPlayerLand(), onPlayerFall(),
    drawBackground(), drawForeground().
@@ -2358,7 +2358,7 @@ export class PlatformMinigame extends CanvasMinigame {
     /** @type {InputController|null} */
     this.input  = null;
 
-    /** @private — estado de chão no frame anterior para detectar aterrissagem */
+    /** @private estado de chão no frame anterior para detectar aterrissagem */
     this._wasOnGround = false;
   }
 
@@ -2391,7 +2391,7 @@ export class PlatformMinigame extends CanvasMinigame {
   }
 
   /**
-   * Renderiza o fundo (céu, parallax, etc.) — antes da translação de câmera.
+   * Renderiza o fundo (céu, parallax, etc.), antes da translação de câmera.
    * @abstract
    * @param {CanvasRenderingContext2D} ctx
    */
@@ -2400,7 +2400,7 @@ export class PlatformMinigame extends CanvasMinigame {
   }
 
   /**
-   * Renderiza o HUD e elementos de tela — depois da restauração de câmera.
+   * Renderiza o HUD e elementos de tela, depois da restauração de câmera.
    * @abstract
    * @param {CanvasRenderingContext2D} ctx
    */
@@ -2412,7 +2412,7 @@ export class PlatformMinigame extends CanvasMinigame {
 
   /**
    * Lógica extra por frame (spawnar tiles, verificar coletáveis, etc.).
-   * A subclasse pode sobrescrever — default vazio.
+   * A subclasse pode sobrescrever, default vazio.
    */
   _updatePlatform() {}
 

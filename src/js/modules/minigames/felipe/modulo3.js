@@ -1,4 +1,4 @@
-// Missão 3 — Encostas e nascentes da Mata Atlântica.
+// Missão 3: Encostas e nascentes da Mata Atlântica.
 import {
   CanvasMinigame,
   PersistenceStore,
@@ -543,7 +543,7 @@ export class Modulo3 extends CanvasMinigame {
       ctx.restore();
     }
 
-    // Hard-mode label — desenhado abaixo da barra do ecossistema (bankH + 4 + 14 + 6)
+    // Hard-mode label, desenhado abaixo da barra do ecossistema (bankH + 4 + 14 + 6)
     if (this.combo.combo >= 3) {
       const mult  = this.combo.getMultiplier();
       const label = mult >= 3 ? '🔥 MODO DIFÍCIL' : '⚡ MODO DIFÍCIL';
@@ -567,7 +567,7 @@ export class Modulo3 extends CanvasMinigame {
         : hardMode ? 0.35 : 1;
       const drawAlpha = item.fadeOut ? item.alpha : baseAlpha;
 
-      // Brilho sem shadowBlur — anel de alpha simples (GPU-friendly)
+      // Brilho sem shadowBlur, anel de alpha simples (GPU-friendly)
       if ((item.type === 'special' || item.type === 'powerup') && drawAlpha > 0) {
         const glowColor  = item.type === 'special' ? '#ff9800' : '#a78bfa';
         const glowAlpha  = (0.22 + Math.sin(t * (item.type === 'special' ? 4 : 5)) * 0.08) * drawAlpha;

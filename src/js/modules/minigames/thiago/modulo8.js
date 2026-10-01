@@ -1,4 +1,4 @@
-// Missão 8 — Trilhas e mineração na Cordilheira dos Andes.
+// Missão 8: Trilhas e mineração na Cordilheira dos Andes.
 // Mecânica: sobrevivência (endurance) com triagem de lixo por arrastar.
 
 export class Modulo8 {

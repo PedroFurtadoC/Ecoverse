@@ -1,4 +1,4 @@
-// Missão 2 — Lixo eletrônico na Bacia do Congo.
+// Missão 2: Lixo eletrônico na Bacia do Congo.
 // Contrato e exemplos: src/js/modules/minigames/README.md
 
 
@@ -27,9 +27,9 @@ const WIN_SCORE     = 60;
 const FLY_FRAMES    = 50;   // frames da animação Bézier até a lixeira
 const RESULT_FRAMES = 55;   // pausa pós-avaliação
 
-/* ── Ondas — velocidade reduzida para dar mais tempo ao jogador ─────────
+/* ── Ondas, velocidade reduzida para dar mais tempo ao jogador ─────────
    Onda 1 começa MUITO devagar (0.22 px/frame ≈ cai ~8% do canvas por segundo).
-   Onda 5 chega a 1.05 — mais fácil que a versão anterior (era 1.70).
+   Onda 5 chega a 1.05, mais fácil que a versão anterior (era 1.70).
    ─────────────────────────────────────────────────────────────────────── */
 const WAVE_DEFS = [
   { fallSpeed: 0.20, pickFrames: 400, label: 'Devagar'   },
@@ -257,7 +257,7 @@ export class Modulo2 extends CanvasMinigame {
   /** Y inicial dos itens (topo). */
   _getItemSpawnY() { return Math.round(this.canvas.height * 0.10); }
 
-  /** Y do "solo" — se o item passar daqui sem triagem, perde vida. */
+  /** Y do "solo", se o item passar daqui sem triagem, perde vida. */
   _getMissThreshold() {
     const bins = this._getBinPositions();
     return bins[0].y - 20;

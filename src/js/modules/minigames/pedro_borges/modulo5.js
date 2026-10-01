@@ -1,4 +1,4 @@
-// Missão 5 — Madagascar · Pesca-fantasma no Canal de Moçambique
+// Missão 5: Madagascar · Pesca-fantasma no Canal de Moçambique
 import {
   PlatformMinigame,
   PersistenceStore,
@@ -38,7 +38,7 @@ const JELLY_SPEED       = 0.85;
 const TRASH_EMOJIS      = ['🧴', '🥤', '🛍️', '🍶', '🥫', '🧃', '🪣'];
 
 /* ═══════════════════════════════════════════════════════════
-   Modulo5 — "Mergulho nas Redes"
+   Modulo5: "Mergulho nas Redes"
    ═══════════════════════════════════════════════════════════ */
 export class Modulo5 extends PlatformMinigame {
   constructor(containerElement, onGameEnd, options = {}) {
@@ -204,7 +204,7 @@ export class Modulo5 extends PlatformMinigame {
     for (const d of solidDefs)
       this.world.spawnPlatform({ ...d, type: 'solid' });
 
-    // Plataformas quebráveis (sem animais — degraus intermediários)
+    // Plataformas quebráveis (sem animais, degraus intermediários)
     const breakDefs = [
       { x: 198,  y: H * 0.58, w: 115, h: 12, data: { kind: 'hull', breakable: true, hits: 2 } },
       { x: 672,  y: H * 0.47, w: 110, h: 12, data: { kind: 'hull', breakable: true, hits: 2 } },
@@ -213,7 +213,7 @@ export class Modulo5 extends PlatformMinigame {
     for (const d of breakDefs)
       this.world.spawnPlatform({ ...d, type: 'solid' });
 
-    // Redes-fantasma — 3 estáticas, 3 em movimento
+    // Redes-fantasma, 3 estáticas, 3 em movimento
     const netDefs = [
       { x: 256,  y: H * 0.35, w: 68, h: 70,  moving: false },
       { x: 706,  y: H * 0.54, w: 82, h: 48,  moving: false },
@@ -387,7 +387,7 @@ export class Modulo5 extends PlatformMinigame {
 
     if (p.y < 0) { p.y = 0; p.vy = Math.max(0, p.vy); }
 
-    // Colisão — descobre qual plataforma foi aterrizda para breakable
+    // Colisão, descobre qual plataforma foi aterrizda para breakable
     const landed = this.world.resolveCollision(p);
     if (landed && !wasOnGround) {
       const plat = this.world.platforms.find(pl =>
@@ -420,7 +420,7 @@ export class Modulo5 extends PlatformMinigame {
     // ─ Cooldown de dano ─
     if (this._hitCooldown > 0) this._hitCooldown--;
 
-    // ─ Redes estáticas/móveis — colisão ─
+    // ─ Redes estáticas/móveis, colisão ─
     if (this._hitCooldown === 0) {
       for (const pl of this.world.platforms) {
         if (pl.type === 'hazard' && p.intersects(pl)) {
@@ -644,7 +644,7 @@ export class Modulo5 extends PlatformMinigame {
     const W = this.canvas.width, H = this.canvas.height;
     const t = this._frame * 0.009;
 
-    // Gradiente cacheado — recriado apenas se o canvas mudar de tamanho
+    // Gradiente cacheado, recriado apenas se o canvas mudar de tamanho
     if (this._bgGradH !== H) {
       this._bgGrad  = ctx.createLinearGradient(0, 0, 0, H);
       this._bgGrad.addColorStop(0,   '#0a3d5c');
@@ -776,7 +776,7 @@ export class Modulo5 extends PlatformMinigame {
     const { x, y, w, h, type, data } = def;
 
     if (type === 'hazard') {
-      // Textura da rede cacheada por (w×h) — evita N² lineTo por frame
+      // Textura da rede cacheada por (w×h), evita N² lineTo por frame
       const netKey = `${w}x${h}`;
       if (!this._netCache) this._netCache = new Map();
       if (!this._netCache.has(netKey)) {
@@ -786,7 +786,7 @@ export class Modulo5 extends PlatformMinigame {
         oc2.fillRect(0, 0, w, h);
         oc2.strokeStyle = '#b5651d'; oc2.lineWidth = 1.2; oc2.globalAlpha = 0.68;
         const step = 18;
-        // Grade diagonal simples (sem sin — estática, pré-renderizada)
+        // Grade diagonal simples (sem sin, estática, pré-renderizada)
         for (let lx = 0; lx <= w; lx += step) {
           oc2.beginPath(); oc2.moveTo(lx, 0); oc2.lineTo(lx, h); oc2.stroke();
         }

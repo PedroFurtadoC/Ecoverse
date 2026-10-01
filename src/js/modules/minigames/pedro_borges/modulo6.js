@@ -1,4 +1,4 @@
-// Módulo 6 — Limpeza do Pantanal
+// Módulo 6: Limpeza do Pantanal
 import {
   CanvasMinigame,
   PhysicsBody,
@@ -159,7 +159,7 @@ const LEVELS = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   Modulo6 — Limpeza do Pantanal (plataformer simples)
+   Modulo6: Limpeza do Pantanal (plataformer simples)
    ═══════════════════════════════════════════════════════════════════════════ */
 export class Modulo6 extends CanvasMinigame {
   constructor(containerElement, onGameEnd, options = {}) {

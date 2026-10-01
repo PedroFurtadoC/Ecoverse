@@ -1,4 +1,4 @@
-// Missão 4 — Manguezais de Bornéu sufocados.
+// Missão 4: Manguezais de Bornéu sufocados.
 import {
   GridCanvasGame,
   PersistenceStore,
@@ -781,7 +781,7 @@ export class Modulo4 extends GridCanvasGame {
         else if (cell.state === 'trash')     { di(cell.trashEmoji, fs, cx, cy); }
         else if (cell.state === 'burning')   {
           di('🔥', fs, cx, cy);
-          // Flicker determinístico — sem Math.random() no draw path
+          // Flicker determinístico, sem Math.random() no draw path
           ctx.globalAlpha = 0.12 + (Math.sin(t * 23.7 + cell.fireAnim * 7.3) * 0.5 + 0.5) * 0.08;
           ctx.fillStyle='#ff6b00';
           ctx.fillRect(x, y, this.cellW, this.cellH);

@@ -37,7 +37,7 @@
   height: 100%; background: #ffd600;
   border-radius: 3px; transition: width 0.3s;
 }
-/* Barra de tempo do item — fica entre HUD e canvas */
+/* Barra de tempo do item, fica entre HUD e canvas */
 .m2-pick-bar-wrap { width: 100%; height: 6px; background: rgba(255,255,255,0.06); }
 #m2-pick-bar      { height: 100%; width: 100%; background: #7df0c8; transition: background 0.3s; }
 #m2-canvas        { cursor: crosshair; display: block; max-width: 100%; }

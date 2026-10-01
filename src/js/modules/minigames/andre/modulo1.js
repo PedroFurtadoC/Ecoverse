@@ -135,7 +135,7 @@ const TRASH_DEFS = [
 ];
 
 /* ── 4 Lixeiras ─────────────────────────────────────────────────────────
-   bin-metal.png é compartilhado com modulo2 — já existe nos assets.
+   bin-metal.png é compartilhado com modulo2, já existe nos assets.
    ─────────────────────────────────────────────────────────────────────── */
 /** @type {Array<{id:string, src:string, label:string, emoji:string, color:string, hoverColor:string}>} */
 const BIN_DEFS = [
@@ -186,7 +186,7 @@ export class Modulo1 extends CanvasMinigame {
     this.resultFrames     = 0;
     this.lastCorrect      = false;
     this.throwTarget      = null;
-    /** ID da lixeira correta do último arremesso — usado na dica de erro */
+    /** ID da lixeira correta do último arremesso, usado na dica de erro */
     this.lastCorrectBinId = null;
 
     this.hoveredBin  = -1;
@@ -216,7 +216,7 @@ export class Modulo1 extends CanvasMinigame {
   }
 
   _preloadAssets() {
-    // Deduplica srcs — vários itens podem reutilizar o mesmo arquivo
+    // Deduplica srcs, vários itens podem reutilizar o mesmo arquivo
     const srcs = new Set([...TRASH_DEFS.map(t => t.src), ...BIN_DEFS.map(b => b.src)]);
     for (const s of srcs) this._loadImage(s);
   }
