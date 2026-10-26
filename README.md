@@ -8,7 +8,7 @@ Trabalho final da disciplina de Sustentabilidade Ambiental da **UNAERP, Universi
 
 ## Como rodar localmente
 
-Pré-requisitos: Node.js 20 ou superior.
+Pré-requisitos: Node.js 22, a mesma versão do CI e da Vercel (campo `engines` do `package.json`).
 
 ```bash
 git clone https://github.com/PedroFurtadoC/Ecoverse.git
@@ -17,7 +17,7 @@ npm install
 npm run dev
 ```
 
-A aplicação abre em `http://localhost:3000`. Para testar missões sem fazer Pomodoro, use `http://localhost:3000/?dev=free` (energia liberada).
+A aplicação abre em `http://localhost:3000`. Para testar missões sem fazer Pomodoro, use `http://localhost:3000/?dev=free`: todas as missões ficam liberadas e não gastam energia, e nada jogado nesse modo fica salvo.
 
 Para gerar o build de produção:
 
@@ -36,7 +36,9 @@ npm run preview     # serve dist/ localmente
 - **Quizzes ODS**: 17 quizzes baseados nos Objetivos de Desenvolvimento Sustentável da ONU, desbloqueados em três fases conforme você completa missões.
 - **16 conquistas** que ensinam conceitos de resíduos enquanto recompensam (15 visíveis e 1 secreta).
 - **Conta opcional com magic link** (sem senha). Quem cadastra sincroniza o progresso na nuvem e aparece no **ranking de turma** (filtros Mensal/Geral).
-- **Conformidade com a LGPD**: políticas claras, botão de exclusão de conta e exportação de dados em JSON direto no menu.
+- **Direitos da LGPD no menu**: consentimento no cadastro, exportação dos dados em JSON e exclusão da conta, que apaga tudo na hora.
+- **Contas separadas no mesmo aparelho**: ao sair, o navegador volta ao começo para a próxima pessoa, e o progresso de uma conta não passa para outra.
+- **Teclado**: missões, quizzes e janelas funcionam com Tab, Enter e Esc. Entre os minigames, o 5 e o 6 também; os outros ainda dependem de mouse ou toque.
 
 ---
 
@@ -46,7 +48,7 @@ npm run preview     # serve dist/ localmente
 - **Globe.GL** (Three.js por baixo) para a visualização 3D.
 - **Supabase** para Auth e leaderboard (opcional, o jogo roda sem isso usando localStorage).
 - **CSS puro** com design system em variáveis (`src/css/variables.css`), mobile-first, modo escuro.
-- **PWA** instalável com manifest e service worker para funcionamento offline básico.
+- **PWA** instalável com manifest e service worker: depois da primeira visita o site abre sem internet (login, ranking e sincronização continuam dependendo de conexão).
 - **Hospedagem na Vercel** com headers de segurança (CSP, etc.) configurados em `vercel.json`.
 
 ---
@@ -68,11 +70,18 @@ Setup, branches, commits, code review: [`docs/contribuindo.md`](./docs/contribui
 
 ## Deploy
 
-Hospedagem na **Vercel**, com deploy automático a partir da branch `main`:
+Hospedagem na **Vercel**. Cada push na `main` publica a produção em cerca de um minuto, e cada Pull Request ganha uma prévia. O CI roda `npm run build` nos dois casos e o CodeQL analisa o código, mas nenhum dos dois bloqueia o merge.
 
-1. Pull Request aberto para `main`.
-2. CI no GitHub Actions roda `npm run build`.
-3. Após merge, a Vercel publica em ~1 minuto.
+A `main` aceita push direto, mas recusa force push e exclusão (ruleset "main protegida"). Para fechar uma versão:
+
+```bash
+npm version 1.0.2 --no-git-tag-version
+git commit -am "chore(release): 1.0.2"
+git tag -a v1.0.2 -m "Ecoverse 1.0.2"
+git push origin main --follow-tags
+```
+
+Depois, crie a Release no GitHub a partir da tag e marque como Latest. Tags `v*` e `inpi-*` não podem ser movidas nem apagadas (ruleset "versões imutáveis"): se uma versão sair errada, publique a seguinte.
 
 ---
 
@@ -93,10 +102,11 @@ Tudo em [`docs/`](./docs/), com um índice explicando para quem serve cada peça
 - [`docs/arquitetura.md`](./docs/arquitetura.md): fluxo de dados e decisões de design.
 - [`docs/contribuindo.md`](./docs/contribuindo.md): setup, branches, commits.
 - **Transferência do projeto** e **Bateria de testes**, em `.docx`, para a entrega institucional.
+- [`SECURITY.md`](./SECURITY.md): como relatar uma falha de segurança.
 
 A marca fica em [`design/marca/`](./design/marca/): arquivos em SVG, exportações e regras de uso. O nome e o logotipo não entram na licença MIT, conforme a seção de marcas do [`LICENSE`](./LICENSE).
 
-O material do registro no INPI é processo interno e não fica versionado aqui.
+O material do registro no INPI é processo interno e fica fora do repositório. A exceção é `registro-inpi/certificados/`, onde entram os certificados emitidos. O código registrado é o da tag `inpi-2026-09-22`.
 
 ---
 

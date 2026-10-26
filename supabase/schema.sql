@@ -1,5 +1,6 @@
 -- Schema do Ecoverse: Supabase (Postgres)
--- Tabelas, view de leaderboard e triggers de updated_at.
+-- Tabelas, triggers de updated_at, ranking (get_leaderboard) e exclusão
+-- de conta (delete_own_account).
 -- Idempotente: pode rodar várias vezes sem quebrar nada.
 
 -- =============================================================

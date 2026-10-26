@@ -5,7 +5,7 @@ Setup do banco e da autenticação. Rode uma vez por ambiente (dev e prod podem 
 ## 1. Criar projeto
 
 1. Acesse https://supabase.com → **New project**.
-2. Nome: `ecoverse`. Region: `South America (São Paulo)` ou a mais próxima dos usuários. Plano: Free.
+2. Nome: `ecoverse`. Region: `East US (North Virginia)`, `us-east-1`, que é onde está a produção e o que a política de privacidade informa. Se escolher outra região, atualize a política. Plano: Free.
 3. Salve a senha do banco assim que aparecer: ela só aparece uma vez.
 
 ## 2. Pegar URL e API key
@@ -21,10 +21,11 @@ A publishable key é pública por design. A RLS (Row Level Security) garante a s
 
 **SQL Editor → New query**, cole e rode em ordem:
 
-1. `schema.sql`: cria tabelas, view (com `security_invoker`) e triggers.
+1. `schema.sql`: cria as tabelas, os triggers de `updated_at`, a função do ranking (`get_leaderboard`) e a função do botão "Excluir minha conta" (`delete_own_account`).
 2. `policies.sql`: habilita RLS e define as políticas otimizadas com `(select auth.uid())`.
+3. O bloco do trigger de novo usuário da seção 5, que não está em arquivo `.sql`.
 
-Os dois são idempotentes: rodar de novo não quebra nada.
+Os três são idempotentes: rodar de novo não quebra nada. O banco não lê o repositório: qualquer mudança futura nesses arquivos só vale depois de colada no SQL Editor.
 
 ## 4. Configurar Auth
 
@@ -33,11 +34,14 @@ Os dois são idempotentes: rodar de novo não quebra nada.
 **Authentication → URL Configuration**:
 
 - **Site URL**: `https://ecoverse.dev`
-- **Redirect URLs** (adicione todos):
-  - `https://ecoverse.dev/**`
-  - `https://www.ecoverse.dev/**`
-  - `https://ecoverse-bice.vercel.app/**` (fallback do deploy Vercel)
-  - `http://localhost:3000/**` (dev local)
+- **Redirect URLs**, exatamente estes três, sem `/**` no final:
+  - `https://ecoverse.dev`
+  - `https://ecoverse-bice.vercel.app` (endereço da Vercel; muda se o projeto for recriado)
+  - `http://localhost:3000` (dev local)
+
+O código pede o retorno para `window.location.origin`, que é o endereço puro, sem barra. Um padrão com `/**` exige a barra e não reconhece esse endereço: o login até funciona, mas volta sempre para a Site URL. O `www` fica de fora porque redireciona para `ecoverse.dev` antes de qualquer login.
+
+**Authentication → Rate Limits**: o envio de emails está em 100 por hora. Com SMTP próprio o padrão é 30, pouco para uma turma entrando junta.
 
 ## 5. Trigger de novo usuário + hardening
 
@@ -86,7 +90,7 @@ VITE_SUPABASE_ANON_KEY=sb_publishable_...
 
 Reinicie o `npm run dev` pra o Vite reler as variáveis.
 
-Produção: no painel Vercel do projeto, **Settings → Environment Variables**, cadastre as mesmas duas variáveis em todos os environments (Production, Preview, Development). Sensitive desmarcado, porque variáveis `VITE_*` são embutidas no bundle JS por design.
+Produção: no painel Vercel do projeto, **Settings → Environment Variables**, cadastre as mesmas duas variáveis em todos os environments (Production, Preview, Development). Sensitive desmarcado, porque variáveis `VITE_*` são embutidas no bundle JS por design. A produção tem ainda uma terceira variável, `CRON_SECRET`, explicada na seção 9.
 
 ## 7. Validar
 
@@ -96,7 +100,16 @@ No SQL Editor:
 select * from public.get_leaderboard('total', 50);
 ```
 
-Deve retornar zero linhas sem erro. Se der "permission denied for table", o grant da função pras roles anon/authenticated não foi aplicado. Rode `policies.sql` de novo.
+Deve rodar sem erro (num banco novo, sem linhas). Se der "permission denied for function get_leaderboard", falta o grant de execução, que fica no fim do `schema.sql`: rode o arquivo de novo. Se der "permission denied for table", são os grants das tabelas, no `policies.sql`.
+
+A função de exclusão de conta só pode ser chamada por quem está logado:
+
+```sql
+select has_function_privilege('anon', 'public.delete_own_account()', 'execute') as anon_pode,
+       has_function_privilege('authenticated', 'public.delete_own_account()', 'execute') as logado_pode;
+```
+
+Esperado: `false` e `true`.
 
 Pra conferir que as tabelas têm os GRANTs corretos (anon lê profiles pro ranking, authenticated faz CRUD nas próprias linhas):
 
@@ -138,7 +151,7 @@ O HTML é o mesmo para os dois templates. O conteúdo do email não muda, só o 
 
 ## 9. Manter o projeto acordado
 
-O plano gratuito pausa projetos que passam 7 dias sem atividade **no banco**. Pausou, o subdomínio sai do DNS e o app inteiro para. Só um clique em **Resume project** no painel traz de volta. Nenhum ping acorda projeto pausado.
+O plano gratuito pausa projetos que passam 7 dias sem atividade **no banco**. Pausou, o site continua abrindo e o jogo funciona com o progresso salvo no navegador, mas login, sincronização e ranking param. Só um clique em **Resume project** no painel traz de volta, e isso vale até 90 dias depois da pausa; passado esse prazo, o painel só deixa baixar os dados para recriar o projeto. Nenhum ping acorda projeto pausado.
 
 O detalhe que derrubou a primeira versão desse setup: o Supabase conta query no Postgres, não requisição HTTP qualquer. Bater em `/auth/v1/health` devolve 200 sem encostar no banco, então o ping passava verde enquanto o contador seguia correndo.
 
@@ -146,8 +159,8 @@ Hoje são duas camadas, as duas fazendo um `SELECT` real em `profiles`:
 
 | Camada | Onde | Frequência | Observação |
 | --- | --- | --- | --- |
-| Principal | Cron da Vercel: [`api/keep-alive.js`](../api/keep-alive.js) + `crons` no `vercel.json` | diária | Não depende de movimento no repositório |
-| Reserva | GitHub Actions: [`keep-supabase-warm.yml`](../.github/workflows/keep-supabase-warm.yml) | diária | Desliga sozinho após 60 dias sem commit |
+| Principal | Cron da Vercel: [`api/keep-alive.js`](../api/keep-alive.js) + `crons` no `vercel.json` | diária, entre 08:00 e 08:59 UTC (no Hobby a Vercel garante só a hora) | Não depende de movimento no repositório |
+| Reserva | GitHub Actions: [`keep-supabase-warm.yml`](../.github/workflows/keep-supabase-warm.yml) | diária, às 08:23 UTC | Desliga sozinho após 60 dias sem commit |
 
 Nada disso exige plano pago: cron diário roda no Hobby da Vercel e Actions é gratuito em repositório público. O Pro do Supabase (US$ 25/mês) resolve por outro caminho: projeto pago não pausa, ponto. Vale se o app precisar de disponibilidade garantida; pra uso acadêmico as duas camadas acima dão conta.
 
@@ -161,7 +174,7 @@ O endpoint `/api/keep-alive` fica exposto na internet como qualquer rota do site
 
 A variável `CRON_SECRET`, cadastrada nas variáveis de ambiente da Vercel, resolve isso. A própria Vercel passa a enviá-la no cabeçalho `Authorization` quando dispara o cron, e o código rejeita quem não mandar. Use uma cadeia aleatória de pelo menos 16 caracteres.
 
-Para conferir se está ativa, abra o endereço no navegador. Com a variável configurada, a resposta deve ser `{"ok":false,"erro":"nao autorizado"}`. Sem ela, vem `{"ok":true}` e o endpoint está aberto.
+Em produção a variável está cadastrada. Para conferir, abra `https://ecoverse.dev/api/keep-alive` no navegador: a resposta deve ser `{"ok":false,"erro":"nao autorizado"}`, com status 401. Se vier `{"ok":true}`, a variável sumiu e o endpoint está aberto.
 
 Se a variável não existir, o ping continua funcionando normalmente. A proteção é opcional do ponto de vista funcional, e recomendada do ponto de vista de custo.
 
@@ -176,7 +189,10 @@ O SMTP nativo do Supabase entrega poucos emails por hora, o que trava uma turma 
 | Domínio verificado | `auth.ecoverse.dev`, subdomínio dedicado ao envio |
 | Remetente | `"Ecoverse" <noreply@auth.ecoverse.dev>` |
 | Região | `sa-east-1` |
-| Limite do plano gratuito | 3.000 emails por mês |
+| Limite do plano gratuito | 100 emails por dia e 3.000 por mês |
+| Limite no Supabase | 100 envios por hora (Authentication → Rate Limits) |
+
+O limite que pesa é o diário. Cada pedido de link gasta um email, inclusive os repetidos, então uma turma inteira entrando no mesmo dia chega perto do teto. Quando estoura, o envio falha e o site pede para tentar de novo.
 
 Usar um subdomínio em vez do apex é escolha deliberada: isola a reputação de envio do domínio principal, então um problema de entrega no email não afeta o site, e vice-versa. Os registros de DKIM e o MX de retorno ficam sob `auth.ecoverse.dev`, não sob `ecoverse.dev`.
 

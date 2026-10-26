@@ -4,21 +4,23 @@ Guia para os 4 colegas que vão implementar os minigames e para quem pegar o pro
 
 ## Setup
 
+Precisa do Node.js 22, a mesma versão do CI e da Vercel.
+
 ```bash
 git clone https://github.com/PedroFurtadoC/Ecoverse.git
 cd Ecoverse
 npm install
-cp .env.example .env   # opcional; só preenche se for usar Supabase
+cp .env.example .env.local   # opcional; só preenche se for usar Supabase
 npm run dev
 ```
 
-Abre em `http://localhost:3000`. Use `?dev=free` na URL durante o desenvolvimento para liberar energia infinita e testar missões sem fazer Pomodoro a cada vez.
+Abre em `http://localhost:3000`. Use `?dev=free` na URL durante o desenvolvimento: todas as missões ficam liberadas, não gastam energia e nada jogado nesse modo fica salvo.
 
 ## Antes de codar
 
 1. Leia `src/js/modules/minigames/<seu-nome>/README.md` (tema, mecânicas, sprites disponíveis).
 2. Confira os sprites prontos em `public/assets/generated/cutouts/`.
-3. (Opcional) Veja o minigame de **inspiração** na branch `demo/triagem-inspiracao`: é só referência de estrutura, não entra em produção.
+3. (Opcional) Veja o minigame de exemplo em `src/js/modules/minigames/_demo/`. Ele virou o easter egg Triagem relâmpago e vai para produção escondido: abre digitando ECO fora de um campo de texto. Serve de referência de estrutura.
 
 ## Branches e commits
 
@@ -71,4 +73,4 @@ PRs são revisados pelo Pedro Furtado. Se quiser segunda opinião, marque o cole
 - Não mexa em arquivos fora da sua pasta sem alinhar antes.
 - Não use `window.<algo>` para compartilhar dados com outros módulos.
 - Não importe assets de URLs externas em runtime. Use `public/assets/`.
-- Não coloque API keys no código. Sempre via `.env`.
+- Não coloque API keys no código. Sempre via `.env.local`.

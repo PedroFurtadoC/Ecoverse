@@ -37,5 +37,6 @@ certutil -hashfile ecoverse-codigo-fonte.zip SHA512
 ```
 
 O resultado tem que bater, caractere por caractere, com o que está impresso
-no certificado. O procedimento completo está em
-[`registro-inpi/README.md`](../README.md).
+no certificado. O procedimento completo está no README da pasta
+`registro-inpi/`, que fica fora do repositório junto com o pacote, sob a
+guarda do titular.

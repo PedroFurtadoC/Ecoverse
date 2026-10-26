@@ -65,6 +65,8 @@ create policy profiles_delete_own
 
 -- =============================================================
 -- progress: cada usuário só lê e escreve a própria linha.
+-- Não há policy de DELETE de propósito: a linha só sai quando a
+-- conta é apagada, pela função delete_own_account (schema.sql).
 -- =============================================================
 alter table public.progress enable row level security;
 
@@ -86,6 +88,7 @@ create policy progress_update_own
 
 -- =============================================================
 -- pomodoro_sessions: cada usuário só lê e escreve as próprias.
+-- Também sem DELETE: o histórico sai junto com a conta.
 -- =============================================================
 alter table public.pomodoro_sessions enable row level security;
 

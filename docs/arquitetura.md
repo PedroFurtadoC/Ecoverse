@@ -35,7 +35,9 @@ Em paralelo, o Pomodoro emite `EVENTS.REWARD` e `EVENTS.POMODORO_COMPLETE`: `mai
 - **ESM** em todo lugar, paths relativos com extensão `.js`.
 - **Português** para domínio (`plantTree`, `flyToMission`); **inglês** para técnico-genérico (`init`, `update`, `open`).
 - **Event bus** para acoplamento de "notificação" (módulo A avisa, módulo B reage). Imports diretos só para contratos síncronos (`MiniGames.open()` chamado direto).
-- **localStorage** é a fonte primária (chave `ecoverse_save_v6`). O progresso dos quizzes ODS vive dentro desse mesmo save, e não em chave separada, pra subir junto na sincronização. Quando o Supabase está configurado, `services/sync.js` faz upsert com debounce de 2s sem alterar o localStorage.
+- **localStorage** é a fonte primária (chave `ecoverse_save_v6`). O progresso dos quizzes ODS vive dentro desse mesmo save, e não em chave separada, pra subir junto na sincronização. Quando o Supabase está configurado, `services/sync.js` faz upsert com debounce de 2s sem alterar o localStorage. O upsert só acontece depois de uma leitura bem-sucedida da linha daquela conta: com rede ruim, gravar sem ter lido substituiria progresso que só existe na nuvem.
+- **Dono do save**: `ecoverse_save_v6_conta` guarda o id da conta que sincronizou com o save. Se outra conta entra no mesmo navegador, o jogo volta ao começo antes de ler a nuvem, e os recordes que cada minigame guarda à parte (chaves `m1_`, `m2_`, `m6v2_` e parecidas) saem junto. Save sem dono é de quem jogou sem conta: se tiver progresso que a conta ainda não tem, o jogo pergunta antes de juntar. Ao sair da conta com a última gravação confirmada, o navegador volta ao começo e fica sem dono, para a próxima pessoa. Tudo isso fica em `reconcileFromCloud()` (`main.js`) e em `signOut()` (`modules/auth-ui.js`).
+- **Janelas**: abra e feche sempre por `openModal()` e `closeModal()` em `main.js`. Elas cuidam do foco: ele entra na janela ao abrir, o Tab circula só dentro dela e, ao fechar, volta para o botão de origem.
 - **`persist()`** em `main.js` é o único caminho para gravar: salva local e agenda o sync. Não chame `Sync.scheduleSync()` de novo depois dele.
 - **Formato na nuvem**: `toCloudSnapshot()` em `store/state.js` é a única definição do progresso em snake_case. O sync e a exportação LGPD usam a mesma função.
 
@@ -48,7 +50,7 @@ Em paralelo, o Pomodoro emite `EVENTS.REWARD` e `EVENTS.POMODORO_COMPLETE`: `mai
 | `index.html` | ~7,7 KB | sempre |
 | `index.css` | ~15 KB | sempre |
 | chunk do app | ~71 KB | sempre |
-| chunk do Supabase | ~57 KB | só quando o usuário entra na conta |
+| chunk do Supabase | ~57 KB | em toda visita, logo depois do app, para conferir se há sessão |
 | chunk do globo | ~519 KB | depois da tela de carregamento |
 
 O globo carrega Three.js junto e por isso pesa. Fica fora do caminho crítico de propósito: a tela de carregamento aparece antes, e o download acontece enquanto ela está visível.
@@ -56,6 +58,12 @@ O globo carrega Three.js junto e por isso pesa. Fica fora do caminho crítico de
 Esses valores mudam a cada alteração de conteúdo ou dependência. Se precisar do número atual, rode `npm run build` e leia a saída, que é a fonte de verdade.
 
 Target ES2020. Cobre 95%+ dos navegadores atuais.
+
+## Offline
+
+`public/sw.js` só é registrado no build de produção. Na instalação, ele guarda a página, o JS, o CSS e o pedaço do globo (cache `ecoverse-v2`), então depois da primeira visita completa o site abre sem internet. Com rede, a página vem sempre do servidor; JS e CSS com hash saem do cache; imagens saem do cache e se atualizam em segundo plano. Login, ranking e sincronização dependem de conexão.
+
+Ao mudar a estratégia de cache, troque o nome do cache em `sw.js` para o navegador descartar o antigo.
 
 ## Rotina de manutenção
 
