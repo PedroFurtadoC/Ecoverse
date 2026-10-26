@@ -114,7 +114,12 @@ Esperado: 12 linhas (4 SELECT/INSERT/UPDATE/DELETE em progress, 5 em profiles, 3
 
 Em **Advisors → Security** o resultado esperado é:
 - Zero erros nas nossas tabelas e funções.
-- Podem aparecer avisos sobre `public.rls_auto_enable()` (função do próprio setup do Supabase, não é nossa) e sobre `public.get_leaderboard()` ser SECURITY DEFINER. Esse último é **intencional**: a função expõe só colunas seguras do ranking público, sem acesso direto à tabela `progress`.
+- Aviso sobre `public.get_leaderboard()` ser SECURITY DEFINER. É **intencional**: a função expõe só colunas seguras do ranking público, sem acesso direto à tabela `progress`.
+- Se o projeto tiver o RLS automático ligado, aparece também `public.rls_auto_enable()`, a função do Supabase que liga RLS em toda tabela nova. Ninguém da API precisa chamá-la, então feche o acesso (o RLS automático continua funcionando):
+
+```sql
+revoke execute on function public.rls_auto_enable() from public, anon, authenticated;
+```
 
 ## 8. Templates de email branded
 
