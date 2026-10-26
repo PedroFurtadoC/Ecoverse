@@ -32,10 +32,13 @@ export function onStatusChange(fn) {
   return () => statusListeners.delete(fn);
 }
 
-async function flush() {
+// userId é a conta que estava logada quando a gravação foi pedida. Se outra
+// conta entrou antes do debounce terminar, o snapshot ainda é da anterior e
+// não pode ir para a linha da nova.
+async function flush(userId) {
   pendingTimer = null;
   const user = getUser();
-  if (!user) { setStatus('idle'); return; }
+  if (!user || user.id !== userId) { setStatus('idle'); return; }
 
   setStatus('syncing');
   const supa = await getSupabase();
@@ -59,7 +62,8 @@ async function flush() {
 // Agendamento normal: agrupa mutações próximas em uma única gravação.
 export function scheduleSync() {
   if (pendingTimer) clearTimeout(pendingTimer);
-  pendingTimer = setTimeout(flush, DEBOUNCE_MS);
+  const userId = getUser()?.id;
+  pendingTimer = setTimeout(() => flush(userId), DEBOUNCE_MS);
 }
 
 // Versão imediata: dispara o flush agora, sem esperar o debounce.
@@ -71,7 +75,7 @@ export async function pushNow() {
     clearTimeout(pendingTimer);
     pendingTimer = null;
   }
-  await flush();
+  await flush(getUser()?.id);
 }
 
 // =============================================================

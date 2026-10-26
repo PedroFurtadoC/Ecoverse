@@ -1,6 +1,6 @@
 import '../css/main.css';
 import { MISSIONS, TIPS, ASSET_LIST, GLOBE_TEXTURE, POMODORO_CONFIG, TEAM } from './config/data.js';
-import { state, saveState, loadState, applyCloudState, hasMeaningfulProgress, toCloudSnapshot } from './store/state.js';
+import { state, saveState, loadState, resetState, getLocalOwner, setLocalOwner, applyCloudState, hasMeaningfulProgress, toCloudSnapshot } from './store/state.js';
 import { on, EVENTS } from './store/events.js';
 import { Pomodoro } from './modules/pomodoro.js';
 import { MiniGames } from './modules/minigames.js';
@@ -785,14 +785,23 @@ async function reconcileFromCloud({ silent = false } = {}) {
   const user = Auth.getUser();
   if (!user) return;
 
+  // Se o save deste navegador é de outra conta (alguém saiu e outra pessoa
+  // entrou), o jogo começa do zero em vez de misturar o progresso das duas.
+  // Save sem dono é de quem jogou sem conta e continua entrando na conta.
+  const owner = getLocalOwner();
+  const otherAccount = Boolean(owner) && owner !== user.id;
+  if (otherAccount) resetState();
+  setLocalOwner(user.id);
+
   const cloudState = await Sync.pullState();
   if (!cloudState) {
+    if (otherAccount) refreshProgressView();
     // Sem linha na nuvem ainda: manda o local pra cima.
     if (hasMeaningfulProgress(state)) Sync.scheduleSync();
     return;
   }
 
-  const changed = applyCloudState(cloudState);
+  const changed = applyCloudState(cloudState) || otherAccount;
   if (!changed) {
     // Já estamos em dia. Se o local tem MAIS que a nuvem, sobe (caso
     // típico: usuário jogou anônimo, depois logou, local "vence" e
@@ -801,17 +810,23 @@ async function reconcileFromCloud({ silent = false } = {}) {
     return;
   }
 
-  AchievementSystem.init(state.achievements);
-  saveState();
-  syncHUDImmediate();
-  refreshGlobeMarkers();
-  if (!silent) {
+  refreshProgressView();
+  if (!silent && !otherAccount) {
     showToast('Progresso sincronizado de outro dispositivo', 'reward');
   }
   // Depois de adotar a nuvem, sobe o snapshot mergeado pra alinhar
   // os dois lados (em caso de UNION: o lado que tinha menos agora tem
   // mais: precisa empurrar).
   Sync.scheduleSync();
+}
+
+// Redesenha HUD, conquistas e globo depois que o state mudou por fora do
+// jogo (nuvem ou troca de conta).
+function refreshProgressView() {
+  AchievementSystem.init(state.achievements);
+  saveState();
+  syncHUDImmediate();
+  refreshGlobeMarkers();
 }
 
 // Marca quando o boot terminou a primeira reconciliação. Antes disso,

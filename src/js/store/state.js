@@ -1,22 +1,44 @@
 import { GAME_CONFIG } from '../config/data.js';
 
-export const state = {
-  energy: GAME_CONFIG.initialEnergy,
-  coins: GAME_CONFIG.initialCoins,
-  impact: GAME_CONFIG.initialImpact,
-  completed: [],
-  currentMission: null,
-  pomodorosCompleted: 0,
-  bestStreak: 0,
-  perfectMinigames: 0,
-  achievements: [],
-  plantedTrees: [],
-  // Progresso dos quizzes ODS por id: { "1": { score, perfect, attempts }, ... }
-  // Vive aqui no estado principal pra ir junto com o save e o sync na nuvem.
-  quizzes: {},
-  eggCompleted: false,
-  lastSavedAt: null
-};
+function initialState() {
+  return {
+    energy: GAME_CONFIG.initialEnergy,
+    coins: GAME_CONFIG.initialCoins,
+    impact: GAME_CONFIG.initialImpact,
+    completed: [],
+    currentMission: null,
+    pomodorosCompleted: 0,
+    bestStreak: 0,
+    perfectMinigames: 0,
+    achievements: [],
+    plantedTrees: [],
+    // Progresso dos quizzes ODS por id: { "1": { score, perfect, attempts }, ... }
+    // Vive aqui no estado principal pra ir junto com o save e o sync na nuvem.
+    quizzes: {},
+    eggCompleted: false,
+    lastSavedAt: null
+  };
+}
+
+export const state = initialState();
+
+// Volta o jogo ao começo, como numa primeira visita.
+export function resetState() {
+  Object.assign(state, initialState());
+  saveState();
+}
+
+// De quem é o save deste navegador: o id da última conta que sincronizou
+// com ele. Save sem dono é de quem jogou sem conta.
+const OWNER_KEY = `${GAME_CONFIG.storageKey}_conta`;
+
+export function getLocalOwner() {
+  try { return localStorage.getItem(OWNER_KEY); } catch (e) { return null; }
+}
+
+export function setLocalOwner(userId) {
+  try { localStorage.setItem(OWNER_KEY, userId); } catch (e) { /* silent */ }
+}
 
 export function saveState() {
   try {
