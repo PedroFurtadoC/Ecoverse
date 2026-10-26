@@ -3,7 +3,7 @@
 // - modal de magic link (entrar) + tela de "link enviado"
 // - leaderboard com filtros mensal/total
 // - exportação dos dados do usuário em JSON
-// - exclusão dos próprios dados (RLS + cascade do schema)
+// - exclusão da conta (função delete_own_account + cascade do schema)
 //
 // As dependências vêm do main.js via init() pra evitar dependência circular
 // com showToast / openModal / closeModal e a serialização do save local.
@@ -11,13 +11,15 @@
 import * as Auth from '../services/auth.js';
 import * as Sync from '../services/sync.js';
 import { isConfigured } from '../services/supabase.js';
+import { clearLocalOwner } from '../store/state.js';
 import { escapeHtml } from '../utils/html.js';
 
 let deps = {
   showToast: () => {},
   openModal: () => {},
   closeModal: () => {},
-  buildExportPayload: () => ({})
+  buildExportPayload: () => ({}),
+  resetLocalGame: () => {}
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -160,9 +162,22 @@ function bindAuthForm() {
   });
 }
 
+// Ao sair, o navegador volta a ser de ninguém: a próxima pessoa que usar o
+// aparelho começa do zero. Isso só acontece quando a nuvem já tem tudo; se a
+// última gravação não chegou, o progresso fica aqui até a conta voltar.
 export async function signOut() {
+  const saved = await Sync.flushPending();
   await Auth.signOut();
-  deps.showToast('Você saiu. Seu progresso continua salvo neste dispositivo.', 'info');
+  if (Auth.getUser()) {
+    deps.showToast('Não consegui sair agora. Confira a internet e tente de novo.', 'info');
+    return;
+  }
+  if (saved) {
+    deps.resetLocalGame();
+    deps.showToast('Você saiu. Seu progresso está salvo na sua conta.', 'info');
+  } else {
+    deps.showToast('Você saiu. A última parte do progresso não chegou à nuvem e ficou neste navegador; ela sobe quando você entrar de novo.', 'info');
+  }
 }
 
 export async function editNickname() {
@@ -238,6 +253,9 @@ export async function deleteAccount() {
 
   try {
     await Auth.deleteOwnData();
+    // O save local fica para quem quiser seguir jogando sem conta, mas sem
+    // dono: se uma conta entrar depois, ela pergunta antes de juntar.
+    clearLocalOwner();
     deps.showToast('Seus dados foram apagados. Boas memórias!', 'info');
   } catch (err) {
     deps.showToast('Algo falhou na exclusão. Fale com a equipe.', 'info');

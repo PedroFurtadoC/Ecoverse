@@ -1,6 +1,6 @@
 import '../css/main.css';
 import { MISSIONS, TIPS, ASSET_LIST, GLOBE_TEXTURE, POMODORO_CONFIG, TEAM } from './config/data.js';
-import { state, saveState, loadState, resetState, getLocalOwner, setLocalOwner, applyCloudState, hasMeaningfulProgress, toCloudSnapshot } from './store/state.js';
+import { state, saveState, loadState, resetState, getLocalOwner, setLocalOwner, clearLocalOwner, applyCloudState, hasMeaningfulProgress, progressScore, toCloudSnapshot } from './store/state.js';
 import { on, EVENTS } from './store/events.js';
 import { Pomodoro } from './modules/pomodoro.js';
 import { MiniGames } from './modules/minigames.js';
@@ -258,7 +258,8 @@ AuthUI.init({
   buildExportPayload: () => ({
     ...toCloudSnapshot(),
     last_saved_at: state.lastSavedAt ?? null
-  })
+  }),
+  resetLocalGame: () => resetLocalGame()
 });
 
 // Preenche o grid de devs do modal "Sobre". A primeira card é destacada
@@ -787,21 +788,35 @@ async function reconcileFromCloud({ silent = false } = {}) {
 
   // Se o save deste navegador é de outra conta (alguém saiu e outra pessoa
   // entrou), o jogo começa do zero em vez de misturar o progresso das duas.
-  // Save sem dono é de quem jogou sem conta e continua entrando na conta.
   const owner = getLocalOwner();
-  const otherAccount = Boolean(owner) && owner !== user.id;
-  if (otherAccount) resetState();
-  setLocalOwner(user.id);
+  let startedFresh = Boolean(owner) && owner !== user.id;
+  if (startedFresh) resetState();
 
   const cloudState = await Sync.pullState();
+
+  // Save sem dono é de quem jogou sem entrar numa conta, e pode ser de outra
+  // pessoa que usou este navegador. Só entra na conta se quem logou confirmar.
+  // Quando a conta já tem tanto quanto ele, não há o que perguntar.
+  if (!owner && hasMeaningfulProgress(state) && progressScore(cloudState) < progressScore(state)) {
+    const join = window.confirm(
+      `Este navegador tem progresso que não está em nenhuma conta: ${state.completed.length} missões e ${state.coins} moedas.\n\n` +
+      'Quer juntar esse progresso à sua conta?\n\nOK junta. Cancelar descarta e fica só com o que já é da sua conta.'
+    );
+    if (!join) {
+      resetState();
+      startedFresh = true;
+    }
+  }
+  setLocalOwner(user.id);
+
   if (!cloudState) {
-    if (otherAccount) refreshProgressView();
+    if (startedFresh) refreshProgressView();
     // Sem linha na nuvem ainda: manda o local pra cima.
     if (hasMeaningfulProgress(state)) Sync.scheduleSync();
     return;
   }
 
-  const changed = applyCloudState(cloudState) || otherAccount;
+  const changed = applyCloudState(cloudState) || startedFresh;
   if (!changed) {
     // Já estamos em dia. Se o local tem MAIS que a nuvem, sobe (caso
     // típico: usuário jogou anônimo, depois logou, local "vence" e
@@ -811,7 +826,7 @@ async function reconcileFromCloud({ silent = false } = {}) {
   }
 
   refreshProgressView();
-  if (!silent && !otherAccount) {
+  if (!silent && !startedFresh) {
     showToast('Progresso sincronizado de outro dispositivo', 'reward');
   }
   // Depois de adotar a nuvem, sobe o snapshot mergeado pra alinhar
@@ -827,6 +842,15 @@ function refreshProgressView() {
   saveState();
   syncHUDImmediate();
   refreshGlobeMarkers();
+}
+
+// Deixa o navegador como numa primeira visita e sem dono, para a próxima
+// pessoa que usar o aparelho. Só é chamado depois de sair da conta com o
+// progresso já salvo na nuvem.
+function resetLocalGame() {
+  resetState();
+  clearLocalOwner();
+  refreshProgressView();
 }
 
 // Marca quando o boot terminou a primeira reconciliação. Antes disso,
@@ -904,6 +928,10 @@ Auth.onAuthChange(async (user) => {
     Sync.subscribeProgress(handleRealtimeProgress);
   } else {
     Sync.unsubscribeProgress();
+    // A saída pode ter vindo de outra aba, que já limpou o save. Esta aba
+    // relê o que ficou no navegador para não seguir mostrando a conta.
+    loadState();
+    refreshProgressView();
   }
 });
 

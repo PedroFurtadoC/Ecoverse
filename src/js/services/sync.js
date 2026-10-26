@@ -5,6 +5,12 @@ import { toCloudSnapshot } from '../store/state.js';
 const DEBOUNCE_MS = 2000;
 let pendingTimer = null;
 
+// Conta cuja linha na nuvem já foi lida nesta sessão. A gravação substitui a
+// linha inteira, então gravar sem ter lido antes (leitura falhou por rede
+// ruim, por exemplo) apagaria progresso que só existe na nuvem. Até a leitura
+// dar certo, o progresso fica guardado no navegador e sobe no próximo merge.
+let pulledUserId = null;
+
 // =============================================================
 // Status pra UI (idle | syncing | online | offline | error).
 // =============================================================
@@ -34,15 +40,16 @@ export function onStatusChange(fn) {
 
 // userId é a conta que estava logada quando a gravação foi pedida. Se outra
 // conta entrou antes do debounce terminar, o snapshot ainda é da anterior e
-// não pode ir para a linha da nova.
+// não pode ir para a linha da nova. Devolve true quando a gravação deu certo.
 async function flush(userId) {
   pendingTimer = null;
   const user = getUser();
-  if (!user || user.id !== userId) { setStatus('idle'); return; }
+  if (!user || user.id !== userId) { setStatus('idle'); return false; }
+  if (pulledUserId !== user.id) return false;
 
   setStatus('syncing');
   const supa = await getSupabase();
-  if (!supa) { setStatus('offline'); return; }
+  if (!supa) { setStatus('offline'); return false; }
 
   try {
     const payload = { user_id: user.id, ...toCloudSnapshot() };
@@ -50,12 +57,14 @@ async function flush(userId) {
     if (error) {
       setStatus('error');
       console.warn('[sync] upsert falhou:', error.message);
-    } else {
-      setStatus('online');
+      return false;
     }
+    setStatus('online');
+    return true;
   } catch (err) {
     setStatus('error');
     console.warn('[sync] upsert exceção:', err?.message ?? err);
+    return false;
   }
 }
 
@@ -75,7 +84,15 @@ export async function pushNow() {
     clearTimeout(pendingTimer);
     pendingTimer = null;
   }
-  await flush(getUser()?.id);
+  return flush(getUser()?.id);
+}
+
+// Usado ao sair da conta: grava o que ainda esperava o debounce e diz se a
+// nuvem ficou com tudo. Sem nada pendente, vale a última conversa com o
+// servidor, que precisa ter dado certo.
+export async function flushPending() {
+  if (pendingTimer) return pushNow();
+  return currentStatus === 'online';
 }
 
 // =============================================================
@@ -100,6 +117,7 @@ export async function pullState() {
   }
   // Sucesso de leitura conta como "online" pra UI: confirma que o cliente
   // conseguiu falar com o backend, mesmo que ainda não tenha gravado nada.
+  pulledUserId = user.id;
   setStatus('online');
   return data;
 }

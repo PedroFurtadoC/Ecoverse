@@ -46,6 +46,10 @@ export function setLocalOwner(userId) {
   try { localStorage.setItem(OWNER_KEY, userId); } catch (e) { /* silent */ }
 }
 
+export function clearLocalOwner() {
+  try { localStorage.removeItem(OWNER_KEY); } catch (e) { /* silent */ }
+}
+
 export function saveState() {
   try {
     state.lastSavedAt = new Date().toISOString();
