@@ -10,6 +10,10 @@ O Ecoverse é o trabalho final da disciplina de Sustentabilidade Ambiental da **
 - **Pedro Borges Casaroti**: minigames das missões 5 (Madagascar) e 6 (Pantanal).
 - **Thiago Salata Siena**: minigames das missões 7 (Grande Barreira) e 8 (Andes).
 
+## Colaboração
+
+- **Ígor Polegato**: revisão do código em setembro de 2026, com limpeza de eventos e timers dos minigames, utilitários compartilhados e padronização dos estilos.
+
 ## Bibliotecas
 
 - [Globe.GL](https://github.com/vasturiano/globe.gl) e [Three.js](https://threejs.org): visualização 3D do globo (MIT).
