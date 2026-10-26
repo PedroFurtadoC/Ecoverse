@@ -52,6 +52,7 @@ registro-inpi/*
 Questões para elaboração de dossiê INPI.docx
 *.docx.bak
 
-# Painel de outra pesquisa, usado só como referência de formato para o
-# banner do CONIC. O trabalho é de outros autores e ainda não foi publicado.
-conic/EXEMPLO_Painel_MASI_CONIC.pptx
+# Banner do CONIC. Não faz parte do software e o PPTX passa de 6 MB, que
+# ficariam no histórico para sempre. A pasta também guarda o painel de outra
+# pesquisa usado como referência de formato, de outros autores e ainda inédito.
+conic/
