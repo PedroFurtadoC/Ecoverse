@@ -368,9 +368,9 @@ const TIPS = [
 // A textura do globo é o único ativo que o Three.js carrega, e ele pede
 // com crossOrigin. Uma imagem buscada com CORS e outra sem viram entradas
 // de cache separadas no navegador, então pré-carregar sem marcar o modo
-// fazia estes 1,4 MB descerem duas vezes: uma na tela de carregamento e
+// fazia a textura descer duas vezes: uma na tela de carregamento e
 // outra quando o globo monta. Por isso a entrada carrega o modo junto.
-const GLOBE_TEXTURE = 'assets/earth-texture.jpg';
+const GLOBE_TEXTURE = 'assets/earth-texture.webp';
 
 const ASSET_LIST = [
   'assets/logo.svg',
