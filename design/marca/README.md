@@ -82,11 +82,3 @@ partir dos SVG atualizados, e troque também os três arquivos que a aplicação
 O `favicon.png` leva quadrado branco por baixo de propósito: além de
 ícone de aba, ele serve como ícone mascarável do PWA, e ícone mascarável
 precisa de fundo cheio.
-
-## Versão anterior
-
-`anterior/` guarda a logo e o favicon que existiam antes desta unificação.
-A logo antiga trazia o subtítulo "Future Forest", em inglês e falando de
-floresta, o que não corresponde mais ao projeto depois que ele passou a
-tratar só de resíduos. O favicon antigo era imagem rasterizada, e a folha
-dele não era a mesma da logo: eram duas marcas diferentes convivendo.
