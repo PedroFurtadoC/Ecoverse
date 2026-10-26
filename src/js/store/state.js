@@ -22,10 +22,16 @@ function initialState() {
 
 export const state = initialState();
 
-// Volta o jogo ao começo, como numa primeira visita.
+// Volta o jogo ao começo, como numa primeira visita. Leva junto o recorde e o
+// modo livre que cada minigame guarda à parte (chaves m1_, m2_, m6v2_ etc.).
 export function resetState() {
   Object.assign(state, initialState());
   saveState();
+  try {
+    for (const key of Object.keys(localStorage)) {
+      if (/^m\d+(v\d+)?_/.test(key)) localStorage.removeItem(key);
+    }
+  } catch (e) { /* silent */ }
 }
 
 // De quem é o save deste navegador: o id da última conta que sincronizou
