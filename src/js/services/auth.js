@@ -98,19 +98,16 @@ export async function updateDisplayName(displayName) {
   return data;
 }
 
-// Exclusão da conta. As tabelas profiles/progress/pomodoro_sessions usam
-// ON DELETE CASCADE em auth.users(id), então remover o usuário leva todo
-// o histórico junto. Como a API pública não permite deletar auth.users
-// diretamente, fazemos o que dá: limpar os dados das tabelas próprias
-// e encerrar a sessão. O registro em auth.users fica órfão até a UNAERP
-// rodar uma limpeza administrativa (descrita no manual de manutenção).
+// Exclusão da conta. A função delete_own_account (supabase/schema.sql)
+// apaga o usuário em auth.users, e as tabelas profiles/progress/
+// pomodoro_sessions usam ON DELETE CASCADE, então tudo vai junto, email
+// incluído. Depois disso a sessão já não vale no servidor: só falta
+// limpar a cópia dela neste navegador.
 export async function deleteOwnData() {
   const supa = await getSupabase();
   if (!supa || !currentUser) throw new Error('Sem sessão');
-  const uid = currentUser.id;
 
-  await supa.from('pomodoro_sessions').delete().eq('user_id', uid);
-  await supa.from('progress').delete().eq('user_id', uid);
-  await supa.from('profiles').delete().eq('id', uid);
-  await supa.auth.signOut();
+  const { error } = await supa.rpc('delete_own_account');
+  if (error) throw error;
+  await supa.auth.signOut({ scope: 'local' });
 }

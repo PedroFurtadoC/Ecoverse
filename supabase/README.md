@@ -115,6 +115,8 @@ Esperado: 12 linhas (4 SELECT/INSERT/UPDATE/DELETE em progress, 5 em profiles, 3
 Em **Advisors → Security** o resultado esperado é:
 - Zero erros nas nossas tabelas e funções.
 - Aviso sobre `public.get_leaderboard()` ser SECURITY DEFINER. É **intencional**: a função expõe só colunas seguras do ranking público, sem acesso direto à tabela `progress`.
+- Aviso sobre `public.delete_own_account()` ser SECURITY DEFINER e executável por `authenticated`. Também é **intencional**: é o botão "Excluir minha conta". Ela só apaga a conta de quem chama (o filtro é `auth.uid()`), e `anon` não pode executá-la.
+- Aviso de *Leaked Password Protection* desligado. Não se aplica: o login é só por link mágico, ninguém cria senha.
 - Se o projeto tiver o RLS automático ligado, aparece também `public.rls_auto_enable()`, a função do Supabase que liga RLS em toda tabela nova. Ninguém da API precisa chamá-la, então feche o acesso (o RLS automático continua funcionando):
 
 ```sql

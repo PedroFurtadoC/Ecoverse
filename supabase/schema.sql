@@ -123,3 +123,26 @@ comment on function public.get_leaderboard(text, int) is
 
 revoke execute on function public.get_leaderboard(text, int) from public;
 grant execute on function public.get_leaderboard(text, int) to anon, authenticated;
+
+-- =============================================================
+-- Exclusão da conta pelo próprio usuário (botão "Excluir minha
+-- conta", LGPD art. 18). O cliente não pode apagar auth.users pela
+-- API, então a função faz isso com privilégio de dono, mas só para
+-- quem chama: o filtro é auth.uid(), não um parâmetro. As FKs com
+-- ON DELETE CASCADE levam perfil, progresso, pomodoros, identidades
+-- e sessões junto, e o email deixa de existir no banco.
+-- =============================================================
+create or replace function public.delete_own_account()
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  delete from auth.users where id = (select auth.uid());
+$$;
+
+comment on function public.delete_own_account() is
+  'Apaga a conta de quem chama e, em cascata, todos os dados dela.';
+
+revoke execute on function public.delete_own_account() from public, anon;
+grant execute on function public.delete_own_account() to authenticated;

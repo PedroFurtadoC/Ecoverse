@@ -226,7 +226,7 @@ export async function exportData() {
 
 export async function deleteAccount() {
   const confirm1 = window.confirm(
-    'Tem certeza? Vamos apagar seu perfil, progresso e histórico de Pomodoros do servidor.\n\nO save local deste navegador continua intacto, você pode continuar jogando anônimo.'
+    'Tem certeza? Vamos apagar sua conta, com perfil, progresso e histórico de Pomodoros.\n\nO save local deste navegador continua intacto, você pode continuar jogando anônimo.'
   );
   if (!confirm1) return;
 
