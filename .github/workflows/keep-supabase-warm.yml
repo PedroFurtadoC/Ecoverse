@@ -86,7 +86,7 @@ jobs:
       # Uma issue aberta na primeira falha evita repetir isso.
       - name: Avisa se o ping falhou
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const marcador = 'keep-supabase-warm-falhou';
