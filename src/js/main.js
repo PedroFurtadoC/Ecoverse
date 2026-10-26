@@ -103,17 +103,70 @@ function showToast(msg, type = 'info') {
   setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 450); }, 3200);
 }
 
-// Modais
-function openModal(id) { const el = document.getElementById(id); if (el) el.classList.add('active'); }
-function closeModal(id) { const el = document.getElementById(id); if (el) el.classList.remove('active'); }
+// Modais. Ao abrir, o foco entra na janela e o Tab circula só dentro dela;
+// ao fechar, volta para o botão que a abriu. Sem isso, quem navega pelo
+// teclado continuava atrás da janela.
+const FOCAVEIS = 'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+let focoAntesDoModal = null;
+
+function focaveisDe(modal) {
+  return [...modal.querySelectorAll(FOCAVEIS)].filter((el) => el.getClientRects().length > 0);
+}
+
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!document.querySelector('.modal-overlay.active')) focoAntesDoModal = document.activeElement;
+  el.classList.add('active');
+  requestAnimationFrame(() => focaveisDe(el)[0]?.focus({ preventScroll: true }));
+}
+
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('active');
+  devolverFoco();
+}
+
+// Só devolve quando não sobrou outra janela aberta: o menu fecha e abre a
+// próxima em seguida, e o foco tem de ir para ela, não para o HUD.
+function devolverFoco() {
+  if (document.querySelector('.modal-overlay.active')) return;
+  if (focoAntesDoModal?.isConnected) focoAntesDoModal.focus({ preventScroll: true });
+  focoAntesDoModal = null;
+}
 
 document.addEventListener('click', (e) => {
   const closeBtn = e.target.closest('[data-close]');
   if (closeBtn) { closeModal(closeBtn.dataset.close); return; }
-  if (e.target.classList.contains('modal-overlay') && e.target.classList.contains('active')) e.target.classList.remove('active');
+  if (e.target.classList.contains('modal-overlay') && e.target.classList.contains('active')) {
+    e.target.classList.remove('active');
+    devolverFoco();
+  }
 });
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') $$('.modal-overlay.active').forEach((m) => m.classList.remove('active'));
+  if (e.key === 'Escape') {
+    const abertas = $$('.modal-overlay.active');
+    if (!abertas.length) return;
+    abertas.forEach((m) => m.classList.remove('active'));
+    devolverFoco();
+    return;
+  }
+  if (e.key !== 'Tab') return;
+  const aberta = document.querySelector('.modal-overlay.active');
+  if (!aberta) return;
+  const itens = focaveisDe(aberta);
+  if (!itens.length) return;
+  const primeiro = itens[0];
+  const ultimo = itens[itens.length - 1];
+  const dentro = aberta.contains(document.activeElement);
+  if (e.shiftKey && (!dentro || document.activeElement === primeiro)) {
+    e.preventDefault();
+    ultimo.focus();
+  } else if (!e.shiftKey && (!dentro || document.activeElement === ultimo)) {
+    e.preventDefault();
+    primeiro.focus();
+  }
 });
 
 // Easter egg: digitar "ECO" fora de um input abre um minigame escondido.
@@ -351,7 +404,7 @@ async function initGlobe() {
 
       if (st === 'available') el.classList.add('gm-pulse');
       el.style.cursor = st === 'locked' ? 'not-allowed' : 'pointer';
-      el.addEventListener('click', (e) => {
+      const activate = (e) => {
         e.stopPropagation();
         if (st === 'locked') {
           showToast('Complete a missão anterior para desbloquear!', 'info');
@@ -359,6 +412,16 @@ async function initGlobe() {
         }
         flyToMission(d.mission);
         setTimeout(() => openMissionCard(d.mission), 1200);
+      };
+      el.addEventListener('click', activate);
+      // Marcador alcançável pelo Tab enquanto estiver na face visível do globo.
+      el.tabIndex = 0;
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', `Missão ${d.mission.id}, ${d.mission.title}, ${d.mission.location}${st === 'locked' ? ', bloqueada' : ''}`);
+      el.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        activate(e);
       });
 
       return el;

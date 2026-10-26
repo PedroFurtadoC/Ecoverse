@@ -62,12 +62,18 @@ export function init({ onChange: handler } = {}) {
   if (typeof handler === 'function') onChange = handler;
 }
 
+// Quem navega pelo teclado entra na galeria ao abrir e volta para o botão
+// que a abriu ao fechar, em vez de ficar parado atrás dela.
+let quemAbriuGaleria = null;
+
 export function openQuizGallery() {
   initDOM();
   renderGallery();
   if (container) {
+    quemAbriuGaleria = document.activeElement;
     container.classList.add('active');
     document.body.style.overflow = 'hidden';
+    closeBtn?.focus({ preventScroll: true });
   }
 }
 
@@ -76,6 +82,14 @@ export function closeQuizGallery() {
   if (container) container.classList.remove('active');
   if (playerEl) playerEl.classList.remove('active');
   document.body.style.overflow = '';
+  if (quemAbriuGaleria?.isConnected) quemAbriuGaleria.focus({ preventScroll: true });
+  quemAbriuGaleria = null;
+}
+
+// Depois de um quiz, o foco volta para o cartão dele na galeria.
+function focarCartao(odsId) {
+  const card = gallery?.querySelector(`.quiz-ods-card[data-ods="${odsId}"]`);
+  (card?.tabIndex === 0 ? card : closeBtn)?.focus({ preventScroll: true });
 }
 
 export function renderGallery() {
@@ -135,6 +149,7 @@ export function renderGallery() {
 function createOdsCard(ods, cardState) {
   const card = document.createElement('div');
   card.className = `quiz-ods-card ${cardState}`;
+  card.dataset.ods = ods.id;
   card.style.setProperty('--ods-color', ods.color);
 
   const starsHtml = getStarsHtml(ods);
@@ -157,6 +172,15 @@ function createOdsCard(ods, cardState) {
   if (cardState === 'available' || cardState === 'completed') {
     card.addEventListener('click', () => startQuiz(ods));
     card.style.cursor = 'pointer';
+    // Também abre pelo teclado: o Tab chega no cartão e Enter ou espaço inicia.
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `ODS ${ods.id}, ${ods.title}: ${cardState === 'completed' ? 'jogar novamente' : 'jogar'}`);
+    card.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      startQuiz(ods);
+    });
   } else if (cardState === 'locked') {
     card.addEventListener('click', () => {
       card.classList.add('shake');
@@ -243,7 +267,12 @@ function startQuiz(ods) {
   backBtn.addEventListener('click', () => {
     stopQuizTimers();
     playerEl.classList.remove('active');
+    focarCartao(ods.id);
   });
+
+  // O leitor de tela anuncia a pergunta junto com as alternativas.
+  optionsEl.setAttribute('role', 'group');
+  optionsEl.setAttribute('aria-labelledby', 'qop-question');
 
   questions.forEach((_, i) => {
     const dot = document.createElement('div');
@@ -276,6 +305,8 @@ function startQuiz(ods) {
       btn.addEventListener('click', () => onAnswer(i, btn, q));
       optionsEl.appendChild(btn);
     });
+    // Com o relógio correndo, quem usa teclado já começa nas alternativas.
+    optionsEl.querySelector('.qop-option')?.focus({ preventScroll: true });
 
     clearInterval(questionTimer);
     questionTimer = setInterval(() => {
@@ -383,7 +414,9 @@ function startQuiz(ods) {
       resultEl.style.display = 'none';
       playerEl.classList.remove('active');
       renderGallery();
+      focarCartao(ods.id);
     };
+    resultBtn.focus({ preventScroll: true });
   }
 
   showQuestion();
