@@ -13,12 +13,17 @@
   padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s ease;
+  /* Fechada, a janela também some do Tab e dos leitores de tela. O
+     visibility só muda depois do fade, para não cortar a animação. */
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0s linear 0.4s;
 }
 
 .modal-overlay.active {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
+  transition: opacity 0.4s ease, visibility 0s;
 }
 
 .modal {
