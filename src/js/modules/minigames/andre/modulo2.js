@@ -211,7 +211,7 @@ export class Modulo2 extends CanvasMinigame {
    */
   _drawSprite(ctx, itemDef, cx, cy, w, h) {
     // Só usa o sprite real se o src for o arquivo "canônico" do item
-    const isCanonical = itemDef.src.includes(itemDef.id.replace('-', '-'));
+    const isCanonical = itemDef.src.includes(itemDef.id);
     const img = this._imgs[itemDef.src];
     const useImg = isCanonical && img && img.complete && img.naturalWidth > 0;
 
