@@ -34,6 +34,10 @@ function initDOM() {
   playerEl    = document.getElementById('quiz-ods-player');
 
   if (closeBtn) closeBtn.addEventListener('click', closeQuizGallery);
+  // Esc fecha a galeria, igual aos outros painéis do jogo.
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && container.classList.contains('active')) closeQuizGallery();
+  });
 }
 
 function getCurrentPhase() {
