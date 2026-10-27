@@ -129,6 +129,16 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  /* No celular, o texto do globo é quase tudo o que aparece na tela, e
+     abaixo disso fica difícil de ler no telefone. */
+  .gm-label {
+    font-size: 12px;
+  }
+
+  .gm-location {
+    font-size: 11px;
+  }
 }
 
 
