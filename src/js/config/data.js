@@ -175,7 +175,7 @@ const QUIZ_ODS_DATA = [
     color: '#4C9F38', unlockPhase: 1, reward: 15,
     desc: 'Assegurar uma vida saudável e promover o bem-estar para todos.',
     questions: [
-      { q: 'As vacinas previnem quantas mortes por ano no mundo?', opts: ['500 mil', '2–3 milhões', '10 milhões', '20 milhões'], correct: 1 },
+      { q: 'As vacinas previnem quantas mortes por ano no mundo?', opts: ['500 mil', '2 a 3 milhões', '10 milhões', '20 milhões'], correct: 1 },
       { q: 'A vacina BCG protege contra qual doença?', opts: ['Gripe', 'Tuberculose', 'Sarampo', 'Poliomielite'], correct: 1 },
       { q: 'Qual doença foi erradicada graças à vacinação em massa?', opts: ['Malária', 'Tuberculose', 'Varíola', 'Dengue'], correct: 2 },
       { q: 'O SUS (Sistema Único de Saúde) do Brasil é considerado:', opts: ['Privado', 'O maior sistema público de saúde do mundo', 'Apenas para crianças', 'Regional'], correct: 1 },
@@ -215,7 +215,7 @@ const QUIZ_ODS_DATA = [
       { q: 'Quanto % da água do planeta é doce e acessível?', opts: ['30%', '10%', '1%', '50%'], correct: 2 },
       { q: 'A falta de saneamento causa quantas mortes por ano?', opts: ['50 mil', '200 mil', '432 mil', '1 milhão'], correct: 2 },
       { q: 'O Brasil tem saneamento básico para qual % da população?', opts: ['50%', '65%', '84%', '95%'], correct: 0 },
-      { q: 'Quanto litros de água uma pessoa precisa por dia no mínimo?', opts: ['5L', '20L', '50L–100L', '200L'], correct: 2 }
+      { q: 'Quantos litros de água uma pessoa precisa por dia no mínimo?', opts: ['5L', '20L', '50L a 100L', '200L'], correct: 2 }
     ]
   },
   {
@@ -401,7 +401,7 @@ const TEAM = [
     portfolio: null
   },
   {
-    name: 'Felipe Pegoraro',
+    name: 'Felipe de Sousa Pegoraro',
     role: 'Missões 3 e 4: Mata Atlântica e Bornéu',
     photo: 'assets/team/felipe.jpg',
     github: 'https://github.com/felipepegoraro',
@@ -417,7 +417,7 @@ const TEAM = [
     portfolio: null
   },
   {
-    name: 'Thiago Siena',
+    name: 'Thiago Salata Siena',
     role: 'Missões 7 e 8: Grande Barreira e Andes',
     photo: 'assets/team/thiago.jpg',
     github: 'https://github.com/thiagosiena',

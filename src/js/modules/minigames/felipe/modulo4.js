@@ -114,7 +114,7 @@ export class Modulo4 extends GridCanvasGame {
       <div class="m4-toolbar" id="m4-toolbar">
         ${TOOL_DEFS.map(t => `
           <button class="m4-tool-btn${t.id==='normal'?' active':''}" id="m4-tool-${t.id}"
-            title="${t.id==='normal'?'Clica em fogo p/ apagar, lixo p/ coletar':t.id==='bucket'?'Apaga área 3×3 de fogo':t.id==='firebreak'?'Cria barreira no chão — o fogo não passa':' Aplica em terra queimada (cinza) para revitalizar'}">
+            title="${t.id==='normal'?'Clica em fogo p/ apagar, lixo p/ coletar':t.id==='bucket'?'Apaga área 3×3 de fogo':t.id==='firebreak'?'Cria barreira no chão: o fogo não passa':' Aplica em terra queimada (cinza) para revitalizar'}">
             <span style="font-size:0.65rem;opacity:0.6;margin-right:2px;">[${t.key}]</span>${t.emoji} ${t.label}${t.quantity !== -1 ? ` <span id="m4-qty-${t.id}">(${t.quantity})</span>` : ''}
           </button>
         `).join('')}
@@ -132,7 +132,7 @@ export class Modulo4 extends GridCanvasGame {
       <p class="m4-tip">
         <strong>[1]</strong> clique fogo→apaga, lixo→coleta ·
         <strong>[2]</strong> 🪣 balde: apaga fogo 3×3 (limitado) ·
-        <strong>[3]</strong> 🧱 barreira: clique no chão — fogo não passa ·
+        <strong>[3]</strong> 🧱 barreira: clique no chão, e o fogo não passa ·
         <strong>[4]</strong> 🌱 fertilizante: clique em terra queimada (cinza) ·
         🦧 clique no orangotango piscando p/ resgatar
       </p>

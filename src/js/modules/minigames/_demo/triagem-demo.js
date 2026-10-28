@@ -11,19 +11,20 @@ const CATEGORIAS = {
   trash:    { bin: 'bin-trash.png',    nome: 'Rejeito',   cor: '#9E9E9E' }
 };
 
+// Pilhas e eletrônicos ficam de fora: pela Política Nacional de Resíduos
+// Sólidos eles voltam pela logística reversa, e nenhuma destas lixeiras serve.
 const ITENS = [
   { sprite: 'waste-paper-newspaper.png',  nome: 'Jornal',          categoria: 'paper'   },
   { sprite: 'waste-cardboard.png',        nome: 'Papelão',         categoria: 'paper'   },
   { sprite: 'waste-plastic-pet.png',      nome: 'Garrafa PET',     categoria: 'plastic' },
+  { sprite: 'waste-plastic-bag.png',      nome: 'Sacola plástica', categoria: 'plastic' },
   { sprite: 'waste-metal-can.png',        nome: 'Lata',            categoria: 'metal'   },
+  { sprite: 'waste-nail.png',             nome: 'Prego',           categoria: 'metal'   },
   { sprite: 'waste-glass-jar.png',        nome: 'Pote de vidro',   categoria: 'glass'   },
   { sprite: 'waste-banana-peel.png',      nome: 'Casca de banana', categoria: 'organic' },
   { sprite: 'waste-apple-core.png',       nome: 'Caroço de maçã',  categoria: 'organic' },
   { sprite: 'waste-coffee-grounds.png',   nome: 'Borra de café',   categoria: 'organic' },
   { sprite: 'waste-eggshell.png',         nome: 'Casca de ovo',    categoria: 'organic' },
-  { sprite: 'waste-battery.png',          nome: 'Pilha',           categoria: 'trash'   },
-  { sprite: 'waste-smartphone.png',       nome: 'Smartphone',      categoria: 'trash'   },
-  { sprite: 'waste-circuit-board.png',    nome: 'Placa eletrônica',categoria: 'trash'   },
   { sprite: 'waste-blister.png',          nome: 'Blíster',         categoria: 'trash'   },
   { sprite: 'waste-sponge.png',           nome: 'Esponja',         categoria: 'trash'   }
 ];
@@ -179,7 +180,7 @@ export class TriagemEasterEgg {
     if (!stage) return;
     const titulo = perfect ? 'Triagem perfeita!' : success ? 'Bom trabalho!' : 'Não foi dessa vez';
     const subtitulo = perfect
-      ? `Você acertou todas as ${RODADAS} categorias.`
+      ? `Você acertou todos os ${RODADAS} itens.`
       : `${this.acertos} de ${RODADAS} corretas.`;
     stage.innerHTML = `
       <div class="demo-tri__result">

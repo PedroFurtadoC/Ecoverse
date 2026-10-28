@@ -637,7 +637,7 @@ export class Modulo6 extends CanvasMinigame {
         ${success ? '✅ Nível Concluído!' : '❌ Tente Novamente'}
       </div>
       <div style="color:#d4f5d4;font-size:1rem">
-        ${lv.name} — ♻️ <strong>${colN}/${trash.length}</strong> coletados
+        ${lv.name} · ♻️ <strong>${colN}/${trash.length}</strong> coletados
       </div>
       <button id="m6-next-btn" style="
         margin-top:8px; padding:10px 36px;

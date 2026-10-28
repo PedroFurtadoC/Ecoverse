@@ -51,19 +51,19 @@ const EWASTE_DEFS = [
     id: 'smartphone', src: 'waste-smartphone.png',
     label: 'Smartphone',       correctBin: 'eletronic',
     emoji: '📱',
-    toxicAlert: '⚠️ Contém ouro, cobre e cobalto — muito valiosos para reciclar!',
+    toxicAlert: '⚠️ Contém ouro, cobre e cobalto, muito valiosos para reciclar!',
   },
   {
     id: 'monitor', src: 'waste-tv.png',
     label: 'Monitor',           correctBin: 'eletronic',
     emoji: '🖥️',
-    toxicAlert: '🔵 Telas antigas contêm chumbo — jamais quebre ou incinere!',
+    toxicAlert: '🔵 Telas antigas contêm chumbo: jamais quebre ou incinere!',
   },
   {
     id: 'headphones', src: 'waste-headphones.png',
     label: 'Fone de Ouvido',    correctBin: 'eletronic',
     emoji: '🎧',
-    toxicAlert: '🔩 Metais raros nos ímãs — reciclagem recupera neodímio.',
+    toxicAlert: '🔩 Metais raros nos ímãs: a reciclagem recupera neodímio.',
   },
   {
     id: 'charger', src: 'waste-charger.png',
@@ -75,33 +75,33 @@ const EWASTE_DEFS = [
     id: 'keyboard', src: 'waste-keyboard.png',
     label: 'Teclado',           correctBin: 'eletronic',
     emoji: '⌨️',
-    toxicAlert: '🛍️ Plástico ABS do teclado é reciclável — não jogue no lixo!',
+    toxicAlert: '🛍️ Plástico ABS do teclado é reciclável: não jogue no lixo!',
   },
   // ── Resíduo Perigoso ────────────────────────────────────────────────
   {
     id: 'battery', src: 'waste-battery.png',
     label: 'Bateria',           correctBin: 'hazard',
     emoji: '🔋',
-    toxicAlert: '🔴 Cádmio e lítio contaminam o solo por séculos — descarte especial!',
+    toxicAlert: '🔴 Cádmio e lítio contaminam o solo por séculos: descarte especial!',
   },
   {
     id: 'pesticide', src: 'waste-pesticide-bottle.png',
     label: 'Pesticida',           correctBin: 'hazard',
     emoji: '🧪',
-    toxicAlert: '🔴 Pesticidas contaminam o solo e a água — descarte especial!',
+    toxicAlert: '🔴 Pesticidas contaminam o solo e a água: descarte especial!',
   },
   // ── Metal ────────────────────────────────────────────────
   {
     id: 'can', src: 'waste-metal-can.png',
     label: 'Lata de Metal',           correctBin: 'metal',
     emoji: '🥫',
-    toxicAlert: '♻️ Latas de metal são altamente recicláveis — descarte na lixeira certa!',
+    toxicAlert: '♻️ Latas de metal são altamente recicláveis: descarte na lixeira certa!',
   },
   {
     id: 'nail', src: 'waste-nail.png',
     label: 'Prego',           correctBin: 'metal',
     emoji: '🔩',
-    toxicAlert: '♻️ Pregos são feitos de aço — altamente recicláveis!',
+    toxicAlert: '♻️ Pregos são feitos de aço, que é altamente reciclável!',
   },
 ];
 
@@ -115,20 +115,20 @@ const BIN_DEFS = [
 
 /* ── Fatos educativos (exibidos entre ondas) ──────────────────────────── */
 const EWASTE_FACTS = [
-  '62 milhões de toneladas de e-waste em 2023 — o dobro do peso da Grande Muralha da China.',
+  'Em 2022, o mundo gerou 62 milhões de toneladas de e-waste, um recorde (GEM 2024).',
   'Apenas 22% do lixo eletrônico global é formalmente reciclado (GEM 2024).',
   'Baterias descartadas no lixo comum liberam cádmio e lítio em lençóis freáticos.',
   'Placas de circuito queimadas a céu aberto liberam mercúrio e dioxinas no ar.',
   'Um smartphone tem mais de 60 elementos químicos: ouro, prata, cobalto e mais.',
   'A Bacia do Congo absorve ilegalmente toneladas de e-waste da Europa e dos EUA todo ano.',
-  'Reciclar 1 tonelada de celulares recupera ~340 g de ouro — 40× mais que minério bruto.',
+  'Reciclar 1 tonelada de celulares recupera ~340 g de ouro, 40× mais que minério bruto.',
   'O chumbo de monitores antigos pode intoxicar crianças que brincam em terrenos contaminados.',
 ];
 
 /* ── Missões ─────────────────────────────────────────────────────────── */
 const MISSION_DEFS = [
-  { id: 'catch5',  text: 'Triaje 5 seguidos',    type: 'consecutive_catch', target: 5,  reward: { pts: 20 } },
-  { id: 'catch10', text: 'Triaje 10 itens',       type: 'total_catch',       target: 10, reward: { pts: 25 } },
+  { id: 'catch5',  text: 'Separe 5 seguidos',    type: 'consecutive_catch', target: 5,  reward: { pts: 20 } },
+  { id: 'catch10', text: 'Separe 10 itens',       type: 'total_catch',       target: 10, reward: { pts: 25 } },
   { id: 'combo4',  text: 'Alcance combo ×4',      type: 'reach_combo',       target: 4,  reward: { pts: 30 } },
   { id: 'survive', text: 'Sobreviva 25 segundos', type: 'survive_frames',    target: 1500, reward: { pts: 35 } },
 ];
@@ -376,7 +376,7 @@ export class Modulo2 extends CanvasMinigame {
       this.fallSpeed   = def.fallSpeed;
       this.pickFrames  = def.pickFrames;
       this.inWaveBreak = false;
-      this.hud.setText('wave', `Onda ${num} — ${def.label}`);
+      this.hud.setText('wave', `Onda ${num}: ${def.label}`);
       this.parts.spawnFloat(this.canvas.width / 2, 55,
         `🌊 Onda ${num}!`, '#4dd0e1', 15);
     });
@@ -942,7 +942,7 @@ export class Modulo2 extends CanvasMinigame {
     this.hud.setText('score', 0);
     this.hud.setText('combo', '—');
     this.hud.setStyle('combo', 'color', '#ffd600');
-    this.hud.setText('wave', 'Onda 1 — Devagar');
+    this.hud.setText('wave', 'Onda 1: Devagar');
     this.hud.setVisible('bestWrap', this.score.bestScore > 0);
     this.hud.setText('best', this.score.bestScore);
     this.hud.setStyle('pickBar', 'width', '100%');

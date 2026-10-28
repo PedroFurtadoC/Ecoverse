@@ -291,7 +291,7 @@ export class Modulo1 extends CanvasMinigame {
       <canvas id="m1-canvas"></canvas>
       <p class="m1-tip">
         Clique na <strong>lixeira correta</strong> para arremessar!
-        🌊 Salve o Rio Amazonas — proteja botos e pirarucus!
+        🌊 Salve o Rio Amazonas: proteja botos e pirarucus!
       </p>
     </div>
     `;

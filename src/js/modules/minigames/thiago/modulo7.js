@@ -50,8 +50,8 @@ export class Modulo7 {
         <div id="t7-damage-flash" class="thiago-7-damage-flash"></div>
 
         <div class="thiago-7-hud">
-          <div class="thiago-7-stat">SCORE: <span id="t7-score">0</span><div id="t7-combo" class="thiago-7-combo" style="display: none;">x1 Combo</div></div>
-          <div class="thiago-7-stat">CORAL HEALTH<div id="t7-health-bar" class="thiago-7-health-bar"><div id="t7-health" class="thiago-7-health-fill" style="width: 100%"></div></div></div>
+          <div class="thiago-7-stat">PONTOS: <span id="t7-score">0</span><div id="t7-combo" class="thiago-7-combo" style="display: none;">x1 Combo</div></div>
+          <div class="thiago-7-stat">SAÚDE DO CORAL<div id="t7-health-bar" class="thiago-7-health-bar"><div id="t7-health" class="thiago-7-health-fill" style="width: 100%"></div></div></div>
         </div>
 
         <div id="t7-game-area" style="position: absolute; inset: 0; overflow: hidden; z-index: 50;">

@@ -11,12 +11,12 @@ import * as Sync from './services/sync.js';
 import * as AuthUI from './modules/auth-ui.js';
 import { escapeHtml } from './utils/html.js';
 
-// Modo de teste: `?dev=free` na URL destrava tudo pra revisar o jogo:
-// todas as missões liberadas, sem custo de energia, sem persistir progresso
-// (nenhuma jogada credita conquistas ou marca missão como concluída).
+// Modo de teste: `?dev=free` na URL libera as missões pra revisar o jogo:
+// todas abertas, sem custo de energia, e nenhuma partida conta como concluída
+// nem credita conquistas. Quizzes e Pomodoro continuam salvando normalmente.
 // Ex.: http://localhost:3000/?dev=free
 const DEV_FREE = new URLSearchParams(location.search).get('dev') === 'free';
-if (DEV_FREE) console.info('[ecoverse] modo dev: tudo liberado, progresso não é salvo');
+if (DEV_FREE) console.info('[ecoverse] modo dev: missões liberadas; as partidas não contam como concluídas');
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -230,7 +230,7 @@ function openEasterEgg() {
     state.eggCompleted = true;
 
     // A triagem relâmpago é uma partida de triagem como as das missões, então
-    // acertar as oito categorias sem errar nenhuma conta pras conquistas de
+    // acertar os oito itens sem errar nenhum conta pras conquistas de
     // triagem. É também o caminho mais curto pra quem ficou perto de fechá-las.
     if (perfect) state.perfectMinigames++;
 
