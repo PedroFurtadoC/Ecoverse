@@ -14,7 +14,7 @@ Roteiro de 32 testes para confirmar que a plataforma está funcionando por intei
 
 **[Ecoverse - Anexo de diagramas.docx](./Ecoverse%20-%20Anexo%20de%20diagramas.docx)**
 
-As seis figuras do sistema em formato pronto para anexar, cada uma numerada, com título e fonte. Gerado a partir de [diagramas.md](./diagramas.md), então regere quando algum diagrama mudar.
+As seis figuras do sistema em formato pronto para anexar, cada uma numerada, com título e fonte. Gerado a partir de [diagramas.md](./diagramas.md), então regere quando algum diagrama mudar. Hoje as figuras correspondem à versão registrada no INPI (tag `inpi-2026-09-22`); mudanças posteriores, como a troca de conta no mesmo navegador, ainda não aparecem nelas.
 
 **[fluxogramas.docx](./fluxogramas.docx)**
 
@@ -40,4 +40,6 @@ Configuração do banco passo a passo: [`supabase/README.md`](../supabase/README
 
 Contrato técnico dos minigames: [`src/js/modules/minigames/README.md`](../src/js/modules/minigames/README.md).
 
-Autoria e bibliotecas de terceiros: [`NOTICE.md`](../NOTICE.md). Termos de licença: [`LICENSE`](../LICENSE).
+Autoria, bibliotecas e imagens de terceiros: [`NOTICE.md`](../NOTICE.md). Termos de licença: [`LICENSE`](../LICENSE).
+
+Pacote e resumo hash do registro no INPI: [`ferramentas/gerar-hash-inpi.mjs`](../ferramentas/gerar-hash-inpi.mjs). O passo a passo fica com o titular, fora do repositório.

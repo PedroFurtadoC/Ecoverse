@@ -6,7 +6,7 @@ Aplicação single-page sem framework. Vite empacota em ESM. O código é dividi
 2. **Módulos de domínio** (`src/js/modules/`): Pomodoro, conquistas, quizzes ODS, roteador de minigames. Cada um expõe um objeto público (ex.: `Pomodoro.init()`, `MiniGames.open(...)`).
 3. **Apresentação** (`src/js/main.js` + `src/css/`): orquestra DOM, anima HUD, controla o globo, encadeia ações entre módulos via event bus.
 
-Apoio: `src/js/services/` fala com o Supabase (auth, sync) e `src/js/utils/` guarda helpers puros usados por mais de um módulo.
+Apoio: `src/js/services/` fala com o Supabase (auth, sync), `src/js/utils/` guarda helpers puros usados por mais de um módulo e `src/js/config/data.js` guarda o conteúdo do jogo: missões, conquistas, quizzes, dicas e equipe.
 
 ## Fluxo principal
 
@@ -33,12 +33,12 @@ Em paralelo, o Pomodoro emite `EVENTS.REWARD` e `EVENTS.POMODORO_COMPLETE`: `mai
 ## Convenções
 
 - **ESM** em todo lugar, paths relativos com extensão `.js`.
-- **Português** para domínio (`plantTree`, `flyToMission`); **inglês** para técnico-genérico (`init`, `update`, `open`).
+- **Nomes**: funções e variáveis em inglês na maior parte do código (`plantTree`, `completeMission`); trechos mais novos usam português (`devolverFoco`). Interface e comentários sempre em português.
 - **Event bus** para acoplamento de "notificação" (módulo A avisa, módulo B reage). Imports diretos só para contratos síncronos (`MiniGames.open()` chamado direto).
 - **localStorage** é a fonte primária (chave `ecoverse_save_v6`). O progresso dos quizzes ODS vive dentro desse mesmo save, e não em chave separada, pra subir junto na sincronização. Quando o Supabase está configurado, `services/sync.js` faz upsert com debounce de 2s sem alterar o localStorage. O upsert só acontece depois de uma leitura bem-sucedida da linha daquela conta: com rede ruim, gravar sem ter lido substituiria progresso que só existe na nuvem.
 - **Dono do save**: `ecoverse_save_v6_conta` guarda o id da conta que sincronizou com o save. Se outra conta entra no mesmo navegador, o jogo volta ao começo antes de ler a nuvem, e os recordes que cada minigame guarda à parte (chaves `m1_`, `m2_`, `m6v2_` e parecidas) saem junto. Save sem dono é de quem jogou sem conta: se tiver progresso que a conta ainda não tem, o jogo pergunta antes de juntar. Ao sair da conta com a última gravação confirmada, o navegador volta ao começo e fica sem dono, para a próxima pessoa. Tudo isso fica em `reconcileFromCloud()` (`main.js`) e em `signOut()` (`modules/auth-ui.js`).
 - **Janelas**: abra e feche sempre por `openModal()` e `closeModal()` em `main.js`. Elas cuidam do foco: ele entra na janela ao abrir, o Tab circula só dentro dela e, ao fechar, volta para o botão de origem.
-- **`persist()`** em `main.js` é o único caminho para gravar: salva local e agenda o sync. Não chame `Sync.scheduleSync()` de novo depois dele.
+- **`persist()`** em `main.js` é o caminho para gravar depois de uma jogada: salva local e agenda o sync. Não chame `Sync.scheduleSync()` de novo depois dele. Quando o estado muda por fora do jogo, pela nuvem ou pela troca de conta, `refreshProgressView()` e o tempo real gravam só no navegador, com `saveState()`.
 - **Formato na nuvem**: `toCloudSnapshot()` em `store/state.js` é a única definição do progresso em snake_case. O sync e a exportação LGPD usam a mesma função.
 
 ## Build
@@ -47,11 +47,11 @@ Em paralelo, o Pomodoro emite `EVENTS.REWARD` e `EVENTS.POMODORO_COMPLETE`: `mai
 
 | Arquivo | gzip | Quando carrega |
 | --- | --- | --- |
-| `index.html` | ~7,7 KB | sempre |
-| `index.css` | ~15 KB | sempre |
-| chunk do app | ~71 KB | sempre |
-| chunk do Supabase | ~57 KB | em toda visita, logo depois do app, para conferir se há sessão |
-| chunk do globo | ~519 KB | depois da tela de carregamento |
+| `index.html` | ~8,7 KB | sempre |
+| `index.css` | ~16 KB | sempre |
+| chunk do app | ~70 KB | sempre |
+| chunk do Supabase | ~57 KB | depois da tela de carregamento, se o login estiver configurado, para conferir se há sessão |
+| chunk do globo | ~519 KB | durante a tela de carregamento |
 
 O globo carrega Three.js junto e por isso pesa. Fica fora do caminho crítico de propósito: a tela de carregamento aparece antes, e o download acontece enquanto ela está visível.
 

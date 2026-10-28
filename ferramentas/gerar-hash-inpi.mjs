@@ -2,7 +2,7 @@
  * Monta o arquivo de código-fonte que fica guardado para o registro de
  * programa de computador no INPI e calcula o resumo digital hash dele.
  *
- *   node ferramentas/gerar-hash-inpi.mjs
+ *   node ferramentas/gerar-hash-inpi.mjs [--somente-codigo]
  *
  * O INPI não recebe o código: recebe apenas o resumo hash, que vai
  * impresso no certificado. Quem guarda o arquivo é o titular do direito.

@@ -35,7 +35,7 @@ create table if not exists public.progress (
 );
 
 -- =============================================================
--- pomodoro_sessions: histórico de sessões pra leaderboard de foco
+-- pomodoro_sessions: histórico das sessões de foco, entregue na exportação de dados (LGPD)
 -- =============================================================
 create table if not exists public.pomodoro_sessions (
   id          uuid primary key default gen_random_uuid(),

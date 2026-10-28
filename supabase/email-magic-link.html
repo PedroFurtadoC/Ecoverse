@@ -15,8 +15,8 @@
       Message body: cole o mesmo HTML.
       Dispara nos acessos seguintes do mesmo email.
 
-  As variáveis {{ .ConfirmationURL }} e {{ .Email }} são substituídas pelo
-  Supabase em tempo de envio. Não altere a grafia delas.
+  A única variável usada é {{ .ConfirmationURL }}, que o Supabase troca
+  pelo link em tempo de envio. Não altere a grafia dela.
 
   O estilo é todo inline de propósito: boa parte dos clientes de email ignora
   a tag <style> no head. O layout em tabela é pelo mesmo motivo, e foi testado

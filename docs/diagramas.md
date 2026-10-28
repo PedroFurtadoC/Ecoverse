@@ -208,4 +208,4 @@ flowchart TD
     P5 --> FIM(["Estado consolidado"])
 ```
 
-A pontuação pesa missão concluída acima de sessão de foco, que pesa acima de quiz respondido, e por último conquistas, moedas e árvores. O resultado é determinístico: dois aparelhos que recebem os mesmos dados chegam ao mesmo estado, independentemente da ordem em que sincronizam.
+A pontuação pesa missão concluída acima de sessão de foco, que pesa acima de quiz respondido, e por último conquistas, moedas e árvores. Listas, contadores e quizzes chegam ao mesmo resultado em qualquer ordem de sincronização. A energia segue o lado de maior pontuação, e as árvores, o lado que tem mais. Em empate, cada aparelho mantém as suas até um dos lados avançar.

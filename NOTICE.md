@@ -21,7 +21,11 @@ O Ecoverse é o trabalho final da disciplina de Sustentabilidade Ambiental da **
 - [Supabase JS](https://github.com/supabase/supabase-js): Auth e banco (MIT).
 - [Outfit (Google Fonts)](https://fonts.google.com/specimen/Outfit): tipografia (OFL 1.1).
 
-Estatísticas e fatos ambientais foram revisados em fontes oficiais (UNEP, IBGE, MMA, SOS Mata Atlântica, MapBiomas, AIMS, FAO, CEMPRE, ABRELPE) e estão citados em comentários inline no código.
+As estatísticas das missões e das dicas da tela de carregamento citam a fonte em comentário no código (UNEP, MapBiomas, SOS Mata Atlântica, AIMS, FAO e outras). As perguntas dos quizzes e parte dos fatos dos minigames ainda não têm fonte registrada item a item.
+
+## Imagens
+
+As fotos das missões (`public/assets/photo-*`) e a textura do globo (`public/assets/earth-texture.webp`) são de terceiros: continuam dos seus autores e não entram na licença MIT. Os sprites e as ilustrações de `public/assets/generated/` e de `design/` foram feitos para o projeto.
 
 ## Forks
 

@@ -48,7 +48,7 @@ Se um minigame chamar `onGameEnd` direto, sem passar pelo gamekit, aí sim preci
 
 ### Resultado depois de "Jogar novamente"
 
-O `success` enviado é sempre o da partida que acabou de terminar, mesmo que o jogador tenha usado o "Jogar novamente" antes. Perdeu a revanche: `success: false` e a energia volta. Ganhou a revanche: `success: true` e a missão conclui. Use `GameOverlay.continueButton(id, success, onClick)`: o rótulo ("Continuar" ou "Voltar ao Mapa") sai do resultado, então fica igual em todos os jogos.
+O `success` enviado é sempre o da partida que acabou de terminar, mesmo que o jogador tenha usado o "Jogar novamente" antes. Perdeu a revanche: `success: false` e a energia volta. Ganhou a revanche: `success: true` e a missão conclui. Use `GameOverlay.continueButton(id, success, onClick)`: o rótulo ("Continuar" ou "Voltar ao Mapa") sai do resultado, então fica igual em todos os jogos feitos com o gamekit (missões 1 a 6). Os jogos 7 e 8 montam os próprios botões, Finalizar e Tentar Novamente.
 
 ## Sair no meio da partida
 
@@ -77,9 +77,9 @@ Pra que os 8 minigames tenham coerência entre si:
 ## Boas práticas
 
 - CSS em arquivo próprio: `src/css/components/minigame-<pasta>-<n>.css`, importado em `src/css/main.css`. Nada de `<style>` dentro do `innerHTML`: ele é reinserido e reprocessado a cada partida.
-- Classes e ids com um prefixo único do módulo, para não colidir entre jogos. Os módulos atuais usam `.m1-` a `.m6-`, `.thiago-7-`/`.thiago-8-` e `.demo-tri__`.
+- Classes e ids com um prefixo único do módulo, para não colidir entre jogos. Os módulos atuais usam `.m1-` a `.m6-`, `.thiago-7-`/`.thiago-8-`/`.t8-` e `.demo-tri__`. Exceção conhecida: o `minigame-thiago-8.css` também declara `.thiago-7-bag` e `.thiago-7-jug`.
 - Sem `window.<algo>` global. Use propriedades da classe ou `let`/`const` locais.
-- Pointer events (`pointerdown`/`move`/`up`) cobrem mouse e touch, então não use `mouse*`/`touch*` separados.
+- Pointer events (`pointerdown`/`move`/`up`) cobrem mouse e touch, então não use `mouse*`/`touch*` separados em código novo. Os módulos 1 a 4 ainda usam os dois separados.
 - Touch targets ≥ 44×44 px.
 - Respeite `prefers-reduced-motion: reduce` nas animações.
 
@@ -87,7 +87,7 @@ Pra que os 8 minigames tenham coerência entre si:
 
 1. `npm run dev` na raiz.
 2. Abra `http://localhost:3000/?dev=free` (energia liberada, não precisa Pomodoro).
-3. Clique no marcador da missão no globo → "Iniciar Missão".
+3. Clique no marcador da missão no globo → "Testar missão" (fora do modo dev, o botão é "Iniciar Missão").
 4. A tela do minigame aparece por cima do globo.
 5. Edite o arquivo do módulo e salve. O Vite recarrega sozinho.
 

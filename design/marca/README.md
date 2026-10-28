@@ -76,9 +76,10 @@ caixa ou moldura, e não recompor o nome em outra fonte.
 A folha aparece nos sete SVG, e o nome em cinco deles. Mexeu num, mexa
 nos outros, senão a marca passa a existir em duas versões ao mesmo tempo.
 Depois refaça as exportações de `png/` e as de `registro-inpi/marca/` a
-partir dos SVG atualizados, e troque também os três arquivos que a aplicação carrega:
-`public/assets/logo.svg`, `public/favicon.svg` e `public/favicon.png`.
+partir dos SVG atualizados, e troque também os sete arquivos que a aplicação usa:
+`public/assets/logo.svg`, `public/favicon.svg`, `public/favicon.png`,
+`public/icon-maskable.png`, `public/apple-touch-icon.png`, `public/og-image.png`
+e `public/email-logo.png`.
 
-O `favicon.png` leva quadrado branco por baixo de propósito: além de
-ícone de aba, ele serve como ícone mascarável do PWA, e ícone mascarável
-precisa de fundo cheio.
+O ícone mascarável do PWA é o `icon-maskable.png`, que precisa de fundo
+cheio. O `favicon.png` entra no manifesto como ícone comum (`any`).

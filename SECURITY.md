@@ -22,7 +22,7 @@ Só a versão em produção, marcada como Latest nas Releases.
 ## Como o projeto se protege
 
 - Cabeçalhos de segurança e política de conteúdo em `vercel.json`: o navegador só executa scripts do próprio site.
-- Proteção por linha no banco: cada conta só lê e grava o que é dela, e quem não entrou numa conta só vê os apelidos do ranking.
+- Proteção por linha no banco: cada conta só grava o que é dela e só lê o próprio progresso. O perfil (apelido e datas) e o ranking (moedas, impacto, Pomodoros, missões e última atividade) ficam abertos a qualquer visitante; email e progresso detalhado, nunca.
 - A exclusão de conta passa por uma função que só alcança a conta de quem pediu.
 - CodeQL, varredura de segredos com bloqueio de push e alertas do Dependabot ligados no repositório.
 - A chave publicável do Supabase que aparece no site é pública por design. Nenhuma chave secreta fica no repositório.

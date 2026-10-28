@@ -1,7 +1,8 @@
 # Easter egg: Triagem relâmpago
 
-Minigame escondido. Não aparece no globo nem no menu. Só abre se a pessoa
-digitar **`ECO`** em qualquer tela da aplicação (fora de um campo de texto).
+Minigame escondido. Não aparece no globo nem no menu. Abre quando a pessoa
+digita **`ECO`** em qualquer tela da aplicação (fora de um campo de texto) ou
+toca três vezes rápido no contador de missões.
 
 ## Mecânica
 
@@ -10,12 +11,14 @@ digitar **`ECO`** em qualquer tela da aplicação (fora de um campo de texto).
 - O jogador clica numa das 6 lixeiras CONAMA (Papel, Plástico, Metal, Vidro, Orgânico, Rejeito)
 - Feedback imediato (`Correto!` ou `Vai pro X`)
 - Acertar ≥ 60% conta como sucesso e desbloqueia a conquista `egg_triagem`
+- Pilhas e eletrônicos ficam de fora de propósito: pela PNRS eles voltam pela logística reversa,
+  e nenhuma das 6 lixeiras serve
 
 ## Como o trigger funciona
 
 Em `src/js/main.js` há um `keydown` listener que acumula as últimas 3 letras
 digitadas e dispara `openEasterEgg()` quando o buffer fecha em `eco`. O buffer
-limpa em 1.2s sem tecla, o listener ignora `input/textarea`, e a sequência
+limpa depois de 2 s sem tecla, o listener ignora `input/textarea`, e a sequência
 só abre se nenhum outro minigame estiver ativo.
 
 ## Como o jogo se integra

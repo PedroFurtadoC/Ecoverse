@@ -6,12 +6,12 @@
 -- especialmente em queries que tocam várias linhas como o leaderboard.
 
 -- =============================================================
--- GRANTs basicos pras roles do Supabase. Sem isso, o Postgres
+-- GRANTs básicos pras roles do Supabase. Sem isso, o Postgres
 -- bloqueia qualquer SELECT/INSERT/UPDATE/DELETE com "permission
--- denied for table" antes mesmo de avaliar a RLS: porque tabelas
--- criadas via SQL direto so recebem privilegios secundarios pra
+-- denied for table" antes mesmo de avaliar a RLS, porque tabelas
+-- criadas via SQL direto só recebem privilégios secundários pra
 -- anon/authenticated. As policies abaixo continuam sendo o que
--- de fato restringe os dados; estes grants so abrem a porta.
+-- de fato restringe os dados; estes grants só abrem a porta.
 -- =============================================================
 grant select on public.profiles to anon, authenticated;
 grant insert, update, delete on public.profiles to authenticated;
@@ -21,24 +21,24 @@ grant select, insert, update, delete on public.progress to authenticated;
 grant select, insert, delete on public.pomodoro_sessions to authenticated;
 
 -- =============================================================
--- Menor privilegio: o bootstrap do Supabase concede TRUNCATE,
+-- Menor privilégio: o bootstrap do Supabase concede TRUNCATE,
 -- TRIGGER e REFERENCES para anon e authenticated em tudo que
--- nasce no schema public. A aplicacao nunca usa nenhum dos tres.
+-- nasce no schema public. A aplicação nunca usa nenhum dos três.
 --
--- TRUNCATE merece atencao especial porque ignora Row Level
--- Security por completo: quem conseguisse executa-lo apagaria a
+-- TRUNCATE merece atenção especial porque ignora Row Level
+-- Security por completo: quem conseguisse executá-lo apagaria a
 -- tabela inteira independentemente das policies. Hoje a API REST
--- nao expoe esse comando, entao nao ha caminho de exploracao, mas
--- manter o privilegio e risco desnecessario. Revogar nao afeta
--- nada, porque o app so faz leitura e escrita comuns.
+-- não expõe esse comando, então não há caminho de exploração, mas
+-- manter o privilégio é risco desnecessário. Revogar não afeta
+-- nada, porque o app só faz leitura e escrita comuns.
 -- =============================================================
 revoke truncate, trigger, references on public.profiles from anon, authenticated;
 revoke truncate, trigger, references on public.progress from anon, authenticated;
 revoke truncate, trigger, references on public.pomodoro_sessions from anon, authenticated;
 
 -- =============================================================
--- profiles: legível por qualquer um (alimenta o leaderboard),
--- gravável só pelo dono.
+-- profiles: legível por qualquer um, gravável só pelo dono. Quem lê
+-- sem login é o ping de manutenção; o ranking passa pela get_leaderboard.
 -- =============================================================
 alter table public.profiles enable row level security;
 

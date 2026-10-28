@@ -16,7 +16,7 @@ Aplicação web criada por Pedro Furtado Cunha e equipe da Universidade de Ribei
 
 ## Documentação
 
-- [README principal](https://github.com/PedroFurtadoC/Ecoverse/blob/main/README.md): visão geral, setup local e estrutura do projeto.
+- [README principal](https://github.com/PedroFurtadoC/Ecoverse/blob/main/README.md): visão geral, setup local e publicação.
 - [Arquitetura](https://github.com/PedroFurtadoC/Ecoverse/blob/main/docs/arquitetura.md): camadas, fluxo de dados, decisões de design e build.
 - [Como contribuir](https://github.com/PedroFurtadoC/Ecoverse/blob/main/docs/contribuindo.md): setup, branches, Conventional Commits e code review.
 - [NOTICE](https://github.com/PedroFurtadoC/Ecoverse/blob/main/NOTICE.md): autores, parceria institucional UNAERP e créditos.
@@ -25,4 +25,4 @@ Aplicação web criada por Pedro Furtado Cunha e equipe da Universidade de Ribei
 
 - GitHub: https://github.com/PedroFurtadoC/Ecoverse
 - Deploy: https://ecoverse.dev
-- Licença: MIT (com atribuição UNAERP)
+- Licença: MIT, com marca e logotipo reservados

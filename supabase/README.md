@@ -24,8 +24,19 @@ A publishable key é pública por design. A RLS (Row Level Security) garante a s
 1. `schema.sql`: cria as tabelas, os triggers de `updated_at`, a função do ranking (`get_leaderboard`) e a função do botão "Excluir minha conta" (`delete_own_account`).
 2. `policies.sql`: habilita RLS e define as políticas otimizadas com `(select auth.uid())`.
 3. O bloco do trigger de novo usuário da seção 5, que não está em arquivo `.sql`.
+4. O tempo real da tabela `progress`, que leva o progresso de um aparelho para o outro sem recarregar a página:
 
-Os três são idempotentes: rodar de novo não quebra nada. O banco não lê o repositório: qualquer mudança futura nesses arquivos só vale depois de colada no SQL Editor.
+```sql
+do $$
+begin
+  if not exists (select 1 from pg_publication_tables
+                 where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'progress') then
+    alter publication supabase_realtime add table public.progress;
+  end if;
+end $$;
+```
+
+Os quatro são idempotentes: rodar de novo não quebra nada. O banco não lê o repositório: qualquer mudança futura nesses arquivos só vale depois de colada no SQL Editor.
 
 ## 4. Configurar Auth
 
@@ -100,7 +111,7 @@ No SQL Editor:
 select * from public.get_leaderboard('total', 50);
 ```
 
-Deve rodar sem erro (num banco novo, sem linhas). Se der "permission denied for function get_leaderboard", falta o grant de execução, que fica no fim do `schema.sql`: rode o arquivo de novo. Se der "permission denied for table", são os grants das tabelas, no `policies.sql`.
+Deve rodar sem erro (num banco novo, sem linhas). Se der "permission denied for function get_leaderboard", falta o grant de execução, que fica logo depois da função `get_leaderboard`, no `schema.sql`: rode o arquivo de novo. Se der "permission denied for table", são os grants das tabelas, no `policies.sql`.
 
 A função de exclusão de conta só pode ser chamada por quem está logado:
 
@@ -111,7 +122,7 @@ select has_function_privilege('anon', 'public.delete_own_account()', 'execute') 
 
 Esperado: `false` e `true`.
 
-Pra conferir que as tabelas têm os GRANTs corretos (anon lê profiles pro ranking, authenticated faz CRUD nas próprias linhas):
+Pra conferir que as tabelas têm os GRANTs corretos (anon só lê profiles, que é o que o ping de manutenção consulta; authenticated grava nas próprias linhas):
 
 ```sql
 select grantee, table_name, privilege_type
@@ -136,7 +147,7 @@ Em **Advisors → Security** o resultado esperado é:
 revoke execute on function public.rls_auto_enable() from public, anon, authenticated;
 ```
 
-## 8. Templates de email branded
+## 8. Templates de email com a marca
 
 O Supabase tem templates separados pro **primeiro acesso de um email** (`Confirm sign up`) e pros **acessos seguintes** (`Magic link or OTP`). Os dois precisam ser personalizados, senão o primeiro email chega genérico em inglês. Os nomes exatos mudam de tempos em tempos na interface, então procure pelo sentido e não pelo rótulo.
 
@@ -147,7 +158,7 @@ Para os dois, faça o mesmo passo:
 3. **Message body**: cole o conteúdo de [`email-magic-link.html`](./email-magic-link.html).
 4. Salve.
 
-O HTML é o mesmo para os dois templates. O conteúdo do email não muda, só o gatilho. As variáveis `{{ .ConfirmationURL }}` e `{{ .Email }}` são substituídas em runtime pelo Supabase.
+O HTML é o mesmo para os dois templates. O conteúdo do email não muda, só o gatilho. A única variável usada é `{{ .ConfirmationURL }}`, que o Supabase troca pelo link na hora do envio.
 
 ## 9. Manter o projeto acordado
 
@@ -160,9 +171,11 @@ Hoje são duas camadas, as duas fazendo um `SELECT` real em `profiles`:
 | Camada | Onde | Frequência | Observação |
 | --- | --- | --- | --- |
 | Principal | Cron da Vercel: [`api/keep-alive.js`](../api/keep-alive.js) + `crons` no `vercel.json` | diária, entre 08:00 e 08:59 UTC (no Hobby a Vercel garante só a hora) | Não depende de movimento no repositório |
-| Reserva | GitHub Actions: [`keep-supabase-warm.yml`](../.github/workflows/keep-supabase-warm.yml) | diária, às 08:23 UTC | Desliga sozinho após 60 dias sem commit |
+| Reserva | GitHub Actions: [`keep-supabase-warm.yml`](../.github/workflows/keep-supabase-warm.yml) | diária, marcada para 08:23 UTC; o GitHub costuma atrasar algumas horas | Desliga sozinho após 60 dias sem commit |
 
 Nada disso exige plano pago: cron diário roda no Hobby da Vercel e Actions é gratuito em repositório público. O Pro do Supabase (US$ 25/mês) resolve por outro caminho: projeto pago não pausa, ponto. Vale se o app precisar de disponibilidade garantida; pra uso acadêmico as duas camadas acima dão conta.
+
+O workflow do GitHub lê `SUPABASE_URL` e `SUPABASE_ANON_KEY` dos segredos do repositório (**Settings → Secrets and variables → Actions**). Se o repositório for recriado em vez de transferido, cadastre os dois de novo.
 
 Sobre o limite dos 60 dias do GitHub: é regra da plataforma pra repositório público, e não tem como desativar. Se o repositório ficar parado (o que é normal depois da entrega), o workflow aparece como *disabled_inactivity* em **Actions**: basta clicar em **Enable workflow**. Por isso a camada principal é a da Vercel.
 

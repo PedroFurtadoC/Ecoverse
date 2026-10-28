@@ -17,7 +17,7 @@ npm install
 npm run dev
 ```
 
-A aplicação abre em `http://localhost:3000`. Para testar missões sem fazer Pomodoro, use `http://localhost:3000/?dev=free`: todas as missões ficam liberadas e não gastam energia, e nada jogado nesse modo fica salvo.
+A aplicação abre em `http://localhost:3000`. Para testar missões sem fazer Pomodoro, use `http://localhost:3000/?dev=free`: todas as missões ficam liberadas, não gastam energia e não contam como concluídas. Quizzes e Pomodoro salvam normalmente.
 
 Para gerar o build de produção:
 
@@ -32,12 +32,12 @@ npm run preview     # serve dist/ localmente
 
 - **Globo 3D interativo** com 8 missões em locais reais (Amazônia, Bacia do Congo, Mata Atlântica, Bornéu, Madagascar, Pantanal, Grande Barreira de Coral, Cordilheira dos Andes).
 - **Minigames temáticos** focados em problemas reais de resíduos por bioma (plástico no rio, e-waste, microplástico, pesca-fantasma, etc.).
-- **Pomodoro** integrado: sessões de 25/5/15 minutos geram energia e moedas para iniciar missões.
+- **Pomodoro** integrado: sessões de 25/5/15 minutos geram energia, que libera as missões, e moedas.
 - **Quizzes ODS**: 17 quizzes baseados nos Objetivos de Desenvolvimento Sustentável da ONU, desbloqueados em três fases conforme você completa missões.
 - **16 conquistas** que ensinam conceitos de resíduos enquanto recompensam (15 visíveis e 1 secreta).
-- **Conta opcional com magic link** (sem senha). Quem cadastra sincroniza o progresso na nuvem e aparece no **ranking de turma** (filtros Mensal/Geral).
-- **Direitos da LGPD no menu**: consentimento no cadastro, exportação dos dados em JSON e exclusão da conta, que apaga tudo na hora.
-- **Contas separadas no mesmo aparelho**: ao sair, o navegador volta ao começo para a próxima pessoa, e o progresso de uma conta não passa para outra.
+- **Conta opcional com magic link** (sem senha). Quem cadastra sincroniza o progresso na nuvem e aparece no **ranking da turma** (abas Geral e Este mês).
+- **Direitos da LGPD no menu**: consentimento no cadastro, exportação dos dados em JSON e exclusão da conta, que apaga na hora tudo o que está na nuvem.
+- **Contas separadas no mesmo aparelho**: ao sair com o progresso salvo na nuvem, o navegador volta ao começo para a próxima pessoa, e o progresso de uma conta não passa para outra.
 - **Teclado**: missões, quizzes e janelas funcionam com Tab, Enter e Esc. Entre os minigames, o 5 e o 6 também; os outros ainda dependem de mouse ou toque.
 
 ---
@@ -75,9 +75,9 @@ Hospedagem na **Vercel**. Cada push na `main` publica a produção em cerca de u
 A `main` aceita push direto, mas recusa force push e exclusão (ruleset "main protegida"). Para fechar uma versão:
 
 ```bash
-npm version 1.0.2 --no-git-tag-version
-git commit -am "chore(release): 1.0.2"
-git tag -a v1.0.2 -m "Ecoverse 1.0.2"
+npm version X.Y.Z --no-git-tag-version
+git commit -am "chore(release): X.Y.Z"
+git tag -a vX.Y.Z -m "Ecoverse X.Y.Z"
 git push origin main --follow-tags
 ```
 
@@ -87,10 +87,10 @@ Depois, crie a Release no GitHub a partir da tag e marque como Latest. Tags `v*`
 
 ## Banco de dados (Supabase)
 
-O leaderboard de turma, autenticação por magic link e a sincronização de progresso entre dispositivos usam Supabase. Sem as variáveis de ambiente configuradas, o jogo roda anônimo usando `localStorage` no navegador, e toda a parte de login fica oculta.
+O leaderboard de turma, autenticação por magic link e a sincronização de progresso entre dispositivos usam Supabase. Sem as variáveis de ambiente configuradas, o jogo roda anônimo usando `localStorage` no navegador, e toda a parte de login fica oculta. O ranking continua no menu, vazio.
 
 - Setup completo em [`supabase/README.md`](./supabase/README.md).
-- Template do email de magic link branded em [`supabase/email-magic-link.html`](./supabase/email-magic-link.html).
+- Template do email de magic link, com a marca, em [`supabase/email-magic-link.html`](./supabase/email-magic-link.html).
 - Ping diário automático pra evitar o auto-pause do plano free, em duas camadas: cron da Vercel ([`api/keep-alive.js`](./api/keep-alive.js)) como principal e o workflow [`keep-supabase-warm`](./.github/workflows/keep-supabase-warm.yml) como reserva. Detalhes em [`supabase/README.md`](./supabase/README.md).
 
 ---
@@ -112,4 +112,4 @@ O material do registro no INPI é processo interno e fica fora do repositório. 
 
 ## Licença e parceria
 
-[MIT](./LICENSE). O aviso de copyright nomeia os cinco autores e a UNAERP, e acompanha qualquer redistribuição. Créditos completos e parceria institucional em [`NOTICE.md`](./NOTICE.md).
+[MIT](./LICENSE). O aviso de copyright nomeia os cinco autores e a UNAERP, e acompanha qualquer redistribuição. Autoria, bibliotecas, imagens de terceiros e parceria institucional em [`NOTICE.md`](./NOTICE.md).
