@@ -70,7 +70,7 @@ const TOOL_DEFS = [
 const MISSION_DEFS = [
   { id:'ext5',    text:'Apague 5 fogos',        type:'total_extinguish', target:5,    reward:{ water:2 }  },
   { id:'rescue3', text:'Salve 3 orangotangos',  type:'rescue_orang',     target:3,    reward:{ pts:50 }   },
-  { id:'trash5',  text:'Colete 5 lixos',        type:'total_catch',      target:5,    reward:{ pts:30 }   },
+  { id:'trash5',  text:'Colete 5 resíduos',     type:'total_catch',      target:5,    reward:{ pts:30 }   },
   { id:'surv30',  text:'Sobreviva 30 segundos', type:'survive_frames',   target:1800, reward:{ pts:40, tool:'fertilizer' } },
 ];
 
@@ -114,7 +114,7 @@ export class Modulo4 extends GridCanvasGame {
       <div class="m4-toolbar" id="m4-toolbar">
         ${TOOL_DEFS.map(t => `
           <button class="m4-tool-btn${t.id==='normal'?' active':''}" id="m4-tool-${t.id}"
-            title="${t.id==='normal'?'Clica em fogo p/ apagar, lixo p/ coletar':t.id==='bucket'?'Apaga área 3×3 de fogo':t.id==='firebreak'?'Cria barreira no chão: o fogo não passa':' Aplica em terra queimada (cinza) para revitalizar'}">
+            title="${t.id==='normal'?'Apaga o fogo e coleta os resíduos com um clique':t.id==='bucket'?'Apaga área 3×3 de fogo':t.id==='firebreak'?'Cria barreira no chão: o fogo não passa':' Aplica em terra queimada (cinza) para revitalizar'}">
             <span style="font-size:0.65rem;opacity:0.6;margin-right:2px;">[${t.key}]</span>${t.emoji} ${t.label}${t.quantity !== -1 ? ` <span id="m4-qty-${t.id}">(${t.quantity})</span>` : ''}
           </button>
         `).join('')}
@@ -130,7 +130,7 @@ export class Modulo4 extends GridCanvasGame {
         <div id="m4-bucket-cursor">🪣</div>
       </div>
       <p class="m4-tip">
-        <strong>[1]</strong> clique fogo→apaga, lixo→coleta ·
+        <strong>[1]</strong> clique fogo→apaga, resíduo→coleta ·
         <strong>[2]</strong> 🪣 balde: apaga fogo 3×3 (limitado) ·
         <strong>[3]</strong> 🧱 barreira: clique no chão, e o fogo não passa ·
         <strong>[4]</strong> 🌱 fertilizante: clique em terra queimada (cinza) ·
@@ -349,7 +349,7 @@ export class Modulo4 extends GridCanvasGame {
 
   /* ─── TIMERS ─────────────────────────────────────── */
   startTimers() {
-    // Inicia/reinicia os timers de fogo e lixo com os params da onda atual
+    // Inicia/reinicia os timers de fogo e de resíduos com os params da onda atual
     this._applyWaveTimers();
 
     // Vento e orangotango são globais (não param durante a pausa)

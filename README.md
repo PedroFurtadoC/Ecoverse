@@ -31,7 +31,7 @@ npm run preview     # serve dist/ localmente
 ## O que tem dentro
 
 - **Globo 3D interativo** com 8 missões em locais reais (Amazônia, Bacia do Congo, Mata Atlântica, Bornéu, Madagascar, Pantanal, Grande Barreira de Coral, Cordilheira dos Andes).
-- **Minigames temáticos** focados em problemas reais de resíduos por bioma (plástico no rio, e-waste, microplástico, pesca-fantasma, etc.).
+- **Minigames temáticos** focados em problemas reais de resíduos por bioma (plástico no rio, resíduos eletrônicos, microplástico, pesca-fantasma, etc.).
 - **Pomodoro** integrado: sessões de 25/5/15 minutos geram energia, que libera as missões, e moedas.
 - **Quizzes ODS**: 17 quizzes baseados nos Objetivos de Desenvolvimento Sustentável da ONU, desbloqueados em três fases conforme você completa missões.
 - **16 conquistas** que ensinam conceitos de resíduos enquanto recompensam (15 visíveis e 1 secreta).

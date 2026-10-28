@@ -31,7 +31,7 @@ const MISSIONS = [
     // Resíduo flutuante na bacia amazônica: estudo Reis et al. (2021) e UNEP
     // Litter Outlook documentaram acúmulo significativo de plástico em
     // igarapés próximos a centros urbanos como Manaus.
-    desc: 'Comunidades ribeirinhas convivem com resíduos plásticos que descem com as cheias e ameaçam botos, pirarucus e a pesca artesanal. Recolha o lixo antes que ele chegue ao igarapé.',
+    desc: 'Comunidades ribeirinhas convivem com resíduos plásticos que descem com as cheias e ameaçam botos, pirarucus e a pesca artesanal. Separe os resíduos antes que eles cheguem ao igarapé.',
     location: 'Amazônia, Brasil',
     photo: 'assets/photo-amazon-river.png',
     costEnergy: 1, rewardCoins: 10, impactCO2: 0.5,
@@ -39,10 +39,10 @@ const MISSIONS = [
     prereqId: null, minigame: 'andre_1'
   },
   {
-    id: 2, title: 'Lixo eletrônico na África Central',
-    // Global E-waste Monitor 2024 (UNU/ITU): 62 milhões de toneladas de e-waste
-    // por ano no mundo, apenas 22% formalmente recicladas; parte é exportada
-    // ilegalmente para países da África Central.
+    id: 2, title: 'Resíduos eletrônicos na África Central',
+    // Global E-waste Monitor 2024 (UNU/ITU): o mundo gerou 62 milhões de
+    // toneladas de resíduos eletrônicos em 2022, e só 22% foram reciclados
+    // formalmente; parte é exportada ilegalmente para países da África Central.
     desc: 'Contêineres de eletrônicos descartados da Europa e da Ásia chegam à Bacia do Congo e contaminam o solo com mercúrio e chumbo. Separe o que tem valor reciclável do que exige descarte especial.',
     location: 'República Dem. do Congo',
     photo: 'assets/photo-congo.jpg',
@@ -55,7 +55,7 @@ const MISSIONS = [
     // SOS Mata Atlântica: bioma já perdeu ~88% da cobertura original e
     // abastece de água ~70% da população brasileira. Descarte irregular
     // em encostas urbanas é principal fonte de contaminação de nascentes.
-    desc: 'A Mata Atlântica fornece água para 7 em cada 10 brasileiros, mas suas encostas viraram lixões irregulares. Limpe as nascentes antes que o resíduo chegue ao rio.',
+    desc: 'A Mata Atlântica fornece água para 7 em cada 10 brasileiros, mas muitas encostas viraram ponto de descarte irregular. Limpe as nascentes antes que os resíduos cheguem ao rio.',
     location: 'Mata Atlântica, Brasil',
     photo: 'assets/photo-waterfall.jpg',
     costEnergy: 2, rewardCoins: 25, impactCO2: 1.2,
@@ -116,7 +116,7 @@ const MISSIONS = [
     // ICIMOD e estudos de turismo de altitude: trilhas como Inca e Huayna
     // Picchu acumulam toneladas de resíduos por temporada; mineração na
     // cordilheira deixa rejeitos que contaminam nascentes do rio Amazonas.
-    desc: 'Trilhas turísticas e atividade mineira deixam rejeitos que contaminam as nascentes do rio Amazonas. Recolha o lixo da rota sem sair do caminho marcado.',
+    desc: 'Trilhas turísticas acumulam resíduos, e a mineração deixa rejeitos que contaminam as nascentes do rio Amazonas. Separe o que os turistas deixam pelo caminho antes que se acumule na neve.',
     location: 'Andes, Peru',
     photo: 'assets/photo-andes.jpg',
     costEnergy: 5, rewardCoins: 75, impactCO2: 3.5,
@@ -286,7 +286,7 @@ const QUIZ_ODS_DATA = [
     questions: [
       { q: 'A indústria da moda é a 2ª mais poluidora do mundo. Quanto % da água industrial ela consome?', opts: ['5%', '10%', '20%', '30%'], correct: 2 },
       { q: 'O que é economia circular?', opts: ['Gastar em círculos', 'Reutilizar e reciclar ao máximo', 'Comprar muito barato', 'Investir em ações'], correct: 1 },
-      { q: 'Cada brasileiro gera em média quantos kg de lixo por dia?', opts: ['0,3 kg', '1 kg', '3 kg', '5 kg'], correct: 1 },
+      { q: 'Cada brasileiro gera em média quantos kg de resíduos sólidos urbanos por dia?', opts: ['0,3 kg', '1 kg', '3 kg', '5 kg'], correct: 1 },
       { q: 'Quanto tempo um plástico leva para se decompor?', opts: ['10 anos', '50 anos', '200 anos', '400+ anos'], correct: 3 },
       { q: 'A obsolescência programada significa:', opts: ['Produtos feitos para durar', 'Produtos projetados para quebrar', 'Reciclagem obrigatória', 'Consumo consciente'], correct: 1 }
     ]
@@ -359,7 +359,7 @@ const TIPS = [
   '♻️ Reciclar uma tonelada de papel poupa 17 árvores e milhares de litros de água. (CEMPRE)',
   '🛒 Cada brasileiro produz cerca de 1 kg de resíduo por dia. (ABRELPE 2023)',
   '🥤 Uma garrafa PET leva mais de 400 anos para se decompor no ambiente. (UNEP)',
-  '📱 O mundo gera 62 milhões de toneladas de lixo eletrônico por ano. Só 22% são formalmente reciclados. (UN E-waste Monitor 2024)',
+  '📱 Em 2022, o mundo gerou 62 milhões de toneladas de resíduos eletrônicos, e só 22% foram reciclados formalmente. (Global E-waste Monitor 2024)',
   '🌊 Cerca de 8 milhões de toneladas de plástico chegam aos oceanos a cada ano. (UNEP)',
   '🥫 Reciclar uma lata de alumínio economiza 95% da energia de produzir uma nova. (CEMPRE)',
   '🍎 Aproximadamente 1/3 dos alimentos produzidos no mundo viram desperdício. (FAO)',

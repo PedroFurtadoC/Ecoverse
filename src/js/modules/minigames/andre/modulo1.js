@@ -21,7 +21,7 @@ const RESULT_FRAMES = 58;   // frames de pausa pós-avaliação
 const WIN_SCORE     = 60;
 const TOTAL_SECONDS = 45;
 
-/* ── 11 Tipos de lixo ───────────────────────────────────────────────────
+/* ── 11 tipos de resíduo ────────────────────────────────────────────────
    correctBin deve corresponder a um id em BIN_DEFS (paper | plastic | metal | trash).
    Itens sem sprite próprio reutilizam outro arquivo e usam emoji como fallback visual.
    ─────────────────────────────────────────────────────────────────────── */
@@ -96,7 +96,7 @@ const TRASH_DEFS = [
     emoji: '🛢️',
   },
 
-  // ── Lixo Geral / Rejeito ───────────────────────────────────────────
+  // ── Rejeito ────────────────────────────────────────────────────────
   {
     id: 'fishing-net',
     src: 'waste-fishing-net.png',
@@ -143,7 +143,7 @@ const BIN_DEFS = [
   { id: 'plastic', src: 'bin-plastic.png', label: 'Plástico',    emoji: '♻️', color: '#c62828', hoverColor: '#ef9a9a' },
   { id: 'metal',   src: 'bin-metal.png',   label: 'Metal',       emoji: '🔩', color: '#424242', hoverColor: '#90a4ae' },
   { id: 'glass',   src: 'bin-glass.png',   label: 'Vidro',       emoji: '🍷', color: '#4dad65', hoverColor: '#78909c' },
-  { id: 'trash',   src: 'bin-trash.png',   label: 'Lixo Geral',  emoji: '🗑️', color: '#191c1d', hoverColor: '#78909c' },
+  { id: 'trash',   src: 'bin-trash.png',   label: 'Rejeito',     emoji: '🗑️', color: '#191c1d', hoverColor: '#78909c' },
   { id: 'organic', src: 'bin-organic.png', label: 'Orgânico',    emoji: '🍒', color: '#ad6200', hoverColor: '#78909c' },
 ];
 
@@ -290,7 +290,7 @@ export class Modulo1 extends CanvasMinigame {
       </div>
       <canvas id="m1-canvas"></canvas>
       <p class="m1-tip">
-        Clique na <strong>lixeira correta</strong> para arremessar!
+        Clique no <strong>coletor certo</strong> para arremessar!
         🌊 Salve o Rio Amazonas: proteja botos e pirarucus!
       </p>
     </div>
@@ -594,7 +594,7 @@ export class Modulo1 extends CanvasMinigame {
     }
   }
 
-  /* ── Draw: item de lixo ─────────────────────────────────────────── */
+  /* ── Draw: item de resíduo ──────────────────────────────────────── */
   _drawCurrentItem(ctx) {
     if (!this.currentTrash) return;
     const it  = this.currentTrash;
@@ -628,7 +628,7 @@ export class Modulo1 extends CanvasMinigame {
     ctx.fillStyle    = '#a0d8ef';
     ctx.font         = `${Math.round(W * 0.022)}px sans-serif`;
     ctx.textAlign    = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('👆 Clique na lixeira correta para arremessar!', W / 2, H * 0.64);
+    ctx.fillText('👆 Clique no coletor certo para arremessar!', W / 2, H * 0.64);
     ctx.restore();
   }
 

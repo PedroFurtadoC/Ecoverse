@@ -8,11 +8,11 @@ toca três vezes rápido no contador de missões.
 
 - 8 rodadas em até 60 segundos
 - A cada rodada, um sprite de resíduo aparece no centro
-- O jogador clica numa das 6 lixeiras CONAMA (Papel, Plástico, Metal, Vidro, Orgânico, Rejeito)
+- O jogador clica num dos 6 coletores do padrão CONAMA (Papel, Plástico, Metal, Vidro, Orgânico, Rejeito)
 - Feedback imediato (`Correto!` ou `Vai pro X`)
 - Acertar ≥ 60% conta como sucesso e desbloqueia a conquista `egg_triagem`
 - Pilhas e eletrônicos ficam de fora de propósito: pela PNRS eles voltam pela logística reversa,
-  e nenhuma das 6 lixeiras serve
+  e nenhum dos 6 coletores serve
 
 ## Como o trigger funciona
 

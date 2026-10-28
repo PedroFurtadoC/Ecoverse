@@ -67,7 +67,7 @@
 .thiago-8-bin::after { font-size: 35px; z-index: 2; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); }
 .thiago-8-bin--plastic { background: linear-gradient(145deg, #ef4444, #b91c1c); } .thiago-8-bin--plastic::after { content: '🧴'; }
 .thiago-8-bin--metal { background: linear-gradient(145deg, #f59e0b, #b45309); } .thiago-8-bin--metal::after { content: '🛢️'; }
-.thiago-8-bin--organic { background: linear-gradient(145deg, #22c55e, #15803d); } .thiago-8-bin--organic::after { content: '🍎'; }
+.thiago-8-bin--organic { background: linear-gradient(145deg, #8d6e63, #5d4037); } .thiago-8-bin--organic::after { content: '🍎'; }
 
 .thiago-8-hud {
   position: absolute; top: 25px; left: 25px; right: 25px;
@@ -175,7 +175,7 @@
   100% { left: -10%; bottom: 16.8%; }
 }
 
-/* 6. LIXOS (Reaproveitamento) */
+/* 6. RESÍDUOS (Reaproveitamento) */
 .thiago-8-item {
   position: absolute; width: 60px; height: 60px; z-index: 150;
   cursor: grab; transition: transform 0.1s, opacity 0.2s;

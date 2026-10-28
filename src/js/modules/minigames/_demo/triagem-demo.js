@@ -12,7 +12,7 @@ const CATEGORIAS = {
 };
 
 // Pilhas e eletrônicos ficam de fora: pela Política Nacional de Resíduos
-// Sólidos eles voltam pela logística reversa, e nenhuma destas lixeiras serve.
+// Sólidos eles voltam pela logística reversa, e nenhum destes coletores serve.
 const ITENS = [
   { sprite: 'waste-paper-newspaper.png',  nome: 'Jornal',          categoria: 'paper'   },
   { sprite: 'waste-cardboard.png',        nome: 'Papelão',         categoria: 'paper'   },

@@ -41,7 +41,7 @@ const INVINCIBLE_MS = 90;   // frames de invencibilidade após dano
 const LEVELS = [
   {
     name:      'Primeiros Passos',
-    tip:       '↑ Espaço = pular  ·  ←→ = mover  ·  Colete todo o lixo! ♻️',
+    tip:       '↑ Espaço = pular  ·  ←→ = mover  ·  Colete todos os resíduos! ♻️',
     timeLimit: 45,
     platforms: [
       [0.00, 0.82, 1.00, 'ground'],
@@ -58,7 +58,7 @@ const LEVELS = [
   },
   {
     name:      'Óleo na Água',
-    tip:       '🛢️ Tambores de óleo queimam! Pegue só o lixo.',
+    tip:       '🛢️ Tambores de óleo queimam! Desvie deles e pegue os resíduos.',
     timeLimit: 45,
     platforms: [
       [0.00, 0.82, 1.00, 'ground'],
@@ -78,7 +78,7 @@ const LEVELS = [
     ],
   },
   {
-    name:      'Tempestade de Lixo',
+    name:      'Tempestade de Resíduos',
     tip:       '🔥 Fogo no tronco! Cinco itens para coletar.',
     timeLimit: 50,
     platforms: [
@@ -679,7 +679,7 @@ export class Modulo6 extends CanvasMinigame {
       titleColor: success ? '#4ade80' : '#60a5fa',
       rows: [
         GameOverlay.scoreRow(this.score.score),
-        { html: `<div style="color:#d4f5d4">Lixo coletado: ♻️ <strong style="color:#4ade80">${this._totalCollected}</strong></div>` },
+        { html: `<div style="color:#d4f5d4">Resíduos coletados: ♻️ <strong style="color:#4ade80">${this._totalCollected}</strong></div>` },
         { html: `<div style="color:#d4f5d4">Nível alcançado: <strong style="color:#fbbf24">${this._levelIdx + 1}/5</strong></div>` },
       ],
       badges: [
@@ -692,7 +692,7 @@ export class Modulo6 extends CanvasMinigame {
         GameOverlay.continueButton('m6-btn-continue', success,
           () => { GameOverlay.dismiss(overlay); this.finishGame(success, this.score.score); }),
       ],
-      footer: 'O Pantanal abriga 3.500 espécies. Lixo na natureza mata animais e contamina rios.',
+      footer: 'O Pantanal abriga 3.500 espécies. Resíduos descartados na natureza matam animais e contaminam rios.',
     });
   }
 

@@ -1,5 +1,5 @@
 // Missão 8: Trilhas e mineração na Cordilheira dos Andes.
-// Mecânica: sobrevivência (endurance) com triagem de lixo por arrastar.
+// Mecânica: sobrevivência (endurance) com triagem de resíduos por arrastar.
 
 export class Modulo8 {
   constructor(container, onGameEnd) {
@@ -33,13 +33,13 @@ export class Modulo8 {
           <div class="thiago-8-overlay" style="display: flex;">
             <h2>Andes: Escalada Limpa</h2>
             <p>O turismo de altitude está poluindo a Cordilheira!</p>
-            <p style="font-size: 0.9em; margin: 10px 0;"><strong>Resista o máximo de tempo</strong> classificando o lixo nas lixeiras corretas.</p>
+            <p style="font-size: 0.9em; margin: 10px 0;"><strong>Resista o máximo de tempo</strong> separando os resíduos nos coletores certos.</p>
             <div style="display: flex; gap: 15px; justify-content: center; margin: 15px 0;">
                <span style="color: #ef4444; font-weight: bold;">🔴 Plástico</span>
-               <span style="color: #f59e0b; font-weight: bold;">🟡 Metal/Vidro</span>
-               <span style="color: #22c55e; font-weight: bold;">🟢 Orgânico</span>
+               <span style="color: #f59e0b; font-weight: bold;">🟡 Metal</span>
+               <span style="color: #c69c7b; font-weight: bold;">🟤 Orgânico</span>
             </div>
-            <p style="color: #60a5fa; font-weight: bold;">Lixo acumulado na neve polui a montanha rapidamente.</p>
+            <p style="color: #60a5fa; font-weight: bold;">Resíduos acumulados na neve poluem a montanha rapidamente.</p>
             <button class="thiago-8-btn" id="t8-start-btn">Iniciar escalada</button>
           </div>
         </div>

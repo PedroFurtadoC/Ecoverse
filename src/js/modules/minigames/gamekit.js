@@ -559,7 +559,7 @@ export class ParticleSystem {
   /* ── Emissores ───────────────────────────── */
 
   /**
-   * Burst radial uniforme (ex: coleta de lixo).
+   * Burst radial uniforme (ex.: coleta de resíduos).
    * @param {number} x
    * @param {number} y
    * @param {string} color

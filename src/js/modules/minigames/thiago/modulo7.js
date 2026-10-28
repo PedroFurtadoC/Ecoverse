@@ -26,7 +26,7 @@ export class Modulo7 {
         <div class="thiago-7-overlay">
           <h2>Limpeza dos Corais</h2>
           <p>Remova garrafas, sacolas e galões de plástico clicando neles!</p>
-          <p style="font-size: 0.9em; margin: 10px 0;">Use sua lixeira para coletar o plástico.</p>
+          <p style="font-size: 0.9em; margin: 10px 0;">Use o seu coletor para recolher o plástico.</p>
           <p style="font-size: 0.8em; margin: 5px 0; color: #ffcc33;">Atenção: não assuste os peixes ou eles se tornarão plástico!</p>
           <button class="thiago-7-btn" id="t7-start-btn">Começar Missão</button>
         </div>

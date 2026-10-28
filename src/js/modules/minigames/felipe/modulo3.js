@@ -224,7 +224,7 @@ export class Modulo3 extends CanvasMinigame {
     if (!def) return;
 
     if (id === 'magnet') {
-      // Ímã: captura instantânea de todos os itens de lixo na tela
+      // Ímã: captura instantânea de todos os resíduos na tela
       let caught = 0;
       for (const item of this.items) {
         if (item.caught || item.fadeOut) continue;

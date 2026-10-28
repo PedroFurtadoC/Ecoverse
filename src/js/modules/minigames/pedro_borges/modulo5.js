@@ -110,7 +110,7 @@ export class Modulo5 extends PlatformMinigame {
         <strong>← →</strong> nadar ·
         <strong>↑ / Espaço</strong> subir ·
         <strong>superfície</strong> = oxigênio ·
-        <strong>aproxime-se</strong> de 🐢🐬 para libertar · colete 🗑️ lixo
+        <strong>aproxime-se</strong> de 🐢🐬 para libertar · colete 🗑️ resíduos
       </p>
     </div>`;
 
@@ -253,7 +253,7 @@ export class Modulo5 extends PlatformMinigame {
     this.animals.push({ x: W - 110, y: H - 15 - 22,
       type: 'dugong', freed: false, phase: Math.random() * Math.PI * 2 });
 
-    // Lixo no leito e perto de plataformas
+    // Resíduos no leito e perto das plataformas
     this._trash = [];
     const trashPositions = [
       120, 280, 430, 600, 750, 880, 1010, 1150, 1260, 1380, 1480, 1560,
@@ -763,7 +763,7 @@ export class Modulo5 extends PlatformMinigame {
       ctx.globalAlpha = Math.min(1, (280 - this._frame) / 60);
       ctx.fillStyle = '#7dd3fc'; ctx.font = `${Math.round(W * 0.018)}px sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-      ctx.fillText('🐢🐬 aproxime-se para libertar · 🗑️ colete lixo · 🦈🪼 fuja dos inimigos!', W / 2, H - 4);
+      ctx.fillText('🐢🐬 aproxime-se para libertar · 🗑️ colete resíduos · 🦈🪼 fuja dos inimigos!', W / 2, H - 4);
       ctx.restore();
     }
 
@@ -889,7 +889,7 @@ export class Modulo5 extends PlatformMinigame {
     ctx.restore();
   }
 
-  /* ── Renderização: lixo ───────────────────────────── */
+  /* ── Renderização: resíduos ───────────────────────── */
 
   _drawTrash(ctx) {
     const t = this._frame;
@@ -1080,7 +1080,7 @@ export class Modulo5 extends PlatformMinigame {
       rows: [
         GameOverlay.scoreRow(this.score.score),
         { html: `<div style="color:#e0f4ff;">Animais soltos: <strong style="color:#fbbf24">${this.freedCount}/${TOTAL_ANIMALS}</strong></div>` },
-        { html: `<div style="color:#e0f4ff;">Lixo coletado: <strong style="color:#fbbf24">${this.trashCollected}/${TOTAL_TRASH}</strong></div>` },
+        { html: `<div style="color:#e0f4ff;">Resíduos coletados: <strong style="color:#fbbf24">${this.trashCollected}/${TOTAL_TRASH}</strong></div>` },
         ...bonusRows,
       ],
       badges: [

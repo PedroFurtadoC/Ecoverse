@@ -1,4 +1,4 @@
-// Missão 2: Lixo eletrônico na Bacia do Congo.
+// Missão 2: Resíduos eletrônicos na Bacia do Congo.
 // Contrato e exemplos: src/js/modules/minigames/README.md
 
 
@@ -39,7 +39,7 @@ const WAVE_DEFS = [
   { fallSpeed: 1.00, pickFrames: 148, label: 'CRÍTICO!'  },
 ];
 
-/* ── 8 tipos de e-waste ─────────────────────────────────────────────────
+/* ── 8 tipos de resíduo eletrônico ──────────────────────────────────────
    Sprites existentes: waste-smartphone, waste-circuit-board, waste-battery.
    Demais itens usam src de fallback (são sobrescritos pelo emoji via _drawSprite
    quando o sprite não é o "certo" para aquele id).
@@ -95,7 +95,7 @@ const EWASTE_DEFS = [
     id: 'can', src: 'waste-metal-can.png',
     label: 'Lata de Metal',           correctBin: 'metal',
     emoji: '🥫',
-    toxicAlert: '♻️ Latas de metal são altamente recicláveis: descarte na lixeira certa!',
+    toxicAlert: '♻️ Latas de metal são altamente recicláveis: descarte no coletor certo!',
   },
   {
     id: 'nail', src: 'waste-nail.png',
@@ -115,12 +115,12 @@ const BIN_DEFS = [
 
 /* ── Fatos educativos (exibidos entre ondas) ──────────────────────────── */
 const EWASTE_FACTS = [
-  'Em 2022, o mundo gerou 62 milhões de toneladas de e-waste, um recorde (GEM 2024).',
-  'Apenas 22% do lixo eletrônico global é formalmente reciclado (GEM 2024).',
+  'Em 2022, o mundo gerou 62 milhões de toneladas de resíduos eletrônicos, um recorde (GEM 2024).',
+  'Apenas 22% dos resíduos eletrônicos do mundo são reciclados formalmente (GEM 2024).',
   'Baterias descartadas no lixo comum liberam cádmio e lítio em lençóis freáticos.',
   'Placas de circuito queimadas a céu aberto liberam mercúrio e dioxinas no ar.',
   'Um smartphone tem mais de 60 elementos químicos: ouro, prata, cobalto e mais.',
-  'A Bacia do Congo absorve ilegalmente toneladas de e-waste da Europa e dos EUA todo ano.',
+  'A Bacia do Congo absorve ilegalmente toneladas de resíduos eletrônicos da Europa e dos EUA todo ano.',
   'Reciclar 1 tonelada de celulares recupera ~340 g de ouro, 40× mais que minério bruto.',
   'O chumbo de monitores antigos pode intoxicar crianças que brincam em terrenos contaminados.',
 ];
@@ -289,7 +289,7 @@ export class Modulo2 extends CanvasMinigame {
       <div class="m2-pick-bar-wrap"><div id="m2-pick-bar"></div></div>
       <canvas id="m2-canvas"></canvas>
       <p class="m2-tip">
-        Clique na <strong>lixeira certa</strong> antes do e-waste tocar o solo!
+        Clique no <strong>coletor certo</strong> antes que o resíduo eletrônico toque o solo!
         ☣️ Descarte correto evita mercúrio e chumbo no Congo.
       </p>
     </div>
@@ -654,7 +654,7 @@ export class Modulo2 extends CanvasMinigame {
       ground.addColorStop(1, '#0d1a0d');
       c.fillStyle = ground; c.fillRect(0, H * 0.38, W, H * 0.62);
 
-      // Reflexo alaranjado do lixo eletrônico
+      // Reflexo alaranjado do resíduo eletrônico
       c.globalAlpha = 0.07; c.fillStyle = '#ff6600';
       c.fillRect(0, H * 0.55, W, H * 0.45); c.globalAlpha = 1;
 
@@ -699,7 +699,7 @@ export class Modulo2 extends CanvasMinigame {
     }
   }
 
-  /* ── Draw: item de e-waste ──────────────────────────────────────── */
+  /* ── Draw: item de resíduo eletrônico ───────────────────────────── */
   _drawCurrentItem(ctx) {
     if (!this.currentItem) return;
     const it  = this.currentItem;
@@ -874,7 +874,7 @@ export class Modulo2 extends CanvasMinigame {
 
     const wrapper = this.container.querySelector('.m2-wrap');
     const overlay = GameOverlay.show(wrapper, {
-      title:      byHearts ? '💀 E-waste venceu desta vez!' : success ? '♻️ Congo mais seguro!' : '☣️ Contaminação ainda em curso...',
+      title:      byHearts ? '💀 Os resíduos eletrônicos venceram desta vez!' : success ? '♻️ Congo mais seguro!' : '☣️ Contaminação ainda em curso...',
       titleColor: success ? '#7df0c8' : '#ff6b6b',
       rows: [
         GameOverlay.scoreRow(this.score.score),
@@ -882,7 +882,7 @@ export class Modulo2 extends CanvasMinigame {
         { html: `<div style="color:#c0e8c0;font-size:0.88rem;">Triados corretamente: <strong style="color:#ffd600">${accuracy}% (${sorted}/${this.totalItems})</strong></div>` },
         { html: success
           ? `<div style="color:#7df0c8;font-size:0.82rem;">🌿 Boa triagem evita mercúrio e chumbo no Congo!</div>`
-          : `<div style="color:#ff9080;font-size:0.82rem;">☣️ 62 milhões de toneladas de e-waste geradas em 2023 (GEM 2024).</div>` },
+          : `<div style="color:#ff9080;font-size:0.82rem;">☣️ 62 milhões de toneladas de resíduos eletrônicos geradas em 2022 (GEM 2024).</div>` },
       ],
       badges: [
         GameOverlay.recordBadge(isNewRecord && this.score.score > 0),
