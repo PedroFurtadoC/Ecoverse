@@ -47,11 +47,12 @@ Em paralelo, o Pomodoro emite `EVENTS.REWARD` e `EVENTS.POMODORO_COMPLETE`: `mai
 
 | Arquivo | gzip | Quando carrega |
 | --- | --- | --- |
-| `index.html` | ~8,7 KB | sempre |
+| `index.html` | ~8,9 KB | sempre |
 | `index.css` | ~16 KB | sempre |
-| chunk do app | ~70 KB | sempre |
+| chunk do app | ~71 KB | sempre |
 | chunk do Supabase | ~57 KB | depois da tela de carregamento, se o login estiver configurado, para conferir se há sessão |
 | chunk do globo | ~519 KB | durante a tela de carregamento |
+| foto de uma missão | 75 a 155 KB (JPEG de 840 × 480, sem gzip) | ao abrir o card daquela missão |
 
 O globo carrega Three.js junto e por isso pesa. Fica fora do caminho crítico de propósito: a tela de carregamento aparece antes, e o download acontece enquanto ela está visível.
 

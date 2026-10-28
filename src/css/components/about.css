@@ -190,6 +190,47 @@
   outline: none;
 }
 
+/* Créditos das fotos das missões e da textura do globo. */
+.about-credits {
+  margin-top: 22px;
+}
+
+.about-credits__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--c-text-dim);
+}
+
+.about-credits__list strong {
+  color: var(--c-text);
+  font-weight: 700;
+}
+
+.about-credits__list a {
+  color: var(--c-green);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.18s ease;
+}
+
+.about-credits__list a:hover,
+.about-credits__list a:focus-visible {
+  border-bottom-color: currentColor;
+}
+
+.about-credits__note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--c-text-dim);
+}
+
 /* A partir de 600px: grid de 3 colunas e lead deixa de spanar a linha inteira */
 @media (min-width: 600px) {
   .about-team__grid {

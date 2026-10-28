@@ -419,13 +419,11 @@
         <div class="modal-body">
           <!-- Sem atributo src: o src vazio faz o navegador resolver para a
                própria página e baixar o HTML inteiro de novo a cada carga.
-               O src e o alt são preenchidos ao abrir a missão. -->
-          <img
-            class="mission-photo"
-            id="mission-photo"
-            alt=""
-            style="display: none"
-          />
+               O src, o alt e o crédito são preenchidos ao abrir a missão. -->
+          <figure class="mission-figure" id="mission-figure" style="display: none">
+            <img class="mission-photo" id="mission-photo" alt="" />
+            <figcaption class="photo-credit" id="mission-photo-credit"></figcaption>
+          </figure>
           <p class="mission-location" id="mission-location"></p>
           <p class="mission-desc" id="mission-desc"></p>
           <div class="mission-stats">
@@ -864,6 +862,14 @@
           <section class="about-team" aria-labelledby="about-team-title">
             <h3 class="about-team__title" id="about-team-title">Quem fez</h3>
             <div class="about-team__grid" id="about-team-grid"></div>
+          </section>
+
+          <section class="about-credits" aria-labelledby="about-credits-title">
+            <h3 class="about-team__title" id="about-credits-title">Fotos e imagens</h3>
+            <ul class="about-credits__list" id="about-credits-list"></ul>
+            <p class="about-credits__note">
+              Os sprites e as ilustrações dos minigames foram feitos para o projeto.
+            </p>
           </section>
 
           <p class="about-footer">

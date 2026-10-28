@@ -25,7 +25,23 @@ As estatísticas das missões e das dicas da tela de carregamento citam a fonte 
 
 ## Imagens
 
-As fotos das missões (`public/assets/photo-*`) e a textura do globo (`public/assets/earth-texture.webp`) são de terceiros: continuam dos seus autores e não entram na licença MIT. A foto do Pantanal (`photo-pantanal-pocone.jpg`) é de Flavio André para o Ministério do Turismo, em domínio público, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Flavio_Andre_Pantanal_Vista_aerea_Pocone_MT_(40064777855).jpg). A origem das outras ainda precisa ser registrada aqui. Os sprites e as ilustrações de `public/assets/generated/` e de `design/` foram feitos para o projeto.
+As fotos das missões (`public/assets/photo-*`) e a textura do globo (`public/assets/earth-texture.webp`) são de terceiros e não entram na licença MIT. Todas têm licença livre e mostram o lugar real de cada missão. O jogo exibe o crédito no canto da foto e reúne todos na janela Sobre; o registro completo fica aqui.
+
+| Missão | Lugar da foto | Autor | Licença |
+|---|---|---|---|
+| 1. Amazônia | Floresta amazônica perto de Manaus (AM) | [Neil Palmer (CIAT)](https://commons.wikimedia.org/wiki/File:Amazon_CIAT_(3).jpg) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/deed.pt-br) |
+| 2. Bacia do Congo | Kivu do Norte, RD Congo | [Abel Kavanagh (MONUSCO)](https://commons.wikimedia.org/wiki/File:River_in_rainforest_-_North_Kivu_(21062578875).jpg) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/deed.pt-br) |
+| 3. Mata Atlântica | Cascatinha Taunay, Floresta da Tijuca, Rio de Janeiro | [Ricardo Wagner e Silva](https://commons.wikimedia.org/wiki/File:Cascatinha_Taunay_do_Rio_Cachoeira_01.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br) |
+| 4. Bornéu | Manguezal de Mentawir, Kalimantan Oriental | [Exagren](https://commons.wikimedia.org/wiki/File:Fisherman_in_Mangrove_Areas.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br) |
+| 5. Madagascar | Tartaruga-de-pente em Nosy Tanikely | [Diego Delso](https://commons.wikimedia.org/wiki/File:Tortuga_carey_(Eretmochelys_imbricata),_Nosy_Tanikely,_Madagascar,_2025-09-19,_DD_95.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br) |
+| 6. Pantanal | Poconé, Mato Grosso | [Flavio André (MTur)](https://commons.wikimedia.org/wiki/File:Flavio_Andre_Pantanal_Vista_aerea_Pocone_MT_(40064777855).jpg) | Domínio público |
+| 7. Grande Barreira | Recife Flynn, perto de Cairns | [Toby Hudson](https://commons.wikimedia.org/wiki/File:Coral_Outcrop_Flynn_Reef.jpg) | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.pt-br) |
+| 8. Andes | Machu Picchu e Huayna Picchu, Peru | [Diego Delso](https://commons.wikimedia.org/wiki/File:Machu_Picchu,_Per%C3%BA,_2015-07-30,_DD_47.JPG) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br) |
+| Globo | Blue Marble Next Generation, outubro de 2004, com relevo e batimetria | [Reto Stöckli, NASA Earth Observatory](https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/) | Domínio público |
+
+As fotos do Commons foram recortadas para 840 × 480 pixels, sem outra alteração. As versões recortadas seguem a mesma licença do original: quem reaproveitar uma delas precisa manter o crédito e a licença. A textura é a mesma que acompanha os exemplos do three-globe, reduzida para 4096 × 2048, e a NASA pede o crédito ao NASA Earth Observatory.
+
+Os sprites e as ilustrações de `public/assets/generated/` e de `design/` foram feitos para o projeto.
 
 ## Forks
 

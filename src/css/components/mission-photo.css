@@ -1,11 +1,43 @@
-/* Foto do bioma exibida no card da missão. */
+/* Foto do bioma exibida no card da missão, com o crédito no canto. */
+
+.mission-figure {
+  position: relative;
+  margin: 0 0 14px;
+}
 
 .mission-photo {
+  display: block;
   width: 100%;
   height: 160px;
   object-fit: cover;
   border-radius: var(--radius-md);
-  margin-bottom: 14px;
 }
 
+/* Crédito por cima da foto. O card de missão completa usa o mesmo. Em tela
+   estreita ele quebra em duas linhas em vez de cortar o nome da licença. */
+.photo-credit {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  max-width: calc(100% - 12px);
+  margin: 0;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.62);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: right;
+}
 
+.photo-credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.45);
+  text-underline-offset: 2px;
+}
+
+.photo-credit a:hover,
+.photo-credit a:focus-visible {
+  text-decoration-color: currentColor;
+}

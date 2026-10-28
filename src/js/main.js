@@ -1,5 +1,5 @@
 import '../css/main.css';
-import { MISSIONS, TIPS, ASSET_LIST, GLOBE_TEXTURE, POMODORO_CONFIG, TEAM } from './config/data.js';
+import { MISSIONS, TIPS, ASSET_LIST, GLOBE_TEXTURE, GLOBE_TEXTURE_CREDIT, POMODORO_CONFIG, TEAM } from './config/data.js';
 import { state, saveState, loadState, resetState, getLocalOwner, setLocalOwner, clearLocalOwner, applyCloudState, hasMeaningfulProgress, progressScore, toCloudSnapshot } from './store/state.js';
 import { on, EVENTS } from './store/events.js';
 import { Pomodoro } from './modules/pomodoro.js';
@@ -52,7 +52,9 @@ const missionCost     = $('#mission-cost');
 const missionReward   = $('#mission-reward');
 const missionImpact   = $('#mission-impact');
 const missionGame     = $('#mission-game');
+const missionFigure   = $('#mission-figure');
 const missionPhoto    = $('#mission-photo');
+const missionCredit   = $('#mission-photo-credit');
 const btnStartMission = $('#btn-start-mission');
 
 const toastContainer = $('#toast-container');
@@ -270,7 +272,7 @@ $$('[data-menu-action]').forEach((btn) => {
     closeModal('modal-menu');
     const open = (id) => setTimeout(() => openModal(id), 220);
     if (action === 'donate')      open('modal-donate');
-    if (action === 'about')       setTimeout(() => { renderTeam(); openModal('modal-about'); }, 220);
+    if (action === 'about')       setTimeout(() => { renderTeam(); renderCredits(); openModal('modal-about'); }, 220);
     if (action === 'auth')        open('modal-auth');
     if (action === 'leaderboard') setTimeout(() => AuthUI.openLeaderboard(), 220);
     if (action === 'privacy')     open('modal-privacy');
@@ -354,6 +356,32 @@ function renderTeam() {
       </div>
     </article>
   `).join('');
+}
+
+// Crédito de uma foto: o autor leva à página do arquivo e a licença ao texto
+// dela. Domínio público não tem texto de licença, então fica sem o segundo
+// link. Sem links, serve para o card de missão completa, que fecha no clique.
+function photoCreditHtml(credit, { links = true, kind = 'Foto' } = {}) {
+  if (!credit) return '';
+  const safe = escapeHtml;
+  const link = (url, text) => links && url
+    ? `<a href="${safe(url)}" target="_blank" rel="noopener noreferrer">${safe(text)}</a>`
+    : safe(text);
+  return `${kind}: ${link(credit.source, credit.author)} · ${link(credit.licenseUrl, credit.license)}`;
+}
+
+// Lista do modal "Sobre" com o crédito de cada foto e o da textura do globo.
+// O rótulo é o lugar onde a foto foi feita, que nem sempre é o ponto exato da
+// missão no globo.
+function renderCredits() {
+  const list = $('#about-credits-list');
+  if (!list) return;
+  const item = (label, html) => `<li><strong>${escapeHtml(label)}</strong> · ${html}</li>`;
+  list.innerHTML = MISSIONS
+    .filter((m) => m.photoCredit)
+    .map((m) => item(m.photoCredit.place || m.location, photoCreditHtml(m.photoCredit)))
+    .concat(item('Globo', photoCreditHtml(GLOBE_TEXTURE_CREDIT, { kind: 'Textura' })))
+    .join('');
 }
 const btnQuiz = $('#btn-quiz-ods');
 if (btnQuiz) btnQuiz.addEventListener('click', () => {
@@ -568,8 +596,10 @@ function openMissionCard(mission) {
 
   if (missionPhoto && mission.photo) {
     missionPhoto.src = mission.photo;
-    missionPhoto.alt = `Foto de ${mission.location}`;
-    missionPhoto.style.display = '';
+    missionPhoto.alt = mission.photoAlt || `Foto de ${mission.location}`;
+    missionPhoto.style.objectPosition = mission.photoPosition || '';
+    if (missionCredit) missionCredit.innerHTML = photoCreditHtml(mission.photoCredit);
+    if (missionFigure) missionFigure.style.display = '';
   }
 
   if (mission.minigame && missionGame) {
@@ -681,8 +711,9 @@ function showCompletionPhoto(mission) {
   overlay.innerHTML = `
     <div class="completion-card">
       <div class="completion-img-wrap">
-        <img src="${mission.photo}" alt="${mission.location}" class="completion-img"/>
+        <img src="${mission.photo}" alt="${escapeHtml(mission.photoAlt || mission.location)}" class="completion-img"${mission.photoPosition ? ` style="object-position: ${mission.photoPosition}"` : ''}/>
         <div class="completion-badge">Missão completa</div>
+        ${mission.photoCredit ? `<p class="photo-credit">${photoCreditHtml(mission.photoCredit, { links: false })}</p>` : ''}
       </div>
       <div class="completion-info">
         <h3>🌍 ${mission.title}</h3>

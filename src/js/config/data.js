@@ -25,6 +25,9 @@ const POMODORO_CONFIG = {
 
 // Missões no globo. Cada uma referencia um local real e um problema concreto
 // de resíduos naquele bioma. Estatísticas com fonte oficial citada inline.
+// A foto é do próprio lugar, com licença livre: photoCredit vira a legenda
+// do card e a lista do Sobre, e o NOTICE.md repete os mesmos créditos.
+// photoPosition, quando existe, ajusta o enquadramento no card.
 const MISSIONS = [
   {
     id: 1, title: 'Plásticos no rio Amazonas',
@@ -33,7 +36,15 @@ const MISSIONS = [
     // igarapés próximos a centros urbanos como Manaus.
     desc: 'Comunidades ribeirinhas convivem com resíduos plásticos que descem com as cheias e ameaçam botos, pirarucus e a pesca artesanal. Separe os resíduos antes que eles cheguem ao igarapé.',
     location: 'Amazônia, Brasil',
-    photo: 'assets/photo-amazon-river.png',
+    photo: 'assets/photo-amazonia-manaus.jpg',
+    photoAlt: 'Rio de água escura cortando a floresta amazônica perto de Manaus, visto do alto',
+    photoCredit: {
+      place: 'Floresta amazônica perto de Manaus (AM)',
+      author: 'Neil Palmer (CIAT)',
+      license: 'CC BY-SA 2.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0/deed.pt-br',
+      source: 'https://commons.wikimedia.org/wiki/File:Amazon_CIAT_(3).jpg'
+    },
     costEnergy: 1, rewardCoins: 10, impactCO2: 0.5,
     lat: -3.4653, lng: -62.2159,
     prereqId: null, minigame: 'andre_1'
@@ -45,7 +56,15 @@ const MISSIONS = [
     // formalmente; parte é exportada ilegalmente para países da África Central.
     desc: 'Contêineres de eletrônicos descartados da Europa e da Ásia chegam à Bacia do Congo e contaminam o solo com mercúrio e chumbo. Separe o que tem valor reciclável do que exige descarte especial.',
     location: 'República Dem. do Congo',
-    photo: 'assets/photo-congo.jpg',
+    photo: 'assets/photo-congo-kivu.jpg',
+    photoAlt: 'Rio sinuoso atravessando a floresta tropical no Kivu do Norte, na República Democrática do Congo',
+    photoCredit: {
+      place: 'Kivu do Norte, RD Congo',
+      author: 'Abel Kavanagh (MONUSCO)',
+      license: 'CC BY-SA 2.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0/deed.pt-br',
+      source: 'https://commons.wikimedia.org/wiki/File:River_in_rainforest_-_North_Kivu_(21062578875).jpg'
+    },
     costEnergy: 2, rewardCoins: 15, impactCO2: 0.8,
     lat: -0.7893, lng: 23.6566,
     prereqId: 1, minigame: 'andre_2'
@@ -57,7 +76,15 @@ const MISSIONS = [
     // em encostas urbanas é principal fonte de contaminação de nascentes.
     desc: 'A Mata Atlântica fornece água para 7 em cada 10 brasileiros, mas muitas encostas viraram ponto de descarte irregular. Limpe as nascentes antes que os resíduos cheguem ao rio.',
     location: 'Mata Atlântica, Brasil',
-    photo: 'assets/photo-waterfall.jpg',
+    photo: 'assets/photo-mata-atlantica-tijuca.jpg',
+    photoAlt: 'Cascatinha Taunay, queda d’água na entrada da Floresta da Tijuca, no Rio de Janeiro',
+    photoCredit: {
+      place: 'Floresta da Tijuca, Rio de Janeiro',
+      author: 'Ricardo Wagner e Silva',
+      license: 'CC BY-SA 4.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br',
+      source: 'https://commons.wikimedia.org/wiki/File:Cascatinha_Taunay_do_Rio_Cachoeira_01.jpg'
+    },
     costEnergy: 2, rewardCoins: 25, impactCO2: 1.2,
     lat: -22.9519, lng: -43.2106,
     prereqId: 2, minigame: 'felipe_1'
@@ -69,7 +96,15 @@ const MISSIONS = [
     // por plástico urbano e efluentes da indústria de óleo de palma.
     desc: 'Os manguezais de Bornéu filtram poluentes e protegem a costa, mas estão sufocados por plástico vindo da indústria de óleo de palma. Identifique a cadeia de descarte e proteja os mangues.',
     location: 'Bornéu, Indonésia',
-    photo: 'assets/photo-borneo.jpg',
+    photo: 'assets/photo-borneo-mentawir.jpg',
+    photoAlt: 'Pescador numa canoa entre os manguezais de Mentawir, em Kalimantan Oriental, Bornéu',
+    photoCredit: {
+      place: 'Mentawir, Kalimantan Oriental (Bornéu)',
+      author: 'Exagren',
+      license: 'CC BY-SA 4.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br',
+      source: 'https://commons.wikimedia.org/wiki/File:Fisherman_in_Mangrove_Areas.jpg'
+    },
     costEnergy: 3, rewardCoins: 28, impactCO2: 1.5,
     lat: 1.8166, lng: 109.9767,
     prereqId: 3, minigame: 'felipe_2'
@@ -81,7 +116,16 @@ const MISSIONS = [
     // tartarugas, dugongos e tubarões em estado crítico no canal de Moçambique.
     desc: 'Tartarugas-marinhas e dugongos morrem presos em redes de pesca abandonadas no Canal de Moçambique. Solte os animais e recolha o equipamento-fantasma.',
     location: 'Madagascar',
-    photo: 'assets/photo-madagascar.jpg',
+    photo: 'assets/photo-madagascar-tanikely.jpg',
+    photoAlt: 'Tartaruga-de-pente nadando junto ao fundo do mar em Nosy Tanikely, Madagascar',
+    photoPosition: '50% 10%',
+    photoCredit: {
+      place: 'Nosy Tanikely, Madagascar',
+      author: 'Diego Delso',
+      license: 'CC BY-SA 4.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br',
+      source: 'https://commons.wikimedia.org/wiki/File:Tortuga_carey_(Eretmochelys_imbricata),_Nosy_Tanikely,_Madagascar,_2025-09-19,_DD_95.jpg'
+    },
     costEnergy: 3, rewardCoins: 35, impactCO2: 2.0,
     lat: -18.7669, lng: 46.8691,
     prereqId: 4, minigame: 'pedro_b_1'
@@ -93,8 +137,15 @@ const MISSIONS = [
     // para incêndios na estação seca.
     desc: 'Em 2020, 30% do Pantanal queimou. Embalagens de agrotóxico e palhada acumulada viram combustível das queimadas. Organize o descarte antes do fogo.',
     location: 'Pantanal, Brasil',
-    // Foto: Flavio André/MTur, em domínio público (Wikimedia Commons).
     photo: 'assets/photo-pantanal-pocone.jpg',
+    photoAlt: 'Campos alagados do Pantanal em Poconé, Mato Grosso, vistos do alto',
+    photoCredit: {
+      place: 'Poconé, Mato Grosso',
+      author: 'Flavio André (MTur)',
+      license: 'Domínio público',
+      licenseUrl: null,
+      source: 'https://commons.wikimedia.org/wiki/File:Flavio_Andre_Pantanal_Vista_aerea_Pocone_MT_(40064777855).jpg'
+    },
     costEnergy: 4, rewardCoins: 40, impactCO2: 2.4,
     lat: -19.0907, lng: -57.6534,
     prereqId: 5, minigame: 'pedro_b_2'
@@ -106,7 +157,15 @@ const MISSIONS = [
     // de cidades costeiras se infiltra nos pólipos e bloqueia o crescimento.
     desc: 'Microplásticos vindos de cidades costeiras entram nos pólipos de coral e travam o crescimento do recife. Distinga partícula de plâncton real e proteja o que sobrou.',
     location: 'Queensland, Austrália',
-    photo: 'assets/photo-coral.jpg',
+    photo: 'assets/photo-grande-barreira-flynn.jpg',
+    photoAlt: 'Corais de várias espécies no recife Flynn, na Grande Barreira, perto de Cairns',
+    photoCredit: {
+      place: 'Recife Flynn, Grande Barreira (Austrália)',
+      author: 'Toby Hudson',
+      license: 'CC BY-SA 3.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/deed.pt-br',
+      source: 'https://commons.wikimedia.org/wiki/File:Coral_Outcrop_Flynn_Reef.jpg'
+    },
     costEnergy: 5, rewardCoins: 60, impactCO2: 3.0,
     lat: -18.2871, lng: 147.6992,
     prereqId: 6, minigame: 'thiago_1'
@@ -118,7 +177,16 @@ const MISSIONS = [
     // cordilheira deixa rejeitos que contaminam nascentes do rio Amazonas.
     desc: 'Trilhas turísticas acumulam resíduos, e a mineração deixa rejeitos que contaminam as nascentes do rio Amazonas. Separe o que os turistas deixam pelo caminho antes que se acumule na neve.',
     location: 'Andes, Peru',
-    photo: 'assets/photo-andes.jpg',
+    photo: 'assets/photo-andes-machu-picchu.jpg',
+    photoAlt: 'Ruínas de Machu Picchu com a montanha Huayna Picchu ao fundo, no Peru',
+    photoPosition: '50% 20%',
+    photoCredit: {
+      place: 'Machu Picchu, Peru',
+      author: 'Diego Delso',
+      license: 'CC BY-SA 4.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br',
+      source: 'https://commons.wikimedia.org/wiki/File:Machu_Picchu,_Per%C3%BA,_2015-07-30,_DD_47.JPG'
+    },
     costEnergy: 5, rewardCoins: 75, impactCO2: 3.5,
     lat: -13.1631, lng: -72.5450,
     prereqId: 7, minigame: 'thiago_2'
@@ -373,6 +441,16 @@ const TIPS = [
 // outra quando o globo monta. Por isso a entrada carrega o modo junto.
 const GLOBE_TEXTURE = 'assets/earth-texture.webp';
 
+// A textura é a Blue Marble Next Generation de outubro de 2004, com relevo e
+// batimetria, reduzida para 4096 × 2048 (a mesma que vem nos exemplos do
+// three-globe). A NASA pede o crédito ao NASA Earth Observatory.
+const GLOBE_TEXTURE_CREDIT = {
+  author: 'Reto Stöckli, NASA Earth Observatory',
+  license: 'Domínio público',
+  licenseUrl: null,
+  source: 'https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/'
+};
+
 const ASSET_LIST = [
   'assets/logo.svg',
   'assets/icon-seed.svg','assets/icon-coin.svg',
@@ -435,4 +513,4 @@ const TEAM = [
   }
 ];
 
-export { GAME_CONFIG, POMODORO_CONFIG, MISSIONS, ACHIEVEMENTS, QUIZ_ODS_DATA, TIPS, ASSET_LIST, GLOBE_TEXTURE, TEAM };
+export { GAME_CONFIG, POMODORO_CONFIG, MISSIONS, ACHIEVEMENTS, QUIZ_ODS_DATA, TIPS, ASSET_LIST, GLOBE_TEXTURE, GLOBE_TEXTURE_CREDIT, TEAM };
