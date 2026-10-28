@@ -25,7 +25,7 @@ As estatísticas das missões e das dicas da tela de carregamento citam a fonte 
 
 ## Imagens
 
-As fotos das missões (`public/assets/photo-*`) e a textura do globo (`public/assets/earth-texture.webp`) são de terceiros: continuam dos seus autores e não entram na licença MIT. Os sprites e as ilustrações de `public/assets/generated/` e de `design/` foram feitos para o projeto.
+As fotos das missões (`public/assets/photo-*`) e a textura do globo (`public/assets/earth-texture.webp`) são de terceiros: continuam dos seus autores e não entram na licença MIT. A foto do Pantanal (`photo-pantanal-pocone.jpg`) é de Flavio André para o Ministério do Turismo, em domínio público, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Flavio_Andre_Pantanal_Vista_aerea_Pocone_MT_(40064777855).jpg). A origem das outras ainda precisa ser registrada aqui. Os sprites e as ilustrações de `public/assets/generated/` e de `design/` foram feitos para o projeto.
 
 ## Forks
 

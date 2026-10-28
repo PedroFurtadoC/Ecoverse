@@ -93,7 +93,8 @@ const MISSIONS = [
     // para incêndios na estação seca.
     desc: 'Em 2020, 30% do Pantanal queimou. Embalagens de agrotóxico e palhada acumulada viram combustível das queimadas. Organize o descarte antes do fogo.',
     location: 'Pantanal, Brasil',
-    photo: 'assets/photo-pantanal.jpg',
+    // Foto: Flavio André/MTur, em domínio público (Wikimedia Commons).
+    photo: 'assets/photo-pantanal-pocone.jpg',
     costEnergy: 4, rewardCoins: 40, impactCO2: 2.4,
     lat: -19.0907, lng: -57.6534,
     prereqId: 5, minigame: 'pedro_b_2'
